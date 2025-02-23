@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="7734da39-a889-4cf0-9055-91fe30229d4f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/css/datatables.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/css/dropzone-spritemap.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/css/dropzone.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/css/linearicon.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/css/ratio.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/css/remixicon.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/css/select2.min.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/css/style.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/css/vector-map.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/css/vendors/animate.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/css/vendors/bootstrap-tagsinput.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/css/vendors/bootstrap.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/css/vendors/chartist.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/css/vendors/date-picker.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/css/vendors/dropzone-spritemap.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/css/vendors/dropzone.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/css/vendors/feather-icon.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/css/vendors/font-awesome.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/css/vendors/fonts/slick-2.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/css/vendors/fonts/slick-3.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/css/vendors/fonts/slick-4.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/css/vendors/fonts/slick.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/css/vendors/fonts/slickd41d.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/css/vendors/scrollbar.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/css/vendors/slick.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/css/vendors/themify.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/fonts/fa-brands-400.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/fonts/fa-brands-400.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/fonts/fa-brands-400.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/fonts/fa-brands-400.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/fonts/fa-brands-400.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/fonts/fa-brands-400d41d.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/fonts/fa-regular-400.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/fonts/fa-regular-400.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/fonts/fa-regular-400.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/fonts/fa-regular-400.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/fonts/fa-regular-400.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/fonts/fa-regular-400d41d.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/fonts/fa-solid-900.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/fonts/fa-solid-900.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/fonts/fa-solid-900.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/fonts/fa-solid-900.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/fonts/fa-solid-900.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/fonts/fa-solid-900d41d.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/fonts/remixicondf6d.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/fonts/remixicondf6d.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/fonts/remixicondf6d.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/fonts/remixicondf6d.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/fonts/remixicondf6d.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/fonts/themify/themify9f24.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/fonts/themify/themify9f24.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/fonts/themify/themify9f24.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/fonts/themify/themify9f24.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/fonts/themify/themifyd41d.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/ajax-loader.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/bg.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/dashboard/bg.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/favicon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/hour.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/icon/down-.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/landing/email-bg.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/landing/leaf-right.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/landing/left-left.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/landing/title.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/logo/1-white.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/logo/1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/logo/full-white.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/logo/logo-white.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/logo/logo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/min.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/other-images/bg-profile.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/other-images/boxbg.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/other-images/calender-bg.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/other-images/clock-face.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/other-images/coming-soon-bg.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/other-images/maintenance-bg.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/other-images/mobile-clock-wallpaper.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/product/1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/product/10.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/product/11.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/product/13.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/product/14.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/product/16.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/product/2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/product/20.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/product/3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/product/4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/product/5.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/product/6.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/product/7.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/product/8.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/product/9.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/profile/1.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/profile/2.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/profile/3.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/sec.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/social-app/social-image.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/users/1.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/users/2.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/users/3.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/users/4.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/users/5.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/bootstrap-tagsinput.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/bootstrap/bootstrap.bundle.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/chart/apex-chart/apex-chart.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/chart/apex-chart/apex-chart1.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/chart/apex-chart/chart-custom.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/chart/apex-chart/chart-custom1.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/chart/apex-chart/moment.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/chart/apex-chart/stock-prices.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/checkbox-all-check.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/ckeditor-custom.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/ckeditor.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/config.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/custom-data-table.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/custom-slick.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/customizer.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/dropzone/dropzone-script.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/dropzone/dropzone.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/icons/feather-icon/feather-icon.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/icons/feather-icon/feather.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/jquery-3.6.0.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/jquery.dataTables.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/notify/bootstrap-notify.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/notify/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/ratio.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/script.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/scrollbar/custom.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/scrollbar/simplebar.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/select2-custom.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/select2.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/sidebar-menu.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/sidebareffect.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/slick.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/js/tooltip-init.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/svg/breakfast.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/svg/cup.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/svg/frozen.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/svg/meats.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/svg/milk.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/svg/pet.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/svg/vegetable.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/back-end/add-new-attributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/back-end/add-new-category.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/back-end/add-new-product.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/back-end/add-new-user.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/back-end/all-users.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/back-end/attributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/back-end/category.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/back-end/coupon-list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/back-end/create-coupon.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/back-end/create-role.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/back-end/currency-rates.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/back-end/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/back-end/list-page.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/back-end/media.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/back-end/order-detail.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/back-end/order-list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/back-end/order-tracking.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/back-end/product-review.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/back-end/products.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/back-end/profile-setting.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/back-end/reports.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/back-end/role.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/back-end/support-ticket.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/back-end/taxes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/back-end/translation.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/(admin)/attributes/[id]/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/(admin)/attributes/create/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/(admin)/attributes/form.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/(admin)/attributes/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/(admin)/categories/[id]/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/(admin)/categories/create/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/(admin)/categories/form.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/(admin)/categories/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/(admin)/dashboard/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/(admin)/global-error.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/(admin)/layout.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/api/attributes/[id]/route.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/api/attributes/route.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/api/categories/[id]/route.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/api/categories/route.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/interfaces/IAttribute.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/interfaces/ICategory.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/models/entities/Attribute.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/models/entities/AttributeValues.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/models/entities/Category.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/(admin)/(form)/FormSeach.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/(admin)/(header)/Logo.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/(admin)/(header)/NavMenu.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/(admin)/(header)/SearchForm.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/(admin)/(sidebar)/Logo.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/(admin)/(sidebar)/Navbar.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/(admin)/Footer.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/(admin)/Header.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/(admin)/Sidebar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shop-acc-game.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(client)/favicon.ico" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(client)/favicon.ico" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/admin/dashboard/page.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/admin/layout.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/models/connect.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/models/connect.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/services/commonService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/services/commonService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;lequyhieu1024&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/lequyhieu1024/shop-acc-game&quot;,
+    &quot;accountId&quot;: &quot;f4bab598-c377-4dad-8755-be556210b2f9&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="2tNbR0lq7vTkzL4SOenMhnBWwxn" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/mac/WebstormProjects/shop-acc-game/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-deb605915726-JavaScript-WS-243.22562.112" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="7734da39-a889-4cf0-9055-91fe30229d4f" name="Changes" comment="" />
+      <created>1740195468010</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1740195468010</updated>
+      <workItem from="1740195469343" duration="1263000" />
+      <workItem from="1740209195357" duration="358000" />
+      <workItem from="1740306890547" duration="1142000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
