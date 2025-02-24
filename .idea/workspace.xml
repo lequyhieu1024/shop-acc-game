@@ -4,22 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7734da39-a889-4cf0-9055-91fe30229d4f" name="Changes" comment="release entities">
-      <change afterPath="$PROJECT_DIR$/src/app/api/systems/route.ts" afterDir="false" />
+    <list default="true" id="7734da39-a889-4cf0-9055-91fe30229d4f" name="Changes" comment="release entities + fix some bug">
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/error500.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/placeholder.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/admin/systems/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/(admin)/Error.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/api/attributes/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/api/attributes/route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/api/categories/[id]/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/api/categories/[id]/route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/api/categories/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/api/categories/route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/models/connect.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/models/connect.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/models/entities/Category.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/models/entities/Category.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/models/entities/LuckyDraw.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/models/entities/LuckyDraw.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/models/entities/LuckyDrawItem.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/models/entities/LuckyDrawItem.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/models/entities/Product.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/models/entities/Product.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/models/entities/UserView.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/models/entities/UserView.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/models/entities/UserVoucher.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/models/entities/UserVoucher.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/services/commonService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/services/commonService.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/services/pinataService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/services/pinataService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/(admin)/(sidebar)/Navbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/(admin)/(sidebar)/Navbar.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,7 +55,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "feat/lehieudev",
-    "last_opened_file_path": "C:/Users/Admin/Desktop/shop-acc-game",
+    "last_opened_file_path": "C:/Users/Admin/Desktop/shop-acc-game/public/admin/assets/images",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -74,7 +66,11 @@
   }
 }]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Admin\Desktop\shop-acc-game\public\admin\assets\images" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Admin\Desktop\shop-acc-game\src\components\(admin)" />
       <recent name="C:\Users\Admin\Desktop\shop-acc-game\src\app\api\systems" />
       <recent name="C:\Users\Admin\Desktop\shop-acc-game" />
       <recent name="$PROJECT_DIR$" />
@@ -99,7 +95,7 @@
       <workItem from="1740209195357" duration="358000" />
       <workItem from="1740306890547" duration="1142000" />
       <workItem from="1740362127120" duration="1188000" />
-      <workItem from="1740363347508" duration="13678000" />
+      <workItem from="1740363347508" duration="21886000" />
     </task>
     <task id="LOCAL-00001" summary="base">
       <option name="closed" value="true" />
@@ -117,7 +113,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740375791202</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="release entities + fix some bug">
+      <option name="closed" value="true" />
+      <created>1740380928364</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1740380928364</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -126,6 +130,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="base" />
     <MESSAGE value="release entities" />
-    <option name="LAST_COMMIT_MESSAGE" value="release entities" />
+    <MESSAGE value="release entities + fix some bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="release entities + fix some bug" />
   </component>
 </project>
