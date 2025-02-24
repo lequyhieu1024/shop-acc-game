@@ -1,17 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm";
-import { User } from "./User";
-import { Voucher } from "./Voucher";
+import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
 
 @Entity({ name: "user_vouchers" })
 export class UserVoucher {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @ManyToOne(() => User, (user) => user.id, { onDelete: "CASCADE" })
-    @JoinColumn({ name: "user_id" })
-    user!: User;
+    @Column({ type: "bigint" })
+    user_id!: number;
 
-    @ManyToOne(() => Voucher, (voucher) => voucher.id, { onDelete: "CASCADE" })
-    @JoinColumn({ name: "voucher_id" })
-    voucher!: Voucher;
+    @Column({ type: "bigint" })
+    voucher_id!: number;
 }

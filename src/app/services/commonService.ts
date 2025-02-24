@@ -1,7 +1,4 @@
-import {writeFile} from "node:fs";
-import { join } from "path";
-
-export const DateTimeISO8601ToUFFAndUTCP7 = (dateISO8601) => {
+export const DateTimeISO8601ToUFFAndUTCP7 = (dateISO8601: string) => {
     const date = new Date(dateISO8601);
     return date.toLocaleString("vi-VN", {
         year: "numeric",
@@ -14,7 +11,7 @@ export const DateTimeISO8601ToUFFAndUTCP7 = (dateISO8601) => {
     });
 }
 
-export const toSlug = (str) => {
+export const toSlug = (str: string): string => {
     return str
         .toLowerCase()
         .normalize("NFD").replace(/[\u0300-\u036f]/g, "")

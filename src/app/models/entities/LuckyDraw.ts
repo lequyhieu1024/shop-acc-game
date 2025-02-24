@@ -3,11 +3,9 @@ import {
     CreateDateColumn,
     DeleteDateColumn,
     Entity,
-    OneToMany,
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from "typeorm";
-import {LuckyDrawItem} from "@/app/models/entities/LuckyDrawItem";
 
 export enum LuckyDrawType {
     VOUCHER = "voucher",
@@ -36,10 +34,10 @@ export class LuckyDraw {
     @Column({ type: "boolean"})
     accept_draw!: boolean;
 
-    @Column({ type: "timestamp" })
+    @Column({ type: "datetime" })
     issue_date!: Date;
 
-    @Column({ type: "timestamp" })
+    @Column({ type: "datetime" })
     expired_date!: Date;
 
     @Column({ type: "boolean"})
@@ -53,7 +51,4 @@ export class LuckyDraw {
 
     @DeleteDateColumn()
     deleted_at?: Date;
-
-    @OneToMany(() => LuckyDrawItem, (item) => item.luckyDraw)
-    items!: LuckyDrawItem[];
 }

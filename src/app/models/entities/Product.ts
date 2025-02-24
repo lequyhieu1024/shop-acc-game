@@ -8,6 +8,7 @@ import {
     DeleteDateColumn
 } from "typeorm";
 import {Image} from "@/app/models/entities/Image";
+import {Category} from "@/app/models/entities/Category";
 
 export enum SystemStatus {
     ACTIVE = "active",
@@ -66,8 +67,8 @@ export class Product {
     @Column({ type: "boolean", default: true })
     is_for_sale!: boolean;
 
-    @OneToMany(() => Image, (image) => image.product, { cascade: true })
-    images?: Image[];
+    @Column({ type: "bigint" })
+    category_id!: number;
 
     @CreateDateColumn({ type: "timestamp" })
     created_at!: Date;

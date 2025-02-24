@@ -1,4 +1,4 @@
-import {connectDB} from "@/app/models/connect";
+import {initRepository} from "@/app/models/connect";
 import {Category} from "@/app/models/entities/Category";
 import {NextResponse} from "next/server";
 import {uploadFileToPinata} from "@/app/services/pinataService";
@@ -6,7 +6,7 @@ import {uploadFileToPinata} from "@/app/services/pinataService";
 export const GET = async (req: Request, { params }: { params: { id: string } }) => {
     try {
         const categoryId: string = params.id
-        const categoryRepository = await connectDB(Category);
+        const categoryRepository = await initRepository(Category);
         const category: object | null = await categoryRepository.findOne({where: {id: Number(categoryId)}})
         if (!category) {
             return NextResponse.json({
@@ -24,7 +24,7 @@ export const GET = async (req: Request, { params }: { params: { id: string } }) 
 
 export const PATCH = async (req: Request, { params }: { params: { id: string } }) => {
     try {
-        const categoryRepo = await connectDB(Category);
+        const categoryRepo = await initRepository(Category);
         const formData = await req.formData();
 
         const newData: any = Object.fromEntries(formData.entries());
@@ -45,7 +45,7 @@ export const PATCH = async (req: Request, { params }: { params: { id: string } }
 
 export const DELETE = async (req:Request, {params} : {params: {id: string}}) => {
     try {
-        const categoryRepo = await connectDB(Category);
+        const categoryRepo = await initRepository(Category);
         const categoryId = params.id
         await categoryRepo.softDelete(categoryId);
         return NextResponse.json({

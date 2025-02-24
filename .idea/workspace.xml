@@ -4,14 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7734da39-a889-4cf0-9055-91fe30229d4f" name="Changes" comment="base">
-      <change afterPath="$PROJECT_DIR$/src/app/models/entities/LuckyDraw.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/models/entities/LuckyDrawItem.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/models/entities/UserView.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/models/entities/UserVoucher.ts" afterDir="false" />
+    <list default="true" id="7734da39-a889-4cf0-9055-91fe30229d4f" name="Changes" comment="release entities">
+      <change afterPath="$PROJECT_DIR$/src/app/api/systems/route.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/api/attributes/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/api/attributes/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/api/categories/[id]/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/api/categories/[id]/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/api/categories/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/api/categories/route.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/models/connect.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/models/connect.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/models/entities/Category.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/models/entities/Category.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/models/entities/LuckyDraw.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/models/entities/LuckyDraw.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/models/entities/LuckyDrawItem.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/models/entities/LuckyDrawItem.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/models/entities/Product.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/models/entities/Product.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/models/entities/UserView.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/models/entities/UserView.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/models/entities/UserVoucher.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/models/entities/UserVoucher.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/services/commonService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/services/commonService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/services/pinataService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/services/pinataService.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,6 +75,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Admin\Desktop\shop-acc-game\src\app\api\systems" />
       <recent name="C:\Users\Admin\Desktop\shop-acc-game" />
       <recent name="$PROJECT_DIR$" />
     </key>
@@ -90,7 +99,7 @@
       <workItem from="1740209195357" duration="358000" />
       <workItem from="1740306890547" duration="1142000" />
       <workItem from="1740362127120" duration="1188000" />
-      <workItem from="1740363347508" duration="8528000" />
+      <workItem from="1740363347508" duration="13678000" />
     </task>
     <task id="LOCAL-00001" summary="base">
       <option name="closed" value="true" />
@@ -100,7 +109,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740374132791</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="release entities">
+      <option name="closed" value="true" />
+      <created>1740375791202</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1740375791202</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -108,6 +125,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="base" />
-    <option name="LAST_COMMIT_MESSAGE" value="base" />
+    <MESSAGE value="release entities" />
+    <option name="LAST_COMMIT_MESSAGE" value="release entities" />
   </component>
 </project>
