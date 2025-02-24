@@ -2,9 +2,10 @@ import {connectDB} from "@/app/models/connect";
 import {Category} from "@/app/models/entities/Category";
 import {NextRequest, NextResponse} from "next/server";
 import {uploadFileToPinata} from "@/app/services/pinataService";
+import {FindOperator, Like} from "typeorm";
 
 interface IFilter {
-    name?: string,
+    name?: FindOperator<string> | undefined,
 }
 
 export const GET = async (req: NextRequest) => {
@@ -13,8 +14,9 @@ export const GET = async (req: NextRequest) => {
         const searchParams: URLSearchParams = req.nextUrl.searchParams
         const size = parseInt(searchParams.get('size') || "10")
         const filter: IFilter = {}
-        if (searchParams.get("name") !== "") {
-            filter.name = searchParams.get("name") || undefined
+        const name = searchParams.get("name");
+        if (name !== null) {
+            filter.name = Like(`%${name}%`)
         }
         const categories = await categoryRepository.find({where: filter, take: size})
         return NextResponse.json({categories});

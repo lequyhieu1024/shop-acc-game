@@ -5,8 +5,8 @@ import Script from "next/script";
 import {Footer} from "@/components/(admin)/Footer";
 import {ToastContainer} from "react-toastify";
 
-export const metadata = {
-    title: "Fastkart - Dashboard"
+const metadata = {
+    title: "Shop Cu Tý Gaming - Dashboard"
 };
 
 export default function layout({children}: { children: ReactNode }) {
@@ -22,13 +22,13 @@ export default function layout({children}: { children: ReactNode }) {
             <link rel="stylesheet" type="text/css" href="/admin/assets/css/vendors/themify.css"/>
             <link rel="stylesheet" type="text/css" href="/admin/assets/css/ratio.css"/>
             <link rel="stylesheet" type="text/css" href="/admin/assets/css/remixicon.css"/>
-            {/*<link rel="stylesheet" type="text/css" href="/admin/assets/css/vendors/feather-icon.css"/>*/}
             <link rel="stylesheet" type="text/css" href="/admin/assets/css/vendors/scrollbar.css"/>
             <link rel="stylesheet" type="text/css" href="/admin/assets/css/vendors/animate.css"/>
             <link rel="stylesheet" type="text/css" href="/admin/assets/css/vendors/bootstrap.css"/>
             <link rel="stylesheet" type="text/css" href="/admin/assets/css/vector-map.css"/>
             <link rel="stylesheet" href="/admin/assets/css/vendors/slick.css"/>
             <link rel="stylesheet" type="text/css" href="/admin/assets/css/style.css"/>
+            <title>{metadata.title}</title>
         </head>
         <body>
         <div className="page-wrapper compact-wrapper" id="pageWrapper">

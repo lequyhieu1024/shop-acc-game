@@ -6,7 +6,7 @@ import {Attribute} from "@/app/models/entities/Attribute";
 export const AppDataSource = new DataSource({
     type: "mysql",
     host: "localhost",
-    port: Number(process.env.DATABASE_PORT),
+    port: Number(process.env.DATABASE_PORT) || 3306,
     username: "root",
     password: "",
     database: process.env.DATABASE_NAME,

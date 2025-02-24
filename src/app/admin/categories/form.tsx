@@ -4,6 +4,7 @@ import api from "@/app/services/axiosService";
 import {useRouter} from "next/navigation";
 import {ICategory} from "@/app/interfaces/ICategory";
 import Loading from "@/components/Loading";
+import Link from "next/link";
 
 interface CategoryEditProps {
     isEditing?: boolean,
@@ -120,19 +121,22 @@ export default function CategoryForm({initialData = null, isEditing = false}: Ca
                                                 <div>
                                                     {message && <p className="mt-3 text-danger">{message}</p>}
                                                 </div>
+                                                {fileReading && (
+                                                    <div className="mt-2">
+                                                        <img src={fileReading} alt="Danh mục"
+                                                             style={{maxWidth: "200px", maxHeight: "150px"}}/>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
 
-                                        {fileReading && (
-                                            <div>
-                                                <img src={fileReading} alt="Danh mục" style={{maxWidth: "100px"}}/>
-                                            </div>
-                                        )}
-
-                                        <div className="mb-4 align-items-center">
-                                            <button type="submit" className="btn btn-solid w-auto">
-                                                {isEditing ? "Cập nhật danh mục" : "Thêm danh mục"}
+                                        <div className="mb-4 d-flex gap-2 col-sm-12 col-md-6 justify-content-center">
+                                            <button type="submit" className="btn btn-solid flex-grow-1">
+                                                {isEditing ? "Cập nhật" : "Lưu"}
                                             </button>
+                                            <Link href="/admin/categories" className="btn btn-warning flex-grow-1">
+                                                Trở lại
+                                            </Link>
                                         </div>
                                     </form>
                                 </div>
