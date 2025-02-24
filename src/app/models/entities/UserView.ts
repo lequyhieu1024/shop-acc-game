@@ -1,17 +1,13 @@
-import {Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn} from "typeorm";
-import { User } from "./User";
-import {Product} from "@/app/models/entities/Product";
+import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
 
 @Entity({ name: "user_views" })
 export class UserView {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @ManyToOne(() => User, (user) => user.id, { onDelete: "CASCADE" })
-    @JoinColumn({ name: "user_id" })
-    user!: User;
+    @Column({ type: "bigint" })
+    user_id!: number;
 
-    @ManyToOne(() => Product, (product) => product.id, { onDelete: "CASCADE" })
-    @JoinColumn({ name: "product_id" })
-    product!: Product;
+    @Column({ type: "bigint" })
+    product_id!: number;
 }

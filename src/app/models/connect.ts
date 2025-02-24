@@ -1,7 +1,6 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import {Category} from "@/app/models/entities/Category";
-import {Attribute} from "@/app/models/entities/Attribute";
 import {Product} from "@/app/models/entities/Product";
 import {Voucher} from "@/app/models/entities/Voucher";
 import {UserVoucher} from "@/app/models/entities/UserVoucher";
@@ -20,12 +19,12 @@ export const AppDataSource = new DataSource({
     username: "root",
     password: "",
     database: process.env.DATABASE_NAME,
-    entities: [Category, Attribute, Product, Voucher, UserVoucher, LuckyDraw, LuckyDrawItem, System, UserView, User, Image, Banner],
+    entities: [Category, Product, Voucher, UserVoucher, LuckyDraw, LuckyDrawItem, System, UserView, User, Image, Banner],
     synchronize: true,
     logging: true,
 });
 
-export const connectDB = async (entity: any) => {
+export const initRepository = async (entity: any) => {
     if (!AppDataSource.isInitialized) {
         await AppDataSource.initialize()
             .then(() => console.log("✅ TypeORM đã kết nối tới database!"))

@@ -1,4 +1,4 @@
-import {connectDB} from "@/app/models/connect";
+import {initRepository} from "@/app/models/connect";
 import {Category} from "@/app/models/entities/Category";
 import {NextRequest, NextResponse} from "next/server";
 import {uploadFileToPinata} from "@/app/services/pinataService";
@@ -10,7 +10,7 @@ interface IFilter {
 
 export const GET = async (req: NextRequest) => {
     try {
-        const categoryRepository = await connectDB(Category);
+        const categoryRepository = await initRepository(Category);
         const searchParams: URLSearchParams = req.nextUrl.searchParams
         const size = parseInt(searchParams.get('size') || "10")
         const filter: IFilter = {}
@@ -30,7 +30,7 @@ export const GET = async (req: NextRequest) => {
 
 export const POST = async (req: Request): Promise<NextResponse> => {
     try {
-        const categoryRepository = await connectDB(Category);
+        const categoryRepository = await initRepository(Category);
         const data = await req.formData();
         const name = data.get("name") as string
         const image = data.get("image") as File | null

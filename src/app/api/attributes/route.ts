@@ -1,5 +1,5 @@
 import {NextRequest, NextResponse} from "next/server";
-import {connectDB} from "@/app/models/connect";
+import {initRepository} from "@/app/models/connect";
 import {Attribute} from "@/app/models/entities/Attribute";
 
 interface IFilter {
@@ -8,7 +8,7 @@ interface IFilter {
 
 export const GET = async (request: NextRequest) => {
     try {
-        const attributeRepo = await connectDB(Attribute)
+        const attributeRepo = await initRepository(Attribute)
         const {searchParams} = request.nextUrl
         const filter: IFilter = {};
         if (searchParams.get("name") !== "") {
@@ -26,7 +26,7 @@ export const GET = async (request: NextRequest) => {
 
 export const POST = async (request: NextRequest) => {
     try {
-        const attributeRepo = await connectDB(Attribute)
+        const attributeRepo = await initRepository(Attribute)
         const data : {name: string} = await request.json();
         if (!data.name.trim()) {
             return NextResponse.json({result: false, message: "không được bỏ trống trường name"}, {status: 400})
