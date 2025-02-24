@@ -1,4 +1,4 @@
-export const DateTimeISO8601ToUFFAndUTCP7 = (dateISO8601: string) => {
+export const DateTimeISO8601ToUFFAndUTCP7 = (dateISO8601: any) => {
     const date = new Date(dateISO8601);
     return date.toLocaleString("vi-VN", {
         year: "numeric",
