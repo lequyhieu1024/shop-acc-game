@@ -13,7 +13,7 @@ export enum SystemStatus {
     ACTIVE = "active",
     INACTIVE = "inactive",
 }
-@Entity({ name: "products" }) // Đảm bảo đúng tên bảng
+@Entity({ name: "products" })
 export class Product {
     @PrimaryGeneratedColumn()
     id!: number;
