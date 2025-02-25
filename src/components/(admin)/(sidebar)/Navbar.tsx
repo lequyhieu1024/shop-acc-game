@@ -151,7 +151,7 @@ export const Navbar = () => {
                                 <Link href="/admin/systems">Hệ thống</Link>
                             </li>
                             <li>
-                                <a href="profile-setting.html">Banner</a>
+                                <Link href="/admin/banners">Banner</Link>
                             </li>
                             <li>
                                 <Link target="_blank" href={system?.youtube ?? "#"}><i className="ri-youtube-line"></i>Đi đến kênh Youtube</Link>

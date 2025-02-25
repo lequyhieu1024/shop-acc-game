@@ -1,5 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
-import {Product} from "@/app/models/entities/Product";
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 @Entity({ name: "images" })
 export class Image {
@@ -9,6 +8,6 @@ export class Image {
     @Column({ type: "varchar", length: 500 })
     image_url!: string;
 
-    @ManyToOne(() => Product, (product) => product.images, { onDelete: "CASCADE" })
-    product!: Product;
+    @Column({ type: "bigint", default: null })
+    product_id!: number;
 }

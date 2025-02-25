@@ -26,7 +26,7 @@ export default function CategoryPage() {
 
             const response = await api.get(url);
             if (response.status === 200) {
-                setCategories(response.data.categories)
+                setCategories(response.data.categories || [])
             }
             setError(false)
         } catch {
