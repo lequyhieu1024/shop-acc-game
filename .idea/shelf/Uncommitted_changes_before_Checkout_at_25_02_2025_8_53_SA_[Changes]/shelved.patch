@@ -1,0 +1,63 @@
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"7734da39-a889-4cf0-9055-91fe30229d4f\" name=\"Changes\" comment=\"release entities + fix some bug\">\r\n      <change afterPath=\"$PROJECT_DIR$/public/admin/assets/images/error500.jpg\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/public/admin/assets/images/placeholder.png\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/src/app/admin/systems/page.tsx\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/src/components/(admin)/Error.tsx\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/src/app/services/commonService.ts\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/app/services/commonService.ts\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/src/components/(admin)/(sidebar)/Navbar.tsx\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/components/(admin)/(sidebar)/Navbar.tsx\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"ComposerSettings\">\r\n    <execution />\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_BRANCH_BY_REPOSITORY\">\r\n      <map>\r\n        <entry key=\"$PROJECT_DIR$\" value=\"main\" />\r\n      </map>\r\n    </option>\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"GitHubPullRequestSearchHistory\">{\r\n  &quot;lastFilter&quot;: {\r\n    &quot;state&quot;: &quot;OPEN&quot;,\r\n    &quot;assignee&quot;: &quot;lequyhieu1024&quot;\r\n  }\r\n}</component>\r\n  <component name=\"GithubPullRequestsUISettings\"><![CDATA[{\r\n  \"selectedUrlAndAccountId\": {\r\n    \"url\": \"https://github.com/lequyhieu1024/shop-acc-game\",\r\n    \"accountId\": \"026b1a0a-ef5f-46f5-8d1f-e034cfc55a8d\"\r\n  }\r\n}]]></component>\r\n  <component name=\"PhpWorkspaceProjectConfiguration\" interpreter_name=\"C:\\xampp\\php\\php.exe\" />\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 7\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2tNbR0lq7vTkzL4SOenMhnBWwxn\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"RunOnceActivity.git.unshallow\": \"true\",\r\n    \"git-widget-placeholder\": \"feat/lehieudev\",\r\n    \"last_opened_file_path\": \"C:/Users/Admin/Desktop/shop-acc-game/public/admin/assets/images\",\r\n    \"node.js.detected.package.eslint\": \"true\",\r\n    \"node.js.detected.package.tslint\": \"true\",\r\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\r\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\r\n    \"nodejs_package_manager_path\": \"npm\",\r\n    \"ts.external.directory.path\": \"C:\\\\Users\\\\Admin\\\\Desktop\\\\shop-acc-game\\\\node_modules\\\\typescript\\\\lib\",\r\n    \"vue.rearranger.settings.migration\": \"true\"\r\n  }\r\n}]]></component>\r\n  <component name=\"RecentsManager\">\r\n    <key name=\"CopyFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\Users\\Admin\\Desktop\\shop-acc-game\\public\\admin\\assets\\images\" />\r\n    </key>\r\n    <key name=\"MoveFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\Users\\Admin\\Desktop\\shop-acc-game\\src\\components\\(admin)\" />\r\n      <recent name=\"C:\\Users\\Admin\\Desktop\\shop-acc-game\\src\\app\\api\\systems\" />\r\n      <recent name=\"C:\\Users\\Admin\\Desktop\\shop-acc-game\" />\r\n      <recent name=\"$PROJECT_DIR$\" />\r\n    </key>\r\n  </component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-WS-242.23339.15\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"7734da39-a889-4cf0-9055-91fe30229d4f\" name=\"Changes\" comment=\"\" />\r\n      <created>1740195468010</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1740195468010</updated>\r\n      <workItem from=\"1740195469343\" duration=\"1263000\" />\r\n      <workItem from=\"1740209195357\" duration=\"358000\" />\r\n      <workItem from=\"1740306890547\" duration=\"1142000\" />\r\n      <workItem from=\"1740362127120\" duration=\"1188000\" />\r\n      <workItem from=\"1740363347508\" duration=\"21886000\" />\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"base\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1740374132791</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1740374132791</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00002\" summary=\"release entities\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1740375791202</created>\r\n      <option name=\"number\" value=\"00002\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1740375791202</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00003\" summary=\"release entities + fix some bug\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1740380928364</created>\r\n      <option name=\"number\" value=\"00003\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1740380928364</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"4\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"base\" />\r\n    <MESSAGE value=\"release entities\" />\r\n    <MESSAGE value=\"release entities + fix some bug\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"release entities + fix some bug\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision c1e7ce48be6c82f07a655c062848087873c3c4e8)
++++ b/.idea/workspace.xml	(date 1740394128289)
+@@ -4,15 +4,7 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="7734da39-a889-4cf0-9055-91fe30229d4f" name="Changes" comment="release entities + fix some bug">
+-      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/error500.jpg" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/placeholder.png" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/src/app/admin/systems/page.tsx" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/src/components/(admin)/Error.tsx" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/src/app/services/commonService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/services/commonService.ts" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/src/components/(admin)/(sidebar)/Navbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/(admin)/(sidebar)/Navbar.tsx" afterDir="false" />
+-    </list>
++    <list default="true" id="7734da39-a889-4cf0-9055-91fe30229d4f" name="Changes" comment="develop module systems" />
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+@@ -95,7 +87,7 @@
+       <workItem from="1740209195357" duration="358000" />
+       <workItem from="1740306890547" duration="1142000" />
+       <workItem from="1740362127120" duration="1188000" />
+-      <workItem from="1740363347508" duration="21886000" />
++      <workItem from="1740363347508" duration="22210000" />
+     </task>
+     <task id="LOCAL-00001" summary="base">
+       <option name="closed" value="true" />
+@@ -121,7 +113,15 @@
+       <option name="project" value="LOCAL" />
+       <updated>1740380928364</updated>
+     </task>
+-    <option name="localTasksCounter" value="4" />
++    <task id="LOCAL-00004" summary="develop module systems">
++      <option name="closed" value="true" />
++      <created>1740393998910</created>
++      <option name="number" value="00004" />
++      <option name="presentableId" value="LOCAL-00004" />
++      <option name="project" value="LOCAL" />
++      <updated>1740393998910</updated>
++    </task>
++    <option name="localTasksCounter" value="5" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -131,6 +131,7 @@
+     <MESSAGE value="base" />
+     <MESSAGE value="release entities" />
+     <MESSAGE value="release entities + fix some bug" />
+-    <option name="LAST_COMMIT_MESSAGE" value="release entities + fix some bug" />
++    <MESSAGE value="develop module systems" />
++    <option name="LAST_COMMIT_MESSAGE" value="develop module systems" />
+   </component>
+ </project>
+\ No newline at end of file

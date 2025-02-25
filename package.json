@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@hookform/resolvers": "^4.1.2",
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
     "mysql2": "^3.12.0",
@@ -18,11 +19,13 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-dropzone": "^14.3.5",
+    "react-hook-form": "^7.54.2",
     "react-icons": "^5.4.0",
     "react-toastify": "^11.0.3",
     "reflect-metadata": "^0.2.2",
     "sweetalert2": "^11.16.0",
-    "typeorm": "^0.3.20"
+    "typeorm": "^0.3.20",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

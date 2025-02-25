@@ -20,15 +20,15 @@ export const GET = async () => {
 export const PATCH = async (req: NextRequest) => {
     try {
         const systemRepo = await initRepository(System)
+        const system = await systemRepo.findOneBy({id: 1});
         const formData = await req.formData();
         const newData : any = Object.fromEntries(formData.entries())
-        if (newData.image !== null){
-            newData.image = await uploadFileToPinata(newData.image)
+        if (newData.logo !== ''){
+            newData.logo = await uploadFileToPinata(newData.logo);
+        } else {
+            newData.logo = system?.logo
         }
-        console.log(`new data: ${newData}`);
-
-        const result = await systemRepo.update(1, newData);
-        console.log(`result: ${result}`);
+        await systemRepo.update(1, newData);
         return NextResponse.json({system: newData}, {status: 200})
     } catch (e) {
         console.log((e as Error).message)
