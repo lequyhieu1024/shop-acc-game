@@ -74,8 +74,8 @@ export default function layout({children}: { children: ReactNode }) {
         </div>
         {/*Modal End*/}
 
-        <Script src="https://cdn.jsdelivr.net/npm/some-library.js" strategy="lazyOnload"/>
         <Script src="/admin/assets/js/jquery-3.6.0.min.js" strategy="beforeInteractive"/>
+        <Script src="https://cdn.jsdelivr.net/npm/some-library.js" strategy="lazyOnload"/>
         <Script src="/admin/assets/js/bootstrap/bootstrap.bundle.min.js" strategy="lazyOnload"/>
         {/*<Script src="/admin/assets/js/icons/feather-icon/feather.min.js" strategy="lazyOnload" />*/}
         {/*<Script src="/admin/assets/js/icons/feather-icon/feather-icon.js" strategy="lazyOnload" />*/}
