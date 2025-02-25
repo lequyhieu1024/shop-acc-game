@@ -1,17 +1,39 @@
-"use client"
-import React, {useEffect, useState} from "react";
-import {ISystem} from "@/app/interfaces/ISystem";
+"use client";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {z} from "zod";
 import api from "@/app/services/axiosService";
 import Loading from "@/components/Loading";
 import ErrorPage from "@/components/(admin)/Error";
+import { toast } from "react-toastify";
+
+const formSchema = z.object({
+    name: z.string().min(1, "Tên website phải có ít nhất 1 ký tự"),
+    phone: z.string().min(10, "Số điện thoại không hợp lệ"),
+    email: z.string().email("Email không hợp lệ"),
+    youtube: z.string().url("Link Youtube không hợp lệ").optional(),
+    facebook: z.string().url("Link Facebook không hợp lệ").optional(),
+    tiktok: z.string().url("Link Tiktok không hợp lệ").optional(),
+});
+
+type FormData = z.infer<typeof formSchema>;
 
 export default function System() {
-
-    const [loading, setLoading] = useState<boolean>(true)
-    const [error, setError] = useState<boolean>(false)
-    const [fileReading, setFileReading] = useState<string | null>("/admin/assets/images/placeholder.png");
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<boolean>(false);
+    const [fileReading, setFileReading] = useState<string | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [data, setData] = useState<ISystem>({} as ISystem);
+    const [isEditing, setIsEditing] = useState<boolean>(false);
+    const [activeTab, setActiveTab] = useState("system");
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        setValue,
+    } = useForm<FormData>({
+        resolver: zodResolver(formSchema),
+    });
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedFile(e.target.files?.[0] || null);
@@ -26,213 +48,221 @@ export default function System() {
         }
     };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        setLoading(true)
+    const changeToEdit = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        setIsEditing(!isEditing);
+    };
+
+    const onSubmit = async (data: FormData) => {
+        setLoading(true);
         try {
             const formData = new FormData();
             Object.entries(data).forEach(([key, value]) => {
-                if (value !== null && value !== undefined) {
-                    formData.append(key, value as string);
-                }
+                if (value) formData.append(key, value as string);
             });
 
             if (selectedFile) {
-                formData.append("image", selectedFile);
+                formData.append("logo", selectedFile);
             }
-            const response = await api.patch(`systems`, formData);
+
+            const response = await api.patch("systems", formData);
             if (response.status === 200) {
-                alert("Cập nhật thành công!");
-                setData(response.data.system);
                 setError(false);
             } else {
-                alert("Cập nhật thất bại!");
-                setError(true)
+                setError(true);
             }
+            showMessage(response.status);
         } catch (error) {
             console.error("Lỗi khi cập nhật:", error);
-            setError(true)
+            setError(true);
         } finally {
-            setLoading(false)
+            setLoading(false);
+            setIsEditing(false);
         }
-    };
-
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setData((prevData) => ({
-            ...prevData,
-            [name]: value
-        }));
-        console.log(data)
     };
 
     const fetchData = async () => {
         try {
-            const response = await api.get("/systems")
-            if (response.status == 200) {
-                setData(response.data.system)
-                setError(false)
+            const response = await api.get("/systems");
+            if (response.status === 200) {
+                const systemData = response.data.system;
+                setValue("name", systemData.name);
+                setValue("phone", systemData.phone);
+                setValue("email", systemData.email);
+                setValue("youtube", systemData.youtube);
+                setValue("facebook", systemData.facebook);
+                setValue("tiktok", systemData.tiktok);
+                setFileReading(systemData.logo);
+                setError(false);
             } else {
-                console.log(response)
-                setError(true)
+                setError(true);
             }
         } catch (e) {
-            setError(true)
-            console.log((e as Error).message)
+            setError(true);
+            console.log((e as Error).message);
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
-    }
+    };
+
     useEffect(() => {
         fetchData();
-        console.log(data)
     }, []);
 
-    return (
-        loading ? <Loading/> : (
-            error ? (
-                <ErrorPage/>
-            ) : (
-                data ? (
-                    <div className="row">
-                        <div className="col-12">
-                            <div className="row">
-                                <div className="col-sm-12">
-                                    <div className="card">
-                                        <div className="card-body">
-                                            <div className="title-header option-title">
-                                                <h5>Cài đặt hệ thống</h5>
-                                            </div>
-                                            <form className="theme-form theme-form-2 mega-form" onSubmit={handleSubmit}>
-                                                <div className="row">
-                                                    <div className="row mb-md-4">
-                                                        <div className="col-sm-12 col-md-6 mb-sm-4 mb-md-0">
-                                                            <label
-                                                                className="col-form-label form-label-title">Logo
-                                                                website(tệp .png, .jpg, .jpeg, ...)</label>
-                                                            <div className="col-sm-12">
-                                                                <input className="form-control form-choose" onChange={handleFileChange} name="logo"
-                                                                       type="file"/>
-                                                            </div>
-                                                            {fileReading && (
-                                                                <div className="mt-4 mb-5">
-                                                                    <img src={fileReading} alt="Danh mục"
-                                                                         style={{maxWidth: "300px", maxHeight: "250px"}}/>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    </div>
+    const showMessage = (status: number) => {
+        const message = status === 200
+            ? "Cập nhật thông tin thành công"
+            : "Cập nhật thông tin thất bại";
+        if (status === 200) {
+            toast.success(message);
+        } else {
+            toast.error(message);
+        }
+    };
 
-                                                    <div className="mb-4 row align-items-center">
-                                                        <label className="form-label-title col-sm-2 mb-0">Tên
-                                                            website</label>
-                                                        <div className="col-sm-10">
-                                                            <input className="form-control" type="text" name="name" onChange={handleInputChange}
-                                                                   value={data.name ?? ""}/>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="mb-4 row align-items-center">
-                                                        <label className="form-label-title col-sm-2 mb-0">Số điện
-                                                            thoại</label>
-                                                        <div className="col-sm-10">
-                                                            <input className="form-control" type="number" onChange={handleInputChange} name="phone"
-                                                                   value={data.phone ?? ""}/>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="mb-4 row align-items-center">
-                                                        <label className="form-label-title col-sm-2 mb-0">Email</label>
-                                                        <div className="col-sm-10">
-                                                            <input className="form-control" type="email" onChange={handleInputChange} name="email"
-                                                                   value={data.email ?? ""}
-                                                                   placeholder="Enter Your Email Address"/>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="mb-4 row align-items-center">
-                                                        <label className="form-label-title col-sm-2 mb-0">Link
-                                                            Youtube</label>
-                                                        <div className="col-sm-10">
-                                                            <input className="form-control" type="text" onChange={handleInputChange} name="youtube"
-                                                                   value={data.youtube ?? ""}
-                                                                   placeholder="Nhập link"/>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="mb-4 row align-items-center">
-                                                        <label className="form-label-title col-sm-2 mb-0">Link
-                                                            Fan page</label>
-                                                        <div className="col-sm-10">
-                                                            <input className="form-control" type="text" onChange={handleInputChange} name="facebook"
-                                                                   value={data.facebook ?? ""}
-                                                                   placeholder="Nhập link"/>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="mb-4 row align-items-center">
-                                                        <label className="form-label-title col-sm-2 mb-0">Link
-                                                            Tiktok</label>
-                                                        <div className="col-sm-10">
-                                                            <input className="form-control" type="text" onChange={handleInputChange} name="tiktok"
-                                                                   value={data.tiktok ?? ""}
-                                                                   placeholder="Nhập link"/>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                                <button className={`mt-3 btn btn-primary`}>Lưu thay đổi</button>
-                                            </form>
-                                        </div>
-                                    </div>
-
-                                    <div className="card">
-                                        <div className="card-body">
-                                            <div className="title-header option-title">
-                                                <h5>Cập nhập mật khẩu</h5>
-                                            </div>
-                                            <form className="theme-form theme-form-2 mega-form">
-                                                <div className="row">
-                                                    <div className="mb-4 row align-items-center">
-                                                        <label
-                                                            className="form-label-title col-sm-2 mb-0">Mật khẩu
-                                                            cũ</label>
-                                                        <div className="col-sm-10">
-                                                            <input className="form-control" type="password" placeholder="Enter Your Old Password"/>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="mb-4 row align-items-center">
-                                                        <label
-                                                            className="form-label-title col-sm-2 mb-0">Mật khẩu
-                                                            mới</label>
-                                                        <div className="col-sm-10">
-                                                            <input className="form-control" type="password" placeholder="Enter Your New Password"/>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="mb-4 row align-items-center">
-                                                        <label className="form-label-title col-sm-2 mb-0">Xác nhận mật
-                                                            khẩu</label>
-                                                        <div className="col-sm-10">
-                                                            <input className="form-control" type="password"
-                                                                   placeholder="Enter Your Confirm Password"/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <button className={`mt-3 btn btn-info`}>Cập nhật</button>
-                                            </form>
-                                        </div>
-                                    </div>
+    return loading ? (
+        <Loading />
+    ) : error ? (
+        <ErrorPage />
+    ) : (
+        <div className="row">
+            <div>
+                <ul className="nav nav-tabs d-flex">
+                    <li className="nav-item">
+                        <button className={`nav-link ${activeTab === "system" ? "active" : ""}`}
+                                onClick={() => setActiveTab("system")}>
+                            Cập nhật hệ thống
+                        </button>
+                    </li>
+                    <li className="nav-item">
+                        <button className={`nav-link ${activeTab === "password" ? "active" : ""}`}
+                                onClick={() => setActiveTab("password")}>
+                            Cập nhật mật khẩu
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            <div className="col-12">
+                <div className="card">
+                    {
+                        activeTab === "system" ? (
+                            <div className="card-body">
+                                <div className="title-header option-title">
+                                    <h5>Cài đặt hệ thống</h5>
                                 </div>
+                                <form className="theme-form theme-form-2 mega-form" onSubmit={handleSubmit(onSubmit)}>
+                                    <div className="row">
+                                        <div className="col-md-6">
+                                            <label className="col-form-label">Logo website</label>
+                                            <input className="form-control" onChange={handleFileChange}
+                                                   disabled={!isEditing}
+                                                   type="file"/>
+                                            {fileReading && (
+                                                <div className="mt-4 mb-5">
+                                                    <img src={fileReading ?? "/admin/assets/images/placeholder.png"}
+                                                         alt="Logo"
+                                                         style={{maxWidth: "300px", maxHeight: "250px"}}/>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div className="mb-4">
+                                        <label className="form-label">Tên website</label>
+                                        <input className="form-control" type="text"
+                                               disabled={!isEditing} {...register("name")} />
+                                        {errors.name && <p className="text-danger">{errors.name.message}</p>}
+                                    </div>
+
+                                    <div className="mb-4">
+                                        <label className="form-label">Số điện thoại</label>
+                                        <input className="form-control" type="text"
+                                               disabled={!isEditing} {...register("phone")} />
+                                        {errors.phone && <p className="text-danger">{errors.phone.message}</p>}
+                                    </div>
+
+                                    <div className="mb-4">
+                                        <label className="form-label">Email</label>
+                                        <input className="form-control" type="email"
+                                               disabled={!isEditing} {...register("email")} />
+                                        {errors.email && <p className="text-danger">{errors.email.message}</p>}
+                                    </div>
+
+                                    <div className="mb-4">
+                                        <label className="form-label">Link Youtube</label>
+                                        <input className="form-control" type="text"
+                                               disabled={!isEditing} {...register("youtube")} />
+                                        {errors.youtube && <p className="text-danger">{errors.youtube.message}</p>}
+                                    </div>
+
+                                    <div className="mb-4">
+                                        <label className="form-label">Link Fan page</label>
+                                        <input className="form-control" type="text"
+                                               disabled={!isEditing} {...register("facebook")} />
+                                        {errors.facebook && <p className="text-danger">{errors.facebook.message}</p>}
+                                    </div>
+
+                                    <div className="mb-4">
+                                        <label className="form-label">Link Tiktok</label>
+                                        <input className="form-control" type="text"
+                                               disabled={!isEditing} {...register("tiktok")} />
+                                        {errors.tiktok && <p className="text-danger">{errors.tiktok.message}</p>}
+                                    </div>
+
+                                    {isEditing ? (
+                                        <button type="submit" className="mt-3 btn btn-primary">
+                                            Lưu thay đổi
+                                        </button>
+                                    ) : (
+                                        <button type="button" onClick={changeToEdit} className="mt-3 btn btn-warning">
+                                            Chỉnh sửa thông tin
+                                        </button>
+                                    )}
+                                </form>
                             </div>
-                        </div>
-                    </div>
-                ) : (
-                    <h2>Dữ liệu đã bị mất</h2>
-                )
-            )
-        )
-    )
+                        ) : (
+                            <div className="card-body">
+                                <div className="title-header option-title">
+                                    <h5>Cập nhập mật khẩu</h5>
+                                </div>
+                                <form className="theme-form theme-form-2 mega-form">
+                                    <div className="row">
+                                        <div className="mb-4 row align-items-center">
+                                            <label
+                                                className="form-label-title col-sm-2 mb-0">Mật khẩu
+                                                cũ</label>
+                                            <div className="col-sm-10">
+                                                <input className="form-control" type="password"
+                                                       placeholder="Enter Your Old Password"/>
+                                            </div>
+                                        </div>
+
+                                        <div className="mb-4 row align-items-center">
+                                            <label
+                                                className="form-label-title col-sm-2 mb-0">Mật khẩu
+                                                mới</label>
+                                            <div className="col-sm-10">
+                                                <input className="form-control" type="password"
+                                                       placeholder="Enter Your New Password"/>
+                                            </div>
+                                        </div>
+
+                                        <div className="mb-4 row align-items-center">
+                                            <label className="form-label-title col-sm-2 mb-0">Xác nhận mật
+                                                khẩu</label>
+                                            <div className="col-sm-10">
+                                                <input className="form-control" type="password"
+                                                       placeholder="Enter Your Confirm Password"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button className={`mt-3 btn btn-primary`}>Cập nhật</button>
+                                </form>
+                            </div>
+                        )
+                    }
+                </div>
+            </div>
+        </div>
+    );
 }
