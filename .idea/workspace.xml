@@ -4,14 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7734da39-a889-4cf0-9055-91fe30229d4f" name="Changes" comment="release entities + fix some bug">
-      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/error500.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/admin/assets/images/placeholder.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/admin/systems/page.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/(admin)/Error.tsx" afterDir="false" />
+    <list default="true" id="7734da39-a889-4cf0-9055-91fe30229d4f" name="Changes" comment="release module banner">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/services/commonService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/services/commonService.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/(admin)/(sidebar)/Navbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/(admin)/(sidebar)/Navbar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,12 +30,12 @@
     &quot;assignee&quot;: &quot;lequyhieu1024&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/lequyhieu1024/shop-acc-game",
-    "accountId": "026b1a0a-ef5f-46f5-8d1f-e034cfc55a8d"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/lequyhieu1024/shop-acc-game&quot;,
+    &quot;accountId&quot;: &quot;026b1a0a-ef5f-46f5-8d1f-e034cfc55a8d&quot;
   }
-}]]></component>
+}</component>
   <component name="PhpWorkspaceProjectConfiguration" interpreter_name="C:\xampp\php\php.exe" />
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
@@ -50,26 +45,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "feat/lehieudev",
-    "last_opened_file_path": "C:/Users/Admin/Desktop/shop-acc-game/public/admin/assets/images",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "ts.external.directory.path": "C:\\Users\\Admin\\Desktop\\shop-acc-game\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feat/lehieudev&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Admin/Desktop/shop-acc-game/src/app/interfaces&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\Admin\\Desktop\\shop-acc-game\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Admin\Desktop\shop-acc-game\src\app\interfaces" />
+      <recent name="C:\Users\Admin\Desktop\shop-acc-game\src\app\api" />
+      <recent name="C:\Users\Admin\Desktop\shop-acc-game\src\app\admin" />
       <recent name="C:\Users\Admin\Desktop\shop-acc-game\public\admin\assets\images" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Admin\Desktop\shop-acc-game\src\app\admin" />
       <recent name="C:\Users\Admin\Desktop\shop-acc-game\src\components\(admin)" />
       <recent name="C:\Users\Admin\Desktop\shop-acc-game\src\app\api\systems" />
       <recent name="C:\Users\Admin\Desktop\shop-acc-game" />
@@ -96,6 +95,7 @@
       <workItem from="1740306890547" duration="1142000" />
       <workItem from="1740362127120" duration="1188000" />
       <workItem from="1740363347508" duration="21886000" />
+      <workItem from="1740481425727" duration="9000" />
     </task>
     <task id="LOCAL-00001" summary="base">
       <option name="closed" value="true" />
@@ -121,7 +121,23 @@
       <option name="project" value="LOCAL" />
       <updated>1740380928364</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="release module system">
+      <option name="closed" value="true" />
+      <created>1740461077110</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1740461077110</updated>
+    </task>
+    <task id="LOCAL-00005" summary="release module banner">
+      <option name="closed" value="true" />
+      <created>1740476819635</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1740476819635</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -131,6 +147,8 @@
     <MESSAGE value="base" />
     <MESSAGE value="release entities" />
     <MESSAGE value="release entities + fix some bug" />
-    <option name="LAST_COMMIT_MESSAGE" value="release entities + fix some bug" />
+    <MESSAGE value="release module system" />
+    <MESSAGE value="release module banner" />
+    <option name="LAST_COMMIT_MESSAGE" value="release module banner" />
   </component>
 </project>

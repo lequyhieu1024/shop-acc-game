@@ -91,8 +91,8 @@ export default function layout({children}: { children: ReactNode }) {
         {/*<Script src="/admin/assets/js/chart/apex-chart/apex-chart.js" strategy="lazyOnload" />*/}
         {/*<Script src="/admin/assets/js/chart/apex-chart/stock-prices.js" strategy="lazyOnload" />*/}
         {/*<Script src="/admin/assets/js/chart/apex-chart/chart-custom1.js" strategy="lazyOnload" />*/}
-        <Script src="/admin/assets/js/slick.min.js" strategy="lazyOnload"/>
-        <Script src="/admin/assets/js/custom-slick.js" strategy="lazyOnload"/>
+        {/*<Script src="/admin/assets/js/slick.min.js" strategy="lazyOnload"/>*/}
+        {/*<Script src="/admin/assets/js/custom-slick.js" strategy="lazyOnload"/>*/}
         <Script src="/admin/assets/js/customizer.js" strategy="lazyOnload"/>
         <Script src="/admin/assets/js/ratio.js" strategy="lazyOnload"/>
         <Script src="/admin/assets/js/sidebareffect.js" strategy="lazyOnload"/>

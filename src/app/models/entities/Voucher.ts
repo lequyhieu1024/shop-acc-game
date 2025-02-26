@@ -9,13 +9,10 @@ export class Voucher {
     name!: string;
 
     @Column({ type: "varchar", length: 50, unique: true })
-    voucher_code!: string;
+    code!: string;
 
     @Column({ type: "bigint" })
     value!: number;
-
-    @Column({ type: "bigint" })
-    min_order_amount!: number;
 
     @Column({ type: "datetime" })
     issue_date!: Date;
@@ -25,6 +22,12 @@ export class Voucher {
 
     @Column({ type: "enum", enum: ["private", "public"], default: "public" })
     type!: string;
+
+    @Column({ type: "int"})
+    quantity!: number;
+
+    @Column({ type: "enum", enum: ["active",  "inactive"]})
+    status!: string;
 
     @CreateDateColumn({ type: "timestamp" })
     created_at!: Date;

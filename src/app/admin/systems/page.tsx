@@ -126,30 +126,25 @@ export default function System() {
         <ErrorPage />
     ) : (
         <div className="row">
-            <div>
-                <ul className="nav nav-tabs d-flex">
-                    <li className="nav-item">
-                        <button className={`nav-link ${activeTab === "system" ? "active" : ""}`}
-                                onClick={() => setActiveTab("system")}>
-                            Cập nhật hệ thống
-                        </button>
-                    </li>
-                    <li className="nav-item">
-                        <button className={`nav-link ${activeTab === "password" ? "active" : ""}`}
-                                onClick={() => setActiveTab("password")}>
-                            Cập nhật mật khẩu
-                        </button>
-                    </li>
-                </ul>
-            </div>
             <div className="col-12">
                 <div className="card">
+                    <ul className="nav nav-pills mb-5" id="pills-tab" role="tablist">
+                        <li className="nav-item" role="presentation">
+                            <button className={`nav-link ${activeTab === "system" ? "active" : ""}`}
+                                    onClick={() => setActiveTab("system")} id="pills-home-tab" data-bs-toggle="pill"
+                                    data-bs-target="#pills-home" type="button">Cập nhật hệ thống
+                            </button>
+                        </li>
+                        <li className="nav-item" role="presentation">
+                            <button className={`nav-link ${activeTab === "password" ? "active" : ""}`}
+                                    onClick={() => setActiveTab("password")} id="pills-profile-tab" data-bs-toggle="pill"
+                                    data-bs-target="#pills-profile" type="button">Cập nhật mật khẩu
+                            </button>
+                        </li>
+                    </ul>
                     {
                         activeTab === "system" ? (
                             <div className="card-body">
-                                <div className="title-header option-title">
-                                    <h5>Cài đặt hệ thống</h5>
-                                </div>
                                 <form className="theme-form theme-form-2 mega-form" onSubmit={handleSubmit(onSubmit)}>
                                     <div className="row">
                                         <div className="col-md-6">
@@ -222,9 +217,6 @@ export default function System() {
                             </div>
                         ) : (
                             <div className="card-body">
-                                <div className="title-header option-title">
-                                    <h5>Cập nhập mật khẩu</h5>
-                                </div>
                                 <form className="theme-form theme-form-2 mega-form">
                                     <div className="row">
                                         <div className="mb-4 row align-items-center">
