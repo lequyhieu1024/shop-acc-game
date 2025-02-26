@@ -23,7 +23,7 @@ export const FormSearch: React.FC<FormSearchProps> = ({ onSearch }) => {
         });
     }
     return (
-        <form className="d-flex gap-5 mb-2" onSubmit={handleSearch}>
+        <form className="d-flex gap-1 mb-2" onSubmit={handleSearch}>
             <div className="name_filter">
                 <input type="search" className="form-control" name="nameSearch" value={searchInput.nameSearch}
                        onChange={handleSearchInput}

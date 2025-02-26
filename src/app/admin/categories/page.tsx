@@ -20,7 +20,7 @@ export default function CategoryPage() {
     name: string | null = null,
     size: number | null = null
   ) => {
-    // setLoading(true); // có loading sẽ mất dữ liệu khi lọc
+    setLoading(true); // Uncomment this to show loading state
     try {
       let url = `categories?`;
       if (size) url += `size=${encodeURIComponent(size)}&`;
@@ -28,11 +28,11 @@ export default function CategoryPage() {
 
       const response = await api.get(url);
       if (response.status === 200) {
-        setCategories(response.data.categories);
+        setCategories(response.data.categories || []);
+        setError(false);
       }
-      setError(false);
     } catch {
-      console.log("error");
+      console.log("Error fetching categories");
       setError(true);
     } finally {
       setLoading(false);
@@ -43,8 +43,8 @@ export default function CategoryPage() {
     try {
       const res = await api.delete(`/categories/${id}`);
       if (res) {
-        setMessage("Xóa danh mục thành công");
-        await getCategories();
+        setMessage("Deleted category successfully");
+        await getCategories(); // Refresh the categories after deletion
       }
     } catch (e) {
       console.log((e as Error).message);
@@ -74,7 +74,7 @@ export default function CategoryPage() {
         <div className="card card-table">
           <div className="card-body">
             <div className="title-header option-title">
-              <h5>Tất cả danh mục</h5>
+              <h5>All Categories</h5>
               <form className="d-inline-flex">
                 <Link
                   href="/admin/categories/create"
@@ -103,7 +103,7 @@ export default function CategoryPage() {
                     <line x1="12" y1="8" x2="12" y2="16"></line>
                     <line x1="8" y1="12" x2="16" y2="12"></line>
                   </svg>
-                  Thêm mới
+                  Add New
                 </Link>
               </form>
             </div>
@@ -117,54 +117,45 @@ export default function CategoryPage() {
                 <table className="table all-package theme-table" id="table_id">
                   <thead>
                     <tr>
-                      <th>ID</th>
-                      <th>Tên danh mục</th>
-                      <th>Ảnh/ Icon</th>
-                      <th>Ngày tạo</th>
-                      <th>Thao tác</th>
+                      <th>Category Name</th>
+                      <th>Image/Icon</th>
+                      <th>Created Date</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
-
                   <tbody>
-                    {categories?.length === 0 ? (
+                    {categories.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="p-5">
+                        <td colSpan={4} className="p-5">
                           <h5>No data</h5>
                         </td>
                       </tr>
                     ) : (
-                      categories?.map((category: ICategory) => (
+                      categories.map((category: ICategory) => (
                         <tr key={category.id}>
-                          <td>{category.id}</td>
                           <td>{category.name}</td>
                           <td>
                             <Image
-                              width={200}
-                              height={200}
-                              src={category.image || "/placeholder.jpg"}
-                              alt={category.image}
+                              width={150}
+                              height={100}
+                              src={
+                                category.image ||
+                                "/admin/assets/images/placeholder.png"
+                              }
+                              alt={category.name}
                               layout="intrinsic"
                             />
                           </td>
-
                           <td>
                             {DateTimeISO8601ToUFFAndUTCP7(category.created_at)}
                           </td>
-
                           <td>
                             <ul>
-                              {/*<li>*/}
-                              {/*    <a href="order-detail.html">*/}
-                              {/*        <i className="ri-eye-line"></i>*/}
-                              {/*    </a>*/}
-                              {/*</li>*/}
-
                               <li>
                                 <Link href={`/admin/categories/${category.id}`}>
                                   <i className="ri-pencil-line"></i>
                                 </Link>
                               </li>
-
                               <li>
                                 <DeleteConfirm
                                   onConfirm={() => handleDelete(category.id)}
@@ -184,6 +175,6 @@ export default function CategoryPage() {
       </div>
     </div>
   ) : (
-    <h3>Some thing were wrong</h3>
+    <h3>Something went wrong</h3>
   );
 }
