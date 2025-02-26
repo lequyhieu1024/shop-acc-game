@@ -59,11 +59,11 @@ export const Navbar = () => {
                         </a>
                         <ul className="sidebar-submenu">
                             <li>
-                                <a href="/admin/products">Danh sách</a>
+                                <Link href="/admin/products">Danh sách</Link>
                             </li>
 
                             <li>
-                                <a href="/admin/products/create">Thêm mới</a>
+                                <Link href="/admin/products/create">Thêm mới</Link>
                             </li>
                         </ul>
                     </li>
@@ -91,13 +91,13 @@ export const Navbar = () => {
                         </a>
                         <ul className="sidebar-submenu">
                             <li>
-                                <a href="all-users.html">Danh sách khách hàng</a>
+                                <Link href="all-users.html">Danh sách khách hàng</Link>
                             </li>
                             <li>
-                                <a href="all-users.html">Danh sách quản trị viên</a>
+                                <Link href="all-users.html">Danh sách quản trị viên</Link>
                             </li>
                             <li>
-                                <a href="add-new-user.html">Thêm mới quản trị viên</a>
+                                <Link href="add-new-user.html">Thêm mới quản trị viên</Link>
                             </li>
                         </ul>
                     </li>
@@ -109,11 +109,11 @@ export const Navbar = () => {
                         </a>
                         <ul className="sidebar-submenu">
                             <li>
-                                <a href="coupon-list.html">Danh sách</a>
+                                <Link href="/admin/vouchers">Danh sách</Link>
                             </li>
 
                             <li>
-                                <a href="create-coupon.html">Thêm mới</a>
+                                <Link href="/admin/vouchers/create">Thêm mới</Link>
                             </li>
                         </ul>
                     </li>
@@ -125,17 +125,17 @@ export const Navbar = () => {
                         </a>
                         <ul className="sidebar-submenu">
                             <li>
-                                <a href="coupon-list.html">Danh sách</a>
+                                <Link href="/admin/lucky-draws">Danh sách</Link>
                             </li>
 
                             <li>
-                                <a href="create-coupon.html">Thêm mới</a>
+                                <Link href="/admin/lucky-draws/create">Thêm mới</Link>
                             </li>
                         </ul>
                     </li>
 
                     <li className="sidebar-list">
-                        <a className="sidebar-link sidebar-title link-nav" href="support-ticket.html">
+                        <a className="sidebar-link sidebar-title link-nav" href="/admin/supports">
                             <i className="ri-phone-line"></i>
                             <span>Liên hệ - Hỗ trợ</span>
                         </a>

@@ -95,7 +95,6 @@ export default function CategoryPage() {
                                         <table className="table all-package theme-table" id="table_id">
                                             <thead>
                                             <tr>
-                                                <th>ID</th>
                                                 <th>Tên danh mục</th>
                                                 <th>Ảnh/ Icon</th>
                                                 <th>Ngày tạo</th>
@@ -114,13 +113,12 @@ export default function CategoryPage() {
                                                 ) : (
                                                     categories.map((category: ICategory) => (
                                                         <tr key={category.id}>
-                                                            <td>{category.id}</td>
                                                             <td>{category.name}</td>
                                                             <td>
                                                                 <Image
-                                                                    width={200}
-                                                                    height={200}
-                                                                    src={category.image || "/placeholder.jpg"}
+                                                                    width={150}
+                                                                    height={100}
+                                                                    src={category.image || "/admin/assets/images/placeholder.png"}
                                                                     alt={category.image}
                                                                     layout="intrinsic"
                                                                 />
@@ -130,12 +128,6 @@ export default function CategoryPage() {
 
                                                             <td>
                                                                 <ul>
-                                                                    {/*<li>*/}
-                                                                    {/*    <a href="order-detail.html">*/}
-                                                                    {/*        <i className="ri-eye-line"></i>*/}
-                                                                    {/*    </a>*/}
-                                                                    {/*</li>*/}
-
                                                                     <li>
                                                                         <Link href={`/admin/categories/${category.id}`}>
                                                                             <i className="ri-pencil-line"></i>

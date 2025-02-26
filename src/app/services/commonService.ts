@@ -24,3 +24,13 @@ export const toSlug = (str: string): string => {
 
 export const randomString = (length = 4) =>
     Array.from({ length }, () => String.fromCharCode(97 + Math.floor(Math.random() * 26))).join("");
+
+export const generateVoucherCode = (length: number = 10) => {
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let voucherCode = ""
+
+    for (let i = 0; i < length; i++) {
+        voucherCode += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return voucherCode;
+};
