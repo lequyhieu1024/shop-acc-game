@@ -41,30 +41,29 @@ export default function CategoryPage() {
 
   const handleDelete = async (id: number): Promise<void> => {
     try {
-      const res = await api.delete(`/categories/${id}`);
+      const res = await api.delete(`categories/${id}`);
       if (res) {
-        setMessage("Deleted category successfully");
-        await getCategories(); // Refresh the categories after deletion
+        sessionStorage.setItem("message", "Xóa danh mục thành công");
+        showMessage();
+        await getCategories();
       }
     } catch (e) {
       console.log((e as Error).message);
     }
   };
 
-  useEffect(() => {
-    getCategories();
+  const showMessage = () => {
     const msg = sessionStorage.getItem("message");
     if (msg) {
-      setMessage(msg);
+      toast.success(msg);
       sessionStorage.removeItem("message");
     }
-  }, []);
+  };
 
   useEffect(() => {
-    if (message) {
-      toast.success(message);
-    }
-  }, [message]);
+    getCategories();
+    showMessage();
+  }, []);
 
   return loading ? (
     <Loading />

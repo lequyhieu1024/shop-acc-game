@@ -15,7 +15,6 @@ export default function EditCategory() {
         const fetchCategory = async (): Promise<void> => {
             try {
                 const response = await api.get(`categories/${params.id}`)
-                console.log(response)
                 if (response.status === 200) {
                     setCategory(response.data.category)
                 }

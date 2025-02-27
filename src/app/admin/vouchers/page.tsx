@@ -9,16 +9,25 @@ import ErrorPage from "@/components/(admin)/Error";
 import {DateTimeISO8601ToUFFAndUTCP7} from "@/app/services/commonService";
 import DeleteConfirm from "@/components/DeleteConfirm";
 import {toast} from "react-toastify";
+import {Space, Table, TableProps, Tag} from "antd";
 
 export default function Voucher() {
 
     const [loading, setLoading] = useState<boolean>(true)
     const [vouchers, setVouchers] = useState<IVoucher[]>([])
     const [error, setError] = useState<boolean>(false)
-    const [message, setMessage] = useState<string>("")
 
-    const onDelete = async () => {
-        console.log('search')
+    const onDelete = async (id: number) => {
+        try {
+            const res = await api.delete(`vouchers/${id}`)
+            if (res) {
+                sessionStorage.setItem("message", "Xóa voucher thành công");
+                showMessage();
+                await fetchVouchers();
+            }
+        } catch (e) {
+            console.log((e as Error).message)
+        }
     }
 
     const fetchVouchers = async (data: string | null = null, size: number | null = 20) => {
@@ -40,16 +49,79 @@ export default function Voucher() {
         }
     }
 
-    useEffect(() => {
-        fetchVouchers();
+    const showMessage = () => {
         const msg = sessionStorage.getItem("message");
-        if (msg) setMessage(msg);
-        sessionStorage.removeItem("message")
-    }, []);
+        if (msg) {
+            toast.success(msg);
+            sessionStorage.removeItem("message");
+        }
+    };
 
     useEffect(() => {
-        if (message) toast.success(message);
-    }, [message]);
+        fetchVouchers();
+        showMessage();
+    }, []);
+
+    const columns: TableProps<IVoucher>['columns'] = [
+        {
+            title: "Tên sự kiện",
+            dataIndex: "name",
+            key: "name",
+        },
+        {
+            title: "Giá trị giảm",
+            dataIndex: "value",
+            key: "value",
+            render: (value: number) => `${value.toLocaleString()} VND`,
+        },
+        {
+            title: "Thời hạn voucher",
+            key: "issue_date",
+            render: (voucher: IVoucher) => (
+                <span>
+                    {DateTimeISO8601ToUFFAndUTCP7(voucher.issue_date)} <strong>-</strong> {DateTimeISO8601ToUFFAndUTCP7(voucher.expired_date)}
+                </span>
+            )
+        },
+        {
+            title: "Loại",
+            dataIndex: "type",
+            key: "type",
+            render: (type: string) => (
+                <Tag color={type === "private" ? "volcano" : "blue"}>{type.toUpperCase()}</Tag>
+            ),
+        },
+        {
+            title: "Mã",
+            dataIndex: "code",
+            key: "code",
+        },
+        {
+            title: "Số lượng",
+            dataIndex: "quantity",
+            key: "quantity",
+        },
+        {
+            title: "Trạng thái",
+            dataIndex: "status",
+            key: "status",
+            render: (status: string) => (
+                <Tag color={status === "active" ? "green" : "red"}>{status.toUpperCase()}</Tag>
+            ),
+        },
+        {
+            title: "Action",
+            key: "action",
+            render: (voucher) => (
+                <Space size="middle">
+                    <Link href={`/admin/vouchers/${voucher.id}`}>
+                        <i className="ri-pencil-line"></i>
+                    </Link>
+                    <DeleteConfirm onConfirm={() => onDelete(voucher.id)} />
+                </Space>
+            ),
+        },
+    ];
 
     return (
         loading ? (
@@ -70,7 +142,8 @@ export default function Voucher() {
                                                 <Link href="/admin/vouchers/create"
                                                       className="align-items-center btn btn-theme d-flex">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         strokeWidth="2"
                                                          strokeLinecap="round" strokeLinejoin="round"
                                                          className="feather feather-plus-square">
                                                         <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
@@ -87,83 +160,13 @@ export default function Voucher() {
                                     <div className="table-responsive">
                                         <div id="table_id_wrapper" className="dataTables_wrapper no-footer">
                                             <FormSearch onSearch={fetchVouchers}/>
-                                            <table
-                                                className="table all-package coupon-list-table table-hover theme-table dataTable no-footer"
-                                                id="table_id">
-                                                <thead>
-                                                <tr>
-                                                    <th className="sorting_disabled" rowSpan={1} colSpan={1}
-                                                        style={{width: 224.656}}>Tên
-                                                    </th>
-                                                    <th className="sorting_disabled" rowSpan={1} colSpan={1}
-                                                        style={{width: 224.656}}>Mã
-                                                    </th>
-                                                    <th className="sorting_disabled" rowSpan={1} colSpan={1}
-                                                        style={{width: 224.656}}>Giá trị
-                                                    </th>
-                                                    <th className="sorting_disabled" rowSpan={1} colSpan={1}
-                                                        style={{width: 224.656}}>Loại
-                                                    </th>
-                                                    <th className="sorting_disabled" rowSpan={1} colSpan={1}
-                                                        style={{width: 224.719}}>Số lượng
-                                                    </th>
-                                                    <th className="sorting_disabled" rowSpan={1} colSpan={1}
-                                                        style={{width: 224.719}}>Thời hạn
-                                                    </th>
-                                                    <th className="sorting_disabled" rowSpan={1} colSpan={1}
-                                                        style={{width: 224.719}}>Trạng thái
-                                                    </th>
-                                                    <th className="sorting_disabled" rowSpan={1} colSpan={1}
-                                                        style={{width: 224.719}}>Hành động
-                                                    </th>
-                                                </tr>
-                                                </thead>
-
-                                                <tbody>
-                                                {
-                                                    vouchers.length === 0 ? (
-                                                        <tr>
-                                                            <td colSpan={5} className="p-5">
-                                                                <h5>No data</h5>
-                                                            </td>
-                                                        </tr>
-                                                    ) : (
-                                                        vouchers.map((voucher: IVoucher) => (
-                                                            <tr className="odd" key={voucher.id}>
-                                                                <td>{voucher.name}</td>
-                                                                <td>{voucher.code}</td>
-                                                                <td>{voucher.value} vnđ</td>
-                                                                <td className="menu-status">
-                                                                    <span
-                                                                        className={voucher.type === 'public' ? "success" : "danger"}>{voucher.type === 'public' ? "Công khai" : "Nội bộ"}</span>
-                                                                </td>
-                                                                <td>{voucher.quantity}</td>
-                                                                <td>{DateTimeISO8601ToUFFAndUTCP7(voucher.issue_date) + "-" + DateTimeISO8601ToUFFAndUTCP7(voucher.expired_date)}</td>
-                                                                <td className="menu-status">
-                                                                    <span
-                                                                        className={voucher.status === 'active' ? "success" : "danger"}>{voucher.status === 'active' ? "Hoạt động" : "Không hoạt động"}</span>
-                                                                </td>
-                                                                <td>
-                                                                    <ul>
-                                                                        <li>
-                                                                            <Link
-                                                                                href={`/admin/vouchers/${voucher.id}`}>
-                                                                                <i className="ri-pencil-line"></i>
-                                                                            </Link>
-                                                                        </li>
-
-                                                                        <li>
-                                                                            <DeleteConfirm
-                                                                                onConfirm={() => onDelete()}/>
-                                                                        </li>
-                                                                    </ul>
-                                                                </td>
-                                                            </tr>
-                                                        ))
-                                                    )
-                                                }
-                                                </tbody>
-                                            </table>
+                                            <div>
+                                                {vouchers.length === 0 ? (
+                                                    <h5>No data</h5>
+                                                ) : (
+                                                    <Table columns={columns} dataSource={vouchers.map((voucher) => ({ ...voucher, key: voucher.id }))}/>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
