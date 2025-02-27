@@ -5,6 +5,7 @@ import {useRouter} from "next/navigation";
 import {ICategory} from "@/app/interfaces/ICategory";
 import Loading from "@/components/Loading";
 import Link from "next/link";
+import {toast} from "react-toastify";
 
 interface CategoryEditProps {
     isEditing?: boolean,
@@ -53,13 +54,13 @@ export default function CategoryForm({initialData = null, isEditing = false}: Ca
 
         if (isEditing) {
             if (!formData.name) {
-                setMessage("Vui lòng nhập đầy đủ tên.");
+                toast.error("Vui lòng nhập đầy đủ tên.");
                 setLoading(false)
                 return;
             }
         } else {
             if (!formData.name || !selectedFile) {
-                setMessage("Vui lòng nhập đầy đủ tên và ảnh.");
+                toast.error("Vui lòng nhập đầy đủ tên và ảnh.");
                 setLoading(false)
                 return;
             }

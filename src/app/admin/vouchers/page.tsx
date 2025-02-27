@@ -16,10 +16,18 @@ export default function Voucher() {
     const [loading, setLoading] = useState<boolean>(true)
     const [vouchers, setVouchers] = useState<IVoucher[]>([])
     const [error, setError] = useState<boolean>(false)
-    const [message, setMessage] = useState<string>("")
 
-    const onDelete = async () => {
-        console.log('search')
+    const onDelete = async (id: number) => {
+        try {
+            const res = await api.delete(`vouchers/${id}`)
+            if (res) {
+                sessionStorage.setItem("message", "Xóa voucher thành công");
+                showMessage();
+                await fetchVouchers();
+            }
+        } catch (e) {
+            console.log((e as Error).message)
+        }
     }
 
     const fetchVouchers = async (data: string | null = null, size: number | null = 20) => {
@@ -41,16 +49,18 @@ export default function Voucher() {
         }
     }
 
-    useEffect(() => {
-        fetchVouchers();
+    const showMessage = () => {
         const msg = sessionStorage.getItem("message");
-        if (msg) setMessage(msg);
-        sessionStorage.removeItem("message")
-    }, []);
+        if (msg) {
+            toast.success(msg);
+            sessionStorage.removeItem("message");
+        }
+    };
 
     useEffect(() => {
-        if (message) toast.success(message);
-    }, [message]);
+        fetchVouchers();
+        showMessage();
+    }, []);
 
     const columns: TableProps<IVoucher>['columns'] = [
         {
@@ -107,7 +117,7 @@ export default function Voucher() {
                     <Link href={`/admin/vouchers/${voucher.id}`}>
                         <i className="ri-pencil-line"></i>
                     </Link>
-                    <DeleteConfirm onConfirm={onDelete} />
+                    <DeleteConfirm onConfirm={() => onDelete(voucher.id)} />
                 </Space>
             ),
         },
