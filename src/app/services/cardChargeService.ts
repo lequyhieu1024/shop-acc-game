@@ -1,4 +1,5 @@
 import axios from "axios";
+import {hashMD5} from "@/app/services/commonService";
 
 class CardService {
     private partnerId: string;
@@ -9,6 +10,9 @@ class CardService {
         this.partnerId = process.env.PARTNER_ID_SUPPER_CHEAP_CARD || "";
         this.partnerKey = process.env.PARTNER_KEY_SUPPER_CHEAP_CARD || "";
         this.apiUrl = process.env.URL_API_SUPPER_CHEAP_CARD || "";
+        console.log(this.apiUrl)
+        console.log(this.partnerId)
+        console.log(this.partnerKey)
         if (!this.partnerId || !this.partnerKey || !this.apiUrl) {
             throw new Error("Missing required environment variables for Supper Cheap Card API.");
         }
@@ -32,11 +36,8 @@ class CardService {
 
             formData.append("request_id", Date.now().toString());
             formData.append("partner_id", this.partnerId);
-            formData.append("partner_key", this.partnerKey);
-            formData.append("sign", this.generateMD5(this.partnerKey, formData.get("code"), formData.get("serial")));
+            formData.append("sign", hashMD5(this.partnerKey + formData.get("code")+formData.get("serial")));
             formData.append("command", "charging");
-
-            console.log("Dữ liệu gửi đi:", formData);
 
             const response = await axios.post(this.apiUrl, formData, {
                 headers: {
@@ -50,10 +51,6 @@ class CardService {
             throw new Error("Failed to process card.");
         }
     }
-    generateMD5 = (partnerKey: string, code: string, serial: string): string => {
-        const data = `${partnerKey}${code}${serial}`;
-        return crypto.createHash('md5').update(data).digest('hex');
-    };
 }
 
 export const cardService = new CardService();

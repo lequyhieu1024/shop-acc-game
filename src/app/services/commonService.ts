@@ -1,3 +1,5 @@
+import crypto from "crypto";
+
 export const DateTimeISO8601ToUFFAndUTCP7 = (dateISO8601: any) => {
     const date = new Date(dateISO8601);
     return date.toLocaleString("vi-VN", {
@@ -40,3 +42,7 @@ export const convertToLocalDatetime = (isoString: string | null) => {
     const date = new Date(isoString);
     return date.toISOString().slice(0, 16);
 };
+
+export function hashMD5(value: any) {
+    return crypto.createHash("md5").update(value).digest("hex");
+}

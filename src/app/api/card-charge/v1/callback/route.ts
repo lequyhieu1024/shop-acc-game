@@ -1,23 +1,30 @@
 import {initRepository} from "@/app/models/connect";
 import {CardTransaction} from "@/app/models/entities/CardTransaction";
 import {NextRequest, NextResponse} from "next/server";
+import {User} from "@/app/models/entities/User";
 
+// nhận call back
 export const POST = async (req: NextRequest) => {
     try {
         const cardTransRepo = await initRepository(CardTransaction)
+        const userRepo = await initRepository(User)
         const callbackResult = await req.json();
-
-        const transLogs: any = cardTransRepo.findOneBy({request_id: callbackResult.request_id, trans_id: callbackResult.trans_id})
-        let transLogUpdated;
-        if (callbackResult) {
-            transLogUpdated = await cardTransRepo.update(transLogs.id, callbackResult);
-        } else {
-            transLogs.status = 100;
-            transLogs.message = "Gửi thẻ thất bại"
-            transLogUpdated = await cardTransRepo.update(transLogs.id ,{status: transLogs.status, message: transLogs.message})
-            return NextResponse.json({transLogUpdated}, {status: 400})
+        console.log("callbackResult "+ callbackResult)
+        if (!callbackResult) {
+            return NextResponse.json({message: "Lỗi từ thẻ siêu rẻ api"}, {status: 400})
         }
-        return NextResponse.json({transLogUpdated}, {status: 200})
+        const transLogs: any = await cardTransRepo.findOneBy({request_id: callbackResult.request_id})
+        if (!transLogs) {
+            return NextResponse.json({message: "Không tìm thấy dữ liệu hợp lệ với request_id"}, {status: 400})
+        }
+        const user: any = await userRepo.findOneBy({id: transLogs.id})
+        if (!user) {
+            return NextResponse.json({message: "Không tìm thấy dữ liệu user hợp lệ"}, {status: 400})
+        }
+        await cardTransRepo.update(transLogs.id, callbackResult);
+        await userRepo.update(transLogs.user_id, {balance: user.balance + callbackResult.amount})
+
+        return NextResponse.json({result: true, message: "success", data: {user, transLogs}}, {status: 200})
     } catch (e) {
         return NextResponse.json({
             result: false,

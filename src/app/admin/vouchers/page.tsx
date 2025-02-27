@@ -135,7 +135,7 @@ export default function Voucher() {
                         <div className="card card-table">
                             <div className="card-body">
                                 <div className="title-header option-title">
-                                    <h5>Coupon List</h5>
+                                    <h5>Danh sách voucher</h5>
                                     <div className="right-options">
                                         <ul>
                                             <li>

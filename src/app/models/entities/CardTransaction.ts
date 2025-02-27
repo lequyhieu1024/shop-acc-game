@@ -24,19 +24,19 @@ export class CardTransaction {
     })
     status!: CardStatus;
 
-    @Column({ type: 'varchar', length: 255, nullable: false })
+    @Column({ type: 'varchar', length: 255, default: "Thẻ chờ xử lý" })
     message!: string;
 
-    @Column({ type: 'varchar', length: 50, unique: true, nullable: false })
+    @Column({ type: 'bigint', unique: true, nullable: false })
     request_id!: string;
 
-    @Column({ type: 'int', nullable: false })
+    @Column({ type: 'bigint', nullable: true })
     declared_value!: number;
 
-    @Column({ type: 'int', nullable: false })
+    @Column({ type: 'bigint', nullable: true })
     value!: number;
 
-    @Column({ type: 'int', nullable: false })
+    @Column({ type: 'bigint', nullable: false })
     amount!: number;
 
     @Column({ type: 'varchar', length: 50, nullable: false })
@@ -48,10 +48,10 @@ export class CardTransaction {
     @Column({ type: 'varchar', length: 20, nullable: false })
     telco!: string;
 
-    @Column({ type: 'int', unique: true, nullable: false })
+    @Column({ type: 'bigint', unique: true, nullable: true })
     trans_id!: number;
 
-    @Column({ type: 'varchar', length: 100, nullable: false })
+    @Column({ type: 'varchar', length: 100, nullable: true })
     callback_sign!: string;
 
     @Column({ type: 'varchar', length: 20, nullable: false })

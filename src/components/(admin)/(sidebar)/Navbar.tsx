@@ -32,10 +32,10 @@ export const Navbar = () => {
                     <li className="back-btn"></li>
 
                     <li className="sidebar-list">
-                        <a className="sidebar-link sidebar-title link-nav" href="/admin/dashboard">
+                        <Link className="sidebar-link sidebar-title link-nav" href="/admin/dashboard">
                             <i className="ri-home-line"></i>
                             <span>Trang chủ</span>
-                        </a>
+                        </Link>
                     </li>
 
                     <li className="sidebar-list">
