@@ -6,6 +6,8 @@ import {IVoucher} from "@/app/interfaces/IVoucher";
 import api from "@/app/services/axiosService";
 import {useRouter} from "next/navigation";
 import Loading from "@/components/Loading";
+import DateTimePicker from "@/components/DateTimePicker";
+import {toast} from "react-toastify";
 
 interface VoucherEditProps {
     isEditing?: boolean,
@@ -18,12 +20,13 @@ export default function VoucherForm({initialData = null, isEditing = false}: Vou
 
     const [data, setData] = useState<IVoucher>({} as IVoucher)
     const [loading, setLoading] = useState<boolean>(true)
+    const [message, setMessage] = useState<string>("")
 
     useEffect(() => {
         if (isEditing && initialData) {
             setData(initialData)
-            setLoading(false)
         }
+        setLoading(false)
     }, [initialData]);
 
     const autoGenareteCode = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -47,8 +50,49 @@ export default function VoucherForm({initialData = null, isEditing = false}: Vou
         // console.log(data)
     };
 
-    const handleSubmit = async () => {
+    const handleDateChange = (name: string, value: string) => {
+        setData(prevData => ({ ...prevData, [name]: value }));
+    };
+
+    const validateVoucherData = (data: any) => {
+        console.log(data)
+        if (!data.name || data.name.trim().length === 0) {
+            return "Tên voucher không được để trống.";
+        }
+
+        if (!data.code || data.code.trim().length === 0) {
+            return "Mã voucher không được để trống.";
+        }
+
+        if (data.value <= 0 || isNaN(data.value)) {
+            return "Giá trị voucher phải là một số dương.";
+        }
+
+        if (!data.issue_date) {
+            return "Ngày phát hành không được bỏ trống.";
+        }
+
+        if (!data.expired_date || new Date(data.expired_date) <= new Date(data.issue_date)) {
+            return "Ngày hết hạn phải lớn hơn ngày phát hành.";
+        }
+
+        if (data.quantity <= 0 || !Number.isInteger(parseInt(data.quantity))) {
+            return "Số lượng voucher phải là một số nguyên dương.";
+        }
+
+        return null;
+    };
+
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         setLoading(true)
+        const validationError = validateVoucherData(data);
+        if (validationError) {
+            toast.error(validationError)
+            setLoading(false);
+            return;
+        }
         try {
             let response;
             if (isEditing && initialData) {
@@ -57,6 +101,7 @@ export default function VoucherForm({initialData = null, isEditing = false}: Vou
                 response = await api.post('vouchers', data)
             }
             if (response.status === 200) {
+                setMessage("")
                 sessionStorage.setItem("message", `${isEditing ? 'Cập nhật' : 'Tạo mới'} voucher thành công`)
                 router.push('/admin/vouchers')
             }
@@ -98,6 +143,11 @@ export default function VoucherForm({initialData = null, isEditing = false}: Vou
                                             <div className={isEditing ? "col-md-9 col-lg-10" : "col-md-7 col-lg-8"}>
                                                 <input className="form-control" disabled={true} type="text"
                                                        value={data.code} onChange={handleInputChange} name="code"/>
+                                                {
+                                                    isEditing &&
+                                                    <small className={`text-danger`}><i>Không được cập nhật trường
+                                                        này</i></small>
+                                                }
                                             </div>
                                             <div className={isEditing ? "d-none" : "col-md-2 col-lg-2"}>
                                                 <button className="btn btn-primary" onClick={autoGenareteCode}>Tự động
@@ -121,9 +171,12 @@ export default function VoucherForm({initialData = null, isEditing = false}: Vou
                                                 className="col-lg-2 col-md-3 col-form-label form-label-title">Ngày
                                                 bắt đầu</label>
                                             <div className="col-md-9 col-lg-10">
-                                                <input className="form-control" type="datetime-local"
-                                                       value={data.issue_date} onChange={handleInputChange}
-                                                       name="issue_date"/>
+                                                <DateTimePicker
+                                                    initialDatetime={data.issue_date}
+                                                    inputName="issue_date"
+                                                    onChange={handleDateChange}
+                                                />
+
                                             </div>
                                         </div>
 
@@ -132,9 +185,11 @@ export default function VoucherForm({initialData = null, isEditing = false}: Vou
                                                 className="col-lg-2 col-md-3 col-form-label form-label-title">Ngày
                                                 kết thúc</label>
                                             <div className="col-md-9 col-lg-10">
-                                                <input className="form-control" type="datetime-local"
-                                                       value={data.expired_date} onChange={handleInputChange}
-                                                       name="expired_date"/>
+                                                <DateTimePicker
+                                                    initialDatetime={data.expired_date}
+                                                    inputName="expired_date"
+                                                    onChange={handleDateChange}
+                                                />
                                             </div>
                                         </div>
 
@@ -169,7 +224,7 @@ export default function VoucherForm({initialData = null, isEditing = false}: Vou
                                             <label className="form-label-title col-lg-2 col-md-3 mb-0">Trạng
                                                 thái</label>
                                             <div className="col-md-9 col-lg-10">
-                                                <select onChange={handleSelectChange} name="status" id=""
+                                                <select onChange={handleSelectChange} name="status" value={data.status || "active"}
                                                         className="form-select">
                                                     <option value="active">Hoạt động</option>
                                                     <option value="inactive">Không hoạt động</option>

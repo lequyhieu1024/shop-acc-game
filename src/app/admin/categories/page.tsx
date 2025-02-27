@@ -15,7 +15,7 @@ export default function CategoryPage() {
     const [categories, setCategories] = useState<ICategory[]>([])
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<boolean>(false)
-    const [message, setMessage] = useState<string>("")
+    // const [message, setMessage] = useState<string>("")
 
     const getCategories = async (name: string | null = null, size: number | null = null) => {
         // setLoading(true); // có loading sẽ mất dữ liệu khi lọc
@@ -39,9 +39,10 @@ export default function CategoryPage() {
 
     const handleDelete = async (id: number): Promise<void> => {
         try {
-            const res = await api.delete(`/categories/${id}`)
+            const res = await api.delete(`categories/${id}`)
             if (res) {
-                setMessage("Xóa danh mục thành công");
+                sessionStorage.setItem("message", "Xóa danh mục thành công");
+                showMessage();
                 await getCategories();
             }
         } catch (e) {
@@ -49,20 +50,18 @@ export default function CategoryPage() {
         }
     }
 
-    useEffect(() => {
-        getCategories();
+    const showMessage = () => {
         const msg = sessionStorage.getItem("message");
         if (msg) {
-            setMessage(msg);
+            toast.success(msg);
             sessionStorage.removeItem("message");
         }
-    }, []);
+    };
 
     useEffect(() => {
-        if (message) {
-            toast.success(message);
-        }
-    }, [message]);
+        getCategories();
+        showMessage();
+    }, []);
 
     return (
         loading ? (<Loading/>) : (

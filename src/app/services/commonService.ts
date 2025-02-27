@@ -34,3 +34,9 @@ export const generateVoucherCode = (length: number = 10) => {
     }
     return voucherCode;
 };
+
+export const convertToLocalDatetime = (isoString: string | null) => {
+    if (!isoString) return "";
+    const date = new Date(isoString);
+    return date.toISOString().slice(0, 16);
+};
