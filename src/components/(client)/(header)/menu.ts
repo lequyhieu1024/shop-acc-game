@@ -25,6 +25,9 @@ export const menu: IMenuItem[] = [
     label: "Nạp thẻ"
   },
   {
+    label: "Tin tức"
+  },
+  {
     label: "Giới thiệu"
   },
   {

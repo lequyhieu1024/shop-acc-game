@@ -10,13 +10,13 @@ const Banner = () => {
 
   return (
     <Carousel
-      autoplay
+      // autoplay
       touchMove
       draggable
-      className="h-[320px] bg-red-50 container select-none cursor-grab active:cursor-grabbing"
+      className="h-[320px] bg-red-50 container select-none cursor-grab active:cursor-grabbing pt-10 mb-6 "
     >
       {banners.map((banner, index) => (
-        <div key={index}>
+        <div key={index} className="">
           {/* Add a unique key here */}
           <img
             height={100}

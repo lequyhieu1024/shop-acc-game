@@ -5,7 +5,7 @@ import { ShoppingCartOutlined } from "@ant-design/icons";
 import image from "../../../../public/client/images/image.jpg";
 import Link from "next/link";
 
-const LatestProducts = () => {
+const NickChip = () => {
   const products = [
     {
       id: 1,
@@ -52,7 +52,7 @@ const LatestProducts = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Nick Free Fire mới nhất</h2>
+        <h2 className="text-2xl font-bold">Nick ngon giá rẻ</h2>
         <Link
           href="/products"
           className="text-blue-600 hover:text-blue-800 flex items-center"
@@ -72,7 +72,7 @@ const LatestProducts = () => {
                   <Badge.Ribbon
                     className="animate-bounce"
                     text={
-                      <span className="animate-bounce inline-block">NEW</span>
+                      <span className="animate-bounce inline-block">SALE</span>
                     }
                     color="magenta"
                   />
@@ -111,4 +111,4 @@ const LatestProducts = () => {
   );
 };
 
-export default LatestProducts;
+export default NickChip;

@@ -23,7 +23,7 @@ const NavBar = () => {
   }, []);
 
   return (
-    <nav className="relative z-10 flex h-[50px] select-none items-center bg-blue-500">
+    <nav className="flex h-[50px] select-none items-center bg-blue-500 fixed z-20 w-full">
       <ul className="container flex h-full items-center gap-[30px]">
         {/* Home Link */}
         <li>
