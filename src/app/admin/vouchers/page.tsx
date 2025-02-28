@@ -38,6 +38,7 @@ export default function Voucher() {
             const response = await api.get(url);
             if (response.status === 200) {
                 setVouchers(response.data.vouchers || [])
+                setError(false)
             } else {
                 setError(true)
             }
@@ -161,11 +162,11 @@ export default function Voucher() {
                                         <div id="table_id_wrapper" className="dataTables_wrapper no-footer">
                                             <FormSearch onSearch={fetchVouchers}/>
                                             <div>
-                                                {vouchers.length === 0 ? (
-                                                    <h5>No data</h5>
-                                                ) : (
-                                                    <Table columns={columns} dataSource={vouchers.map((voucher) => ({ ...voucher, key: voucher.id }))}/>
-                                                )}
+                                                <Table
+                                                    columns={columns}
+                                                   dataSource={vouchers.map((voucher) => ({ ...voucher, key: voucher.id }))}
+                                                   locale={{ emptyText: "Không có dữ liệu" }}
+                                                />
                                             </div>
                                         </div>
                                     </div>

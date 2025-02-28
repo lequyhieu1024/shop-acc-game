@@ -46,3 +46,18 @@ export const convertToLocalDatetime = (isoString: string | null) => {
 export function hashMD5(value: any) {
     return crypto.createHash("md5").update(value).digest("hex");
 }
+
+export const maskDigits = (input: string): string => {
+    if (input.length < 8) return input;
+    return input.substring(0, 4) + "****" + input.substring(8);
+};
+
+export const numberFormat = (num: any): string => {
+    return new Intl.NumberFormat("vi-VN").format(num);
+};
+
+export const isInteger = (value: any): boolean => Number.isInteger(Number(value));
+
+export const getRandomInt = (min: number = 100, max: number = 999): number => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+};

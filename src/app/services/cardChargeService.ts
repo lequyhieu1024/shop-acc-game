@@ -1,5 +1,5 @@
 import axios from "axios";
-import {hashMD5} from "@/app/services/commonService";
+import {getRandomInt, hashMD5} from "@/app/services/commonService";
 
 class CardService {
     private partnerId: string;
@@ -34,7 +34,7 @@ class CardService {
                 formData.append(key, data[key]);
             }
 
-            formData.append("request_id", Date.now().toString());
+            formData.append("request_id", Date.now().toString()+getRandomInt());
             formData.append("partner_id", this.partnerId);
             formData.append("sign", hashMD5(this.partnerKey + formData.get("code")+formData.get("serial")));
             formData.append("command", "charging");

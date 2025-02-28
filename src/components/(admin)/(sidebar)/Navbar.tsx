@@ -46,10 +46,10 @@ export const Navbar = () => {
                     </li>
 
                     <li className="sidebar-list">
-                        <a className="sidebar-link sidebar-title link-nav" href="support-ticket.html">
+                        <Link className="sidebar-link sidebar-title link-nav" href="/admin/transactions">
                             <i className="ri-bank-line"></i>
                             <span>Giao dịch</span>
-                        </a>
+                        </Link>
                     </li>
 
                     <li className="sidebar-list">
