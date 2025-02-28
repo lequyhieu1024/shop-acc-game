@@ -11,7 +11,7 @@ import {toast} from "react-toastify";
 
 interface VoucherEditProps {
     isEditing?: boolean,
-    initialData: IVoucher | null
+    initialData?: IVoucher | null
 }
 
 export default function VoucherForm({initialData = null, isEditing = false}: VoucherEditProps) {
@@ -20,7 +20,6 @@ export default function VoucherForm({initialData = null, isEditing = false}: Vou
 
     const [data, setData] = useState<IVoucher>({} as IVoucher)
     const [loading, setLoading] = useState<boolean>(true)
-    const [message, setMessage] = useState<string>("")
 
     useEffect(() => {
         if (isEditing && initialData) {
@@ -101,7 +100,6 @@ export default function VoucherForm({initialData = null, isEditing = false}: Vou
                 response = await api.post('vouchers', data)
             }
             if (response.status === 200) {
-                setMessage("")
                 sessionStorage.setItem("message", `${isEditing ? 'Cập nhật' : 'Tạo mới'} voucher thành công`)
                 router.push('/admin/vouchers')
             }
