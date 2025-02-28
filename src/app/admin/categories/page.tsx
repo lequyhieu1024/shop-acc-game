@@ -15,7 +15,6 @@ export default function CategoryPage() {
     const [categories, setCategories] = useState<ICategory[]>([])
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<boolean>(false)
-    // const [message, setMessage] = useState<string>("")
 
     const getCategories = async (name: string | null = null, size: number | null = null) => {
         // setLoading(true); // có loading sẽ mất dữ liệu khi lọc
@@ -27,10 +26,12 @@ export default function CategoryPage() {
             const response = await api.get(url);
             if (response.status === 200) {
                 setCategories(response.data.categories || [])
+                setError(false)
+            } else {
+                setError(true)
             }
-            setError(false)
-        } catch {
-            console.log("error")
+        } catch (e) {
+            console.error("error: "+ e)
             setError(true)
         } finally {
             setLoading(false)

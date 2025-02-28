@@ -11,6 +11,7 @@ import {User} from "@/app/models/entities/User";
 import {UserView} from "@/app/models/entities/UserView";
 import {Image} from "@/app/models/entities/Image";
 import {Banner} from "@/app/models/entities/Banner";
+import {CardTransaction} from "@/app/models/entities/CardTransaction";
 
 export const AppDataSource = new DataSource({
     type: "mysql",
@@ -19,7 +20,7 @@ export const AppDataSource = new DataSource({
     username: "root",
     password: "",
     database: process.env.DATABASE_NAME,
-    entities: [Category, Product, Voucher, UserVoucher, LuckyDraw, LuckyDrawItem, System, UserView, User, Image, Banner],
+    entities: [Category, Product, Voucher, UserVoucher, LuckyDraw, LuckyDrawItem, System, UserView, User, Image, Banner, CardTransaction],
     synchronize: true,
     logging: true,
 });
