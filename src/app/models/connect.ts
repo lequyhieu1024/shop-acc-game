@@ -17,12 +17,12 @@ export const AppDataSource = new DataSource({
     type: "mysql",
     host: "localhost",
     port: Number(process.env.DATABASE_PORT) || 3306,
-    username: "root",
-    password: "",
+    username: process.env.DB_USERNAME || "root",
+    password: process.env.DB_PASSWORD || "",
     database: process.env.DATABASE_NAME,
     entities: [Category, Product, Voucher, UserVoucher, LuckyDraw, LuckyDrawItem, System, UserView, User, Image, Banner, CardTransaction],
     synchronize: true,
-    logging: true,
+    logging: false,
 });
 
 export const initRepository = async (entity: any) => {
