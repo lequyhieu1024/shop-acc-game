@@ -5,7 +5,7 @@ import {ITransaction} from "@/app/interfaces/ITransaction";
 import api from "@/app/services/axiosService";
 import Loading from "@/components/Loading";
 import ErrorPage from "@/components/(admin)/Error";
-import {Input, Space, Table, TableProps, Tag, Form, Button, Select} from "antd";
+import {Space, Table, TableProps, Tag} from "antd";
 import {CardStatus} from "@/app/models/entities/CardTransaction";
 
 export default function Transaction() {
@@ -13,7 +13,6 @@ export default function Transaction() {
     const [loading, setLoading] = useState<boolean>(true)
     const [transactions, setTransactions] = useState<ITransaction[]>([])
     const [error, setError] = useState<boolean>(false)
-    const [form] = Form.useForm();
     const fetchTransactions = async (filters: Record<string, any> = {}, size: number = 20, page: number = 1) => {
         try {
             const params = new URLSearchParams({
@@ -41,9 +40,36 @@ export default function Transaction() {
         }
     };
 
-    const handleSearch = () => {
-        fetchTransactions();
+    const [formData, setFormData] = useState({
+        user_code: "",
+        status: "",
+        value: "",
+        created_at: ""
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
     };
+
+    const handleSearch = async (e: React.MouseEvent<HTMLFormElement>) => {
+        setLoading(true)
+        e.preventDefault();
+        fetchTransactions(formData)
+    }
+
+    const handleReset = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        setFormData({
+            user_code: "",
+            status: "",
+            value: "",
+            created_at: ""
+        })
+        fetchTransactions();
+    }
 
     useEffect(() => {
         fetchTransactions();
@@ -84,14 +110,14 @@ export default function Transaction() {
             key: "status",
             render: (status: number) => {
                 const statusMap: Record<CardStatus, { label: string; color: string }> = {
-                    [CardStatus.SUCCESS_CORRECT]: { label: "SUCCESS_CORRECT", color: "green" },
-                    [CardStatus.SUCCESS_INCORRECT]: { label: "SUCCESS_INCORRECT", color: "blue" },
-                    [CardStatus.FAILED]: { label: "FAILED", color: "red" },
-                    [CardStatus.MAINTENANCE]: { label: "MAINTENANCE", color: "orange" },
-                    [CardStatus.PENDING]: { label: "PENDING", color: "gold" },
-                    [CardStatus.SUBMIT_FAILED]: { label: "SUBMIT_FAILED", color: "purple" },
+                    [CardStatus.SUCCESS_CORRECT]: {label: "SUCCESS_CORRECT", color: "green"},
+                    [CardStatus.SUCCESS_INCORRECT]: {label: "SUCCESS_INCORRECT", color: "blue"},
+                    [CardStatus.FAILED]: {label: "FAILED", color: "red"},
+                    [CardStatus.MAINTENANCE]: {label: "MAINTENANCE", color: "orange"},
+                    [CardStatus.PENDING]: {label: "PENDING", color: "gold"},
+                    [CardStatus.SUBMIT_FAILED]: {label: "SUBMIT_FAILED", color: "purple"},
                 };
-                const { label, color } = statusMap[status as CardStatus] || { label: "Không xác định", color: "gray" };
+                const {label, color} = statusMap[status as CardStatus] || {label: "Không xác định", color: "gray"};
                 return <Tag color={color}>{label}</Tag>;
             },
         },
@@ -132,31 +158,63 @@ export default function Transaction() {
                                     <div className="table-responsive">
                                         <div id="table_id_wrapper" className="dataTables_wrapper no-footer">
                                             <div>
-                                                <Form layout="inline" form={form} onFinish={handleSearch} className={`mb-3`}>
-                                                    <Form.Item name="user_code">
-                                                        <Input placeholder="Mã người dùng" />
-                                                    </Form.Item>
-                                                    <Form.Item name="status">
-                                                        <Select placeholder="Trạng thái" style={{ width: 150 }}>
-                                                            <Select.Option value="pending">Pending</Select.Option>
-                                                            <Select.Option value="completed">Completed</Select.Option>
-                                                            <Select.Option value="failed">Failed</Select.Option>
-                                                        </Select>
-                                                    </Form.Item>
-                                                    <Form.Item name="value">
-                                                        <Input placeholder="Giá trị" type="number" />
-                                                    </Form.Item>
-                                                    <Form.Item>
-                                                        <Space>
-                                                            <Button type="primary" htmlType="submit">Tìm kiếm</Button>
-                                                            <Button onClick={() => form.resetFields()}>Reset</Button>
-                                                        </Space>
-                                                    </Form.Item>
-                                                </Form>
+                                                <form onSubmit={handleSearch} className="mb-3">
+                                                    <div className="row g-3">
+                                                        <div className="col-md-3">
+                                                            <input
+                                                                type="text"
+                                                                name="user_code"
+                                                                className="form-control"
+                                                                placeholder="Mã người dùng"
+                                                                value={formData.user_code}
+                                                                onChange={handleChange}
+                                                            />
+                                                        </div>
+                                                        <div className="col-md-3">
+                                                            <select name="status" className="form-select form-control" value={formData.status} onChange={handleChange}>
+                                                                <option value="">Trạng thái</option>
+                                                                <option value="99">Đang chờ</option>
+                                                                <option value="1">Thành công (đúng mệnh giá)</option>
+                                                                <option value="2">Thành công (sai mệnh giá)</option>
+                                                                <option value="3">Thất bại</option>
+                                                            </select>
+                                                        </div>
+                                                        <div className="col-md-3">
+                                                            <input
+                                                                type="number"
+                                                                name="value"
+                                                                className="form-control"
+                                                                placeholder="Giá trị"
+                                                                value={formData.value}
+                                                                onChange={handleChange}
+                                                            />
+                                                        </div>
+                                                        <div className="col-md-3">
+                                                            <input
+                                                                type="date"
+                                                                name="created_at"
+                                                                className="form-control"
+                                                                value={formData.created_at}
+                                                                onChange={handleChange}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="mt-3 d-flex gap-2">
+                                                        <button type="submit" className="btn btn-primary btn-lg"><i className="fa fa-search"></i></button>
+                                                        <button type="button" className="btn btn-info btn-lg"
+                                                                onClick={handleReset} >
+                                                            <i className="fa fa-history"></i>
+                                                        </button>
+                                                    </div>
+                                                </form>
+
                                                 <Table
                                                     columns={columns}
-                                                    dataSource={transactions.map((transaction) => ({ ...transaction, key: transaction.id }))}
-                                                    locale={{ emptyText: "Không có dữ liệu" }}
+                                                    dataSource={transactions.map((transaction) => ({
+                                                        ...transaction,
+                                                        key: transaction.id
+                                                    }))}
+                                                    locale={{emptyText: "Không có dữ liệu"}}
                                                 />
                                             </div>
                                         </div>

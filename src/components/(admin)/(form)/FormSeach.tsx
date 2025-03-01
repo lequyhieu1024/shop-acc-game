@@ -29,8 +29,8 @@ export const FormSearch: React.FC<FormSearchProps> = ({ onSearch }) => {
                        onChange={handleSearchInput}
                        placeholder="Nội dung tìm kiếm ..."/>
             </div>
-            <div className="size_filter d-flex">
-                <select name="size" className="form-select" value={searchInput.size} onChange={handleSearchInput}>
+            <div className="size_filter">
+                <select name="size" className="form-select form-control" value={searchInput.size} onChange={handleSearchInput}>
                     <option value="20">20</option>
                     <option value="50">50</option>
                     <option value="100">100</option>

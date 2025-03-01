@@ -1,6 +1,7 @@
 import {NextRequest, NextResponse} from "next/server";
 import {initRepository} from "@/app/models/connect";
 import {CardTransaction} from "@/app/models/entities/CardTransaction";
+import {Between} from "typeorm";
 
 export const GET = async (req: NextRequest) => {
     try {
@@ -21,14 +22,56 @@ export const GET = async (req: NextRequest) => {
         if (status) where.status = status;
         if (userCode) where.user_code = userCode;
         if (value) where.value = Number(value);
-        if (createdAt) where.created_at = new Date(createdAt);
+        if (createdAt) {
+            const startDate = new Date(createdAt);
+            startDate.setHours(0, 0, 0, 0);
 
-        const [transactions, total] = await transRepo.findAndCount({
-            where,
-            take: size,
-            skip,
-            order: { created_at: "DESC" },
-        });
+            const endDate = new Date(createdAt);
+            endDate.setHours(23, 59, 59, 999);
+
+            where.created_at = Between(startDate, endDate);
+        }
+
+        const queryBuilder = transRepo.createQueryBuilder("transaction")
+            .leftJoin("users", "user", "user.id = transaction.user_id")
+            .select([
+                "transaction.id",
+                "transaction.status",
+                "transaction.request_id",
+                "transaction.telco",
+                "transaction.declared_value",
+                "transaction.amount",
+                "transaction.value",
+                "transaction.created_at",
+                "user.user_code"
+            ])
+            .orderBy("transaction.created_at", "DESC")
+            .skip(skip)
+            .take(size);
+
+        if (status) queryBuilder.andWhere("transaction.status = :status", { status });
+
+        if (value) queryBuilder.andWhere("transaction.value = :value", { value });
+
+        if (createdAt) {
+            const startDate = new Date(createdAt);
+            startDate.setHours(0, 0, 0, 0);
+
+            const endDate = new Date(createdAt);
+            endDate.setHours(23, 59, 59, 999);
+
+            queryBuilder.andWhere("transaction.created_at BETWEEN :start AND :end", {
+                start: startDate,
+                end: endDate
+            });
+        }
+
+        if (userCode) {
+            queryBuilder.andWhere("user.user_code = :userCode", { userCode });
+        }
+        console.log(queryBuilder.getSql())
+
+        const [transactions, total] = await queryBuilder.getManyAndCount();
 
         return NextResponse.json({
             transactions,
