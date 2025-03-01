@@ -3,6 +3,7 @@ import {initRepository} from "@/app/models/connect";
 import {CardTransaction} from "@/app/models/entities/CardTransaction";
 import {cardService} from "@/app/services/cardChargeService";
 import {isInteger} from "@/app/services/commonService";
+import {ITransaction} from "@/app/interfaces/ITransaction";
 
 // khi đổi thẻ, đầu tiên sẽ gọi hàm này và thêm data vào bảng card_transactions, sau đó api trả về callback
 //hàm nhận json, api nhận formData, convert json sang formData trong service
@@ -52,7 +53,7 @@ export const POST = async (req: NextRequest) => {
         // cardData.value = 1;
         //default khi charge
         cardData.command = 'charge';
-        const newTransLog: any = cardTransRepo.create(cardData);
+        const newTransLog = cardTransRepo.create(cardData);
         await cardTransRepo.save(newTransLog);
         return NextResponse.json({ newTransLog }, { status: 200 });
     } catch (e) {
