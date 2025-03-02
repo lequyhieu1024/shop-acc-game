@@ -1,3 +1,4 @@
+import LuckyWheel from "@/components/(client)/(common)/LuckySpin";
 import Banner from "./Banner";
 import ExclusiveOffers from "./ExclusiveOffers";
 import GetDiamondsHot from "./GetDiamondsHot";
@@ -16,6 +17,7 @@ export default function Home() {
       <RobloxServices />
       <NickChip />
       <InfoCards />
+      <LuckyWheel />
     </>
   );
 }
