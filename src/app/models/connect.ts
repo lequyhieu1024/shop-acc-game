@@ -11,17 +11,18 @@ import {User} from "@/app/models/entities/User";
 import {UserView} from "@/app/models/entities/UserView";
 import {Image} from "@/app/models/entities/Image";
 import {Banner} from "@/app/models/entities/Banner";
+import {CardTransaction} from "@/app/models/entities/CardTransaction";
 
 export const AppDataSource = new DataSource({
     type: "mysql",
     host: "localhost",
     port: Number(process.env.DATABASE_PORT) || 3306,
-    username: "root",
-    password: "",
+    username: process.env.DB_USERNAME || "root",
+    password: process.env.DB_PASSWORD || "",
     database: process.env.DATABASE_NAME,
-    entities: [Category, Product, Voucher, UserVoucher, LuckyDraw, LuckyDrawItem, System, UserView, User, Image, Banner],
+    entities: [Category, Product, Voucher, UserVoucher, LuckyDraw, LuckyDrawItem, System, UserView, User, Image, Banner, CardTransaction],
     synchronize: true,
-    logging: true,
+    logging: false,
 });
 
 export const initRepository = async (entity: any) => {
