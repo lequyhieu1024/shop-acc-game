@@ -4,12 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7734da39-a889-4cf0-9055-91fe30229d4f" name="Changes" comment="develop voucher module">
-      <change afterPath="$PROJECT_DIR$/src/components/(client)/Footer.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/(client)/Header.tsx" afterDir="false" />
+    <list default="true" id="7734da39-a889-4cf0-9055-91fe30229d4f" name="Changes" comment="release card transaction module">
+      <change afterPath="$PROJECT_DIR$/src/app/admin/products/create/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/admin/products/form.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/admin/products/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/api/categories/get-list/route.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/api/products/[id]/route.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/api/products/route.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/interfaces/IProduct.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/admin/vouchers/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/admin/vouchers/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/models/entities/Image.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/models/entities/Image.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,12 +52,12 @@
     &quot;assignee&quot;: &quot;lequyhieu1024&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "git@github.com:lequyhieu1024/shop-acc-game.git",
-    "accountId": "f4bab598-c377-4dad-8755-be556210b2f9"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:lequyhieu1024/shop-acc-game.git&quot;,
+    &quot;accountId&quot;: &quot;f4bab598-c377-4dad-8755-be556210b2f9&quot;
   }
-}]]></component>
+}</component>
   <component name="PhpWorkspaceProjectConfiguration" interpreter_name="C:\xampp\php\php.exe" />
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
@@ -67,7 +72,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;feat/lehieudev&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Admin/Desktop/shop-acc-game/src/app/interfaces&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/mac/Desktop/shop-acc-game/src/app/interfaces&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -79,17 +84,18 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/app/interfaces" />
       <recent name="C:\Users\Admin\Desktop\shop-acc-game\src\app\interfaces" />
       <recent name="C:\Users\Admin\Desktop\shop-acc-game\src\app\api" />
       <recent name="C:\Users\Admin\Desktop\shop-acc-game\src\app\admin" />
       <recent name="C:\Users\Admin\Desktop\shop-acc-game\public\admin\assets\images" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/app/api/categories" />
       <recent name="C:\Users\Admin\Desktop\shop-acc-game\src\app\admin" />
       <recent name="C:\Users\Admin\Desktop\shop-acc-game\src\components\(admin)" />
       <recent name="C:\Users\Admin\Desktop\shop-acc-game\src\app\api\systems" />
       <recent name="C:\Users\Admin\Desktop\shop-acc-game" />
-      <recent name="$PROJECT_DIR$" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -114,6 +120,8 @@
       <workItem from="1740363347508" duration="21886000" />
       <workItem from="1740481425727" duration="9000" />
       <workItem from="1740582113718" duration="9606000" />
+      <workItem from="1740756559503" duration="10833000" />
+      <workItem from="1740923645067" duration="4925000" />
     </task>
     <task id="LOCAL-00001" summary="base">
       <option name="closed" value="true" />
@@ -163,7 +171,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740591570233</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="release card transaction module">
+      <option name="closed" value="true" />
+      <created>1740817901999</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1740817901999</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -187,6 +203,8 @@
     <MESSAGE value="release module system" />
     <MESSAGE value="release module banner" />
     <MESSAGE value="develop voucher module" />
-    <option name="LAST_COMMIT_MESSAGE" value="develop voucher module" />
+    <MESSAGE value="develop voucher card api, release module charge card, callback" />
+    <MESSAGE value="release card transaction module" />
+    <option name="LAST_COMMIT_MESSAGE" value="release card transaction module" />
   </component>
 </project>
