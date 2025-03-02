@@ -1,6 +1,7 @@
 import { Card } from "antd";
 import { RightOutlined } from "@ant-design/icons";
 import image from "../../../../public/client/images/image.jpg";
+import Image from "next/image";
 
 const services = [
   {
@@ -51,7 +52,7 @@ const RobloxServices = () => (
           className="border border-pink-300 rounded-lg overflow-hidden"
           cover={
             <div className="h-[150px] bg-gray-100 relative">
-              <img
+              <Image
                 src={service.image.src}
                 alt={service.title}
                 className="w-full h-full object-cover"

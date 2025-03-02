@@ -1,6 +1,7 @@
 "use client";
 
 import { Layout } from "antd";
+import Image from "next/image";
 import Link from "next/link";
 import { FaFacebookF, FaPhoneAlt } from "react-icons/fa";
 
@@ -67,7 +68,7 @@ const AppFooter: React.FC = () => {
               Facebook Fanpage
             </Link>
           </div>
-          <img src="/path-to-your-image.jpg" alt="Hỗ Trợ" className="mt-4" />
+          <Image src="/path-to-your-image.jpg" alt="Hỗ Trợ" className="mt-4" />
         </div>
 
         {/* Map */}

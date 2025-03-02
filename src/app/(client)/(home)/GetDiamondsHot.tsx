@@ -3,7 +3,6 @@ import React from "react";
 import { Card, Tag } from "antd";
 import { RightOutlined } from "@ant-design/icons";
 import Link from "next/link";
-import Image from "next/image";
 import image from "../../../../public/client/images/image.jpg";
 
 const GetDiamondsHot = () => {

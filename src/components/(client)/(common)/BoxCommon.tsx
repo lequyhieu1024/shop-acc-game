@@ -3,6 +3,7 @@ import React from "react";
 import { Card, Badge } from "antd";
 import { ShoppingCartOutlined, RightOutlined } from "@ant-design/icons";
 import Link from "next/link";
+import Image from "next/image";
 
 interface ProductItem {
   id: number;
@@ -56,8 +57,8 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
                   </div>
                 )}
                 <div className="group w-full h-full overflow-hidden">
-                  <img
-                    alt={item.name}
+                  <Image
+                    alt={item?.name || "Product image"}
                     src={item.image}
                     className="h-full object-contain transition-transform duration-500 ease-in-out group-hover:scale-110"
                   />

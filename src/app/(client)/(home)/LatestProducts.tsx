@@ -4,6 +4,7 @@ import { Card, Badge } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import image from "../../../../public/client/images/image.jpg";
 import Link from "next/link";
+import Image from "next/image";
 
 const LatestProducts = () => {
   const products = [
@@ -78,7 +79,7 @@ const LatestProducts = () => {
                   />
                 </div>
                 <div className="group w-full h-full overflow-hidden">
-                  <img
+                  <Image
                     alt={product.name}
                     src={product.image.src}
                     className="h-full object-contain transition-transform duration-500 ease-in-out group-hover:scale-110"

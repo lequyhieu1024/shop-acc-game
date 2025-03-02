@@ -14,7 +14,6 @@ export default function CategoryPage() {
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
-  const [message, setMessage] = useState<string>("");
 
   const getCategories = async (
     name: string | null = null,

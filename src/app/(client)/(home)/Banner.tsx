@@ -4,6 +4,7 @@ import { Carousel } from "antd";
 import banner1 from "../../../../public/client/images/banner-1.jpg";
 import banner2 from "../../../../public/client/images/banner-2.png";
 import banner3 from "../../../../public/client/images/banner-3.jpg";
+import Image from "next/image";
 
 const Banner = () => {
   const banners = [banner1, banner2, banner3];
@@ -18,7 +19,7 @@ const Banner = () => {
       {banners.map((banner, index) => (
         <div key={index} className="">
           {/* Add a unique key here */}
-          <img
+          <Image
             height={100}
             width={100}
             src={banner.src}

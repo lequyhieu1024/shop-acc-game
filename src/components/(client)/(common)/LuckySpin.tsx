@@ -13,6 +13,7 @@ interface Prize {
 const LuckyWheel: React.FC = () => {
   const [rotation, setRotation] = useState<number>(0);
   const [isSpinning, setIsSpinning] = useState<boolean>(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [clickCount, setClickCount] = useState<number>(0);
   const [showWarning, setShowWarning] = useState<boolean>(false);
   const [showCongrats, setShowCongrats] = useState<boolean>(false);
@@ -108,10 +109,6 @@ const LuckyWheel: React.FC = () => {
     <div className="min-h-screen bg-gray-200 flex items-center justify-center font-['Open_Sans']">
       <Head>
         <title>Vòng Quay May Mắn</title>
-        <link
-          href="https://fonts.googleapis.com/css?family=Open+Sans:600,300"
-          rel="stylesheet"
-        />
       </Head>
 
       <div className="flex flex-col md:flex-row items-center">
