@@ -79,7 +79,7 @@ export default function layout({children}: { children: ReactNode }) {
         <Script src="/admin/assets/js/bootstrap/bootstrap.bundle.min.js" strategy="lazyOnload"/>
         {/*<Script src="/admin/assets/js/icons/feather-icon/feather.min.js" strategy="lazyOnload" />*/}
         {/*<Script src="/admin/assets/js/icons/feather-icon/feather-icon.js" strategy="lazyOnload" />*/}
-        <Script src="/admin/assets/js/scrollbar/simplebar.js" strategy="lazyOnload"/>
+        <Script src="/admin/assets/js/scrollbar/simplebar.js" strategy="beforeInteractive"/>
         <Script src="/admin/assets/js/scrollbar/custom.js" strategy="lazyOnload"/>
         <Script src="/admin/assets/js/config.js" strategy="lazyOnload"/>
         <Script src="/admin/assets/js/tooltip-init.js" strategy="lazyOnload"/>
