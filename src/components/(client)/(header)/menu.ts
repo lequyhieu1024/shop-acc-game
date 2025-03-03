@@ -22,7 +22,8 @@ export const menu: IMenuItem[] = [
     label: "Danh mục"
   },
   {
-    label: "Nạp thẻ"
+    label: "Nạp thẻ",
+    path: "/nap-the"
   },
   {
     label: "Tin tức"
