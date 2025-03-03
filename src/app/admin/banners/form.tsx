@@ -145,6 +145,8 @@ export default function BannerForm({
                       {fileReading && (
                         <div className="mt-2">
                           <Image
+                            height={150}
+                            width={200}
                             src={fileReading}
                             alt="Banner"
                             style={{ maxWidth: "200px", maxHeight: "150px" }}

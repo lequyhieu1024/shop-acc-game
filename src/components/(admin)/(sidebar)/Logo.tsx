@@ -23,11 +23,15 @@ export const Logo = () => {
       <div className="logo-icon-wrapper">
         <a href="index.html">
           <Image
+            height={100}
+            width={100}
             className="img-fluid main-logo main-white"
             src="/admin/assets/images/logo/logo.png"
             alt="logo"
           />
           <Image
+            height={100}
+            width={100}
             className="img-fluid main-logo main-dark"
             src="/admin/assets/images/logo/logo-white.png"
             alt="logo"

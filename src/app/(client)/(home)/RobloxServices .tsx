@@ -53,6 +53,8 @@ const RobloxServices = () => (
           cover={
             <div className="h-[150px] bg-gray-100 relative">
               <Image
+                height={100}
+                width={100}
                 src={service.image.src}
                 alt={service.title}
                 className="w-full h-full object-cover"

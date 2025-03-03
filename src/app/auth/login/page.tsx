@@ -75,6 +75,8 @@ export default function login() {
               className="btn google-button w-100"
             >
               <Image
+                height={100}
+                width={100}
                 src="../assets/images/inner-page/google.png"
                 className="blur-up lazyloaded"
                 alt=""
@@ -88,6 +90,8 @@ export default function login() {
               className="btn google-button w-100"
             >
               <Image
+                height={100}
+                width={100}
                 src="../assets/images/inner-page/facebook.png"
                 className="blur-up lazyloaded"
                 alt=""

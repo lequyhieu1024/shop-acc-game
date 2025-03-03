@@ -58,6 +58,8 @@ export const NavMenu = () => {
       <li className="profile-nav onhover-dropdown pe-0 me-0">
         <div className="media profile-media">
           <Image
+            height={100}
+            width={100}
             className="user-profile rounded-circle"
             src="/admin/assets/images/users/4.jpg"
             alt=""

@@ -80,6 +80,8 @@ const NickChip = () => {
                 </div>
                 <div className="group w-full h-full overflow-hidden">
                   <Image
+                    height={100}
+                    width={100}
                     alt={product.name}
                     src={product.image.src}
                     className="h-full object-contain transition-transform duration-500 ease-in-out group-hover:scale-110"
