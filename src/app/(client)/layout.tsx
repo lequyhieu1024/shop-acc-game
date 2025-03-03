@@ -1,27 +1,27 @@
-import React, {ReactNode} from "react";
-import {ToastContainer} from "react-toastify";
+"use client";
 
-export default function layout({children}: { children: ReactNode }) {
-    return (
-        <html lang="en">
-        <head>
-            <title>Client</title>
-        </head>
-        <body>
-        <header>
-            <h2>Header</h2>
-        </header>
+import Header from "@/components/(client)/(header)/page";
+import React, { ReactNode } from "react";
+import { ToastContainer } from "react-toastify";
+import "../../index.css";
+import AppFooter from "@/components/(admin)/(footer)/page";
+export default function layout({ children }: { children: ReactNode }) {
+  return (
+    <html lang="en">
+      <head>
+        <title>Client</title>
+      </head>
+      <body>
+        <Header />
         <div className="page-body">
-            <div className="container-fluid">
-                {/*Extend Here*/}
-                {children}
-                <ToastContainer/>
-            </div>
-            <footer>
-                <h2>Footer</h2>
-            </footer>
+          <div className="container-fluid">
+            {/*Extend Here*/}
+            {children}
+            <ToastContainer />
+          </div>
+          <AppFooter />
         </div>
-        </body>
-        </html>
-    )
+      </body>
+    </html>
+  );
 }
