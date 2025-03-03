@@ -1,7 +1,5 @@
 "use client";
 import React, { useRef, useState } from "react";
-import { Button, Modal } from "antd";
-import { SmileOutlined, MehOutlined, CloseOutlined } from "@ant-design/icons";
 import Head from "next/head";
 
 interface Prize {
@@ -13,7 +11,6 @@ interface Prize {
 const LuckyWheel: React.FC = () => {
   const [rotation, setRotation] = useState<number>(0);
   const [isSpinning, setIsSpinning] = useState<boolean>(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [clickCount, setClickCount] = useState<number>(0);
   const [showWarning, setShowWarning] = useState<boolean>(false);
   const [showCongrats, setShowCongrats] = useState<boolean>(false);
@@ -105,6 +102,54 @@ const LuckyWheel: React.FC = () => {
     }, 5000);
   };
 
+  // Custom Modal Component
+  const CustomModal = ({ 
+    title, 
+    isOpen, 
+    onClose, 
+    children, 
+    icon 
+  }: { 
+    title: string; 
+    isOpen: boolean; 
+    onClose: () => void; 
+    children: React.ReactNode;
+    icon?: string;
+  }) => {
+    if (!isOpen) return null;
+    
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white rounded-lg p-6 max-w-md w-full">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-semibold text-yellow-500">
+              {icon === 'smile' && '😊 '}
+              {icon === 'meh' && '😐 '}
+              {title}
+            </h3>
+            <button 
+              onClick={onClose}
+              className="text-red-600 hover:text-red-800 transition-all duration-300 hover:rotate-90"
+            >
+              ✕
+            </button>
+          </div>
+          <div className="mb-6">
+            {children}
+          </div>
+          <div className="text-center">
+            <button
+              onClick={onClose}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+            >
+              Đóng
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gray-200 flex items-center justify-center font-['Open_Sans']">
       <Head>
@@ -150,53 +195,36 @@ const LuckyWheel: React.FC = () => {
               })}
             </div>
 
-            <div className="absolute top-[121px] left-[115px] w-[70px] h-[70px] bg-white rounded-full flex justify-center items-center z-10 ">
-              <Button
-                type="default"
-                shape="circle"
-                className="w-[60px] h-[60px] bg-gray-200 hover:text-green-500 text-lg font-semibold"
+            <div className="absolute top-[121px] left-[115px] w-[70px] h-[70px] bg-white rounded-full flex justify-center items-center z-10">
+              <button
+                className={`w-[60px] h-[60px] rounded-full bg-gray-200 hover:text-green-500 text-lg font-semibold ${isSpinning ? 'opacity-50 cursor-not-allowed' : ''}`}
                 onClick={handleSpin}
                 disabled={isSpinning}
               >
                 QUAY
-              </Button>
+              </button>
               <div className="absolute w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[20px] border-b-white top-[-15px] left-[25px]"></div>
             </div>
           </div>
         </div>
 
-        <Modal
-          title={
-            <div className="text-center text-yellow-500 text-xl">
-              <MehOutlined className="mr-2" />
-              Cảnh báo
-            </div>
-          }
-          open={showWarning}
-          footer={null}
-          onCancel={() => setShowWarning(false)}
-          centered
+        <CustomModal
+          title="Cảnh báo"
+          isOpen={showWarning}
+          onClose={() => setShowWarning(false)}
+          icon="meh"
         >
           <p className="text-center">{warningMessage}</p>
-        </Modal>
+        </CustomModal>
 
-        <Modal
-          title={
-            <div className="text-center text-yellow-500 text-xl">
-              <SmileOutlined className="mr-2" />
-              Chúc mừng!
-            </div>
-          }
-          open={showCongrats}
-          footer={null}
-          onCancel={() => setShowCongrats(false)}
-          closeIcon={
-            <CloseOutlined className="text-red-600 transition-all duration-500 hover:rotate-360" />
-          }
-          centered
+        <CustomModal
+          title="Chúc mừng!"
+          isOpen={showCongrats}
+          onClose={() => setShowCongrats(false)}
+          icon="smile"
         >
           <p className="text-center">{prize}</p>
-        </Modal>
+        </CustomModal>
       </div>
     </div>
   );

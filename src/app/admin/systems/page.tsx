@@ -177,6 +177,8 @@ export default function System() {
                     {fileReading && (
                       <div className="mt-4 mb-5">
                         <Image
+                          height={100}
+                          width={100}
                           src={
                             fileReading ??
                             "/admin/assets/images/placeholder.png"

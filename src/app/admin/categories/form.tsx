@@ -151,6 +151,8 @@ export default function CategoryForm({
                       {fileReading && (
                         <div className="mt-2">
                           <Image
+                            height={100}
+                            width={100}
                             src={fileReading}
                             alt="Danh mục"
                             style={{ maxWidth: "200px", maxHeight: "150px" }}

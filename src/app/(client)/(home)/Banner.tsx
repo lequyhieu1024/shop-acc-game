@@ -19,9 +19,7 @@ const Banner = () => {
       {banners.map((banner, index) => (
         <div key={index} className="">
           {/* Add a unique key here */}
-          <Image
-            height={100}
-            width={100}
+          <img
             src={banner.src}
             alt=""
             className="w-full h-[320px] object-cover"
