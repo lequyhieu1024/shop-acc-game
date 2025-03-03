@@ -57,9 +57,7 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
                   </div>
                 )}
                 <div className="group w-full h-full overflow-hidden">
-                  <Image
-                    height={100}
-                    width={100}
+                  <img
                     alt={item?.name || "Product image"}
                     src={item.image}
                     className="h-full object-contain transition-transform duration-500 ease-in-out group-hover:scale-110"
