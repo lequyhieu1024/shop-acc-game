@@ -1,11 +1,19 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { ReactNode, useRef, useState } from "react";
 import Head from "next/head";
-
+import { FaHeart } from "react-icons/fa";
+import { IoDiamondSharp } from "react-icons/io5";
+import { GiAbdominalArmor } from "react-icons/gi";
+import { FaMoneyBillWave } from "react-icons/fa";
+import { RiEmotionSadLine } from "react-icons/ri";
+import { FaGift } from "react-icons/fa6";
+import { FaHatCowboySide } from "react-icons/fa";
+import { IconType } from "react-icons/lib";
 interface Prize {
   color: string;
   text: string;
   message: string;
+  icon?: IconType;
 }
 
 const LuckyWheel: React.FC = () => {
@@ -23,32 +31,44 @@ const LuckyWheel: React.FC = () => {
     {
       color: "#16a085",
       text: "1 CĂN NHÀ LẦU 4 TẦNG",
-      message: "CHÚC MỪNG BẠN TRÚNG ĐƯỢC MỘT CĂN NHÀ LẦU 4 TẦNG"
+      message: "CHÚC MỪNG BẠN TRÚNG ĐƯỢC MỘT CĂN NHÀ LẦU 4 TẦNG",
+      icon: FaHeart
     },
     {
       color: "#2980b9",
       text: "1 CHUYẾN DU LỊCH MIỀN TÂY",
-      message: "CHÚC MỪNG BẠN TRÚNG ĐƯỢC MỘT CHUYẾN DU LỊCH MIỀN TÂY"
+      message: "CHÚC MỪNG BẠN TRÚNG ĐƯỢC MỘT CHUYẾN DU LỊCH MIỀN TÂY",
+      icon: IoDiamondSharp
     },
     {
       color: "#34495e",
       text: "1 THẺ CÀO 100K",
-      message: "CHÚC MỪNG BẠN TRÚNG ĐƯỢC MỘT THẺ CÀO 100K"
+      message: "CHÚC MỪNG BẠN TRÚNG ĐƯỢC MỘT THẺ CÀO 100K",
+      icon: GiAbdominalArmor
     },
     {
       color: "#f39c12",
       text: "1 THẺ CÀO 200K",
-      message: "CHÚC MỪNG BẠN TRÚNG ĐƯỢC MỘT THẺ CÀO 200K"
+      message: "CHÚC MỪNG BẠN TRÚNG ĐƯỢC MỘT THẺ CÀO 200K",
+      icon: FaMoneyBillWave
     },
     {
       color: "#d35400",
       text: "CHÚC BẠN MAY MẮN LẦN SAU",
-      message: "CHÚC BẠN MAY MẮN LẦN SAU"
+      message: "CHÚC BẠN MAY MẮN LẦN SAU",
+      icon: RiEmotionSadLine
     },
     {
       color: "#c0392b",
-      text: "1 CHUYẾN DU LỊCH VŨNG TÀU",
-      message: "CHÚC MỪNG BẠN TRÚNG ĐƯỢC MỘT CHUYẾN DU LỊCH VŨNG TÀU"
+      text: "1 PHẦN QUÀ BÍ ẨN",
+      message: "CHÚC MỪNG BẠN TRÚNG ĐƯỢC 1 PHẦN QUÀ BÍ ẨN",
+      icon: FaGift
+    },
+    {
+      color: "#8e44ad",
+      text: "GIẢI ĐẶC BIỆT",
+      message: "CHÚC MỪNG BẠN ĐÃ TRÚNG GIẢI ĐẶC BIỆT!",
+      icon: FaHatCowboySide
     }
   ];
 
@@ -101,45 +121,46 @@ const LuckyWheel: React.FC = () => {
       setIsSpinning(false);
     }, 5000);
   };
-
+  const handleClose = () => {
+    setShowCongrats(false);
+    console.log("ds");
+  };
   // Custom Modal Component
-  const CustomModal = ({ 
-    title, 
-    isOpen, 
-    onClose, 
-    children, 
-    icon 
-  }: { 
-    title: string; 
-    isOpen: boolean; 
-    onClose: () => void; 
+  const CustomModal = ({
+    title,
+    isOpen,
+    onClose,
+    children,
+    icon
+  }: {
+    title: string;
+    isOpen: boolean;
+    onClose: () => void;
     children: React.ReactNode;
     icon?: string;
   }) => {
     if (!isOpen) return null;
-    
+
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white rounded-lg p-6 max-w-md w-full">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-xl font-semibold text-yellow-500">
-              {icon === 'smile' && '😊 '}
-              {icon === 'meh' && '😐 '}
+              {icon === "smile" && "😊 "}
+              {icon === "meh" && "😐 "}
               {title}
             </h3>
-            <button 
-              onClick={onClose}
+            <button
+              onClick={handleClose}
               className="text-red-600 hover:text-red-800 transition-all duration-300 hover:rotate-90"
             >
               ✕
             </button>
           </div>
-          <div className="mb-6">
-            {children}
-          </div>
+          <div className="mb-6">{children}</div>
           <div className="text-center">
             <button
-              onClick={onClose}
+              onClick={handleClose}
               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
             >
               Đóng
@@ -181,23 +202,47 @@ const LuckyWheel: React.FC = () => {
             >
               {prizes.map((prize, index) => {
                 const angle = (360 / prizes.length) * index;
+                const IconComponent = prize.icon;
+                const textRotation = angle + 360 / (2 * prizes.length); // Điều chỉnh để chữ quay đúng hướng
+
                 return (
                   <div
                     key={index}
-                    className="absolute w-full h-full"
+                    className="absolute w-full h-full flex items-center justify-center"
                     style={{
-                      clipPath: `polygon(50% 50%, 100% 0%, 100% 100%)`,
+                      background: `conic-gradient(${prizes
+                        .map((prize, index) => {
+                          const startAngle = (360 / prizes.length) * index;
+                          const endAngle = (360 / prizes.length) * (index + 1);
+                          return `${prize.color} ${startAngle}deg ${endAngle}deg`;
+                        })
+                        .join(", ")})`,
                       transform: `rotate(${angle}deg)`,
                       backgroundColor: prize.color
                     }}
-                  ></div>
+                  >
+                    {/* Hiển thị icon */}
+                    {IconComponent && (
+                      <IconComponent className="absolute left-1/2 top-1/4 transform -translate-x-1/2 -translate-y-1/2 text-white w-8 h-8" />
+                    )}
+
+                    {/* Hiển thị text */}
+                    {/* <div
+                      className="absolute left-1/2 top-[45%] transform -translate-x-1/2 -translate-y-1/2 text-white text-sm font-semibold text-center"
+                      style={{ transform: `rotate(${textRotation}deg)` }}
+                    >
+                      {prize.text}
+                    </div> */}
+                  </div>
                 );
               })}
             </div>
 
             <div className="absolute top-[121px] left-[115px] w-[70px] h-[70px] bg-white rounded-full flex justify-center items-center z-10">
               <button
-                className={`w-[60px] h-[60px] rounded-full bg-gray-200 hover:text-green-500 text-lg font-semibold ${isSpinning ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`w-[60px] h-[60px] rounded-full bg-gray-200 hover:text-green-500 text-lg font-semibold ${
+                  isSpinning ? "opacity-50 cursor-not-allowed" : ""
+                }`}
                 onClick={handleSpin}
                 disabled={isSpinning}
               >
@@ -220,7 +265,7 @@ const LuckyWheel: React.FC = () => {
         <CustomModal
           title="Chúc mừng!"
           isOpen={showCongrats}
-          onClose={() => setShowCongrats(false)}
+          onClose={() => handleClose()}
           icon="smile"
         >
           <p className="text-center">{prize}</p>

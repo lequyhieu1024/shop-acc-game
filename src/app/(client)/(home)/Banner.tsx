@@ -1,9 +1,9 @@
 "use client";
 
 import { Carousel } from "antd";
-import banner1 from "../../../../public/client/images/banner-1.jpg";
-import banner2 from "../../../../public/client/images/banner-2.png";
-import banner3 from "../../../../public/client/images/banner-3.jpg";
+import banner1 from "../../../../public/client/assets/images/banner-1.jpg";
+import banner2 from "../../../../public/client/assets/images/banner-2.png";
+import banner3 from "../../../../public/client/assets/images/banner-3.jpg";
 import Image from "next/image";
 
 const Banner = () => {

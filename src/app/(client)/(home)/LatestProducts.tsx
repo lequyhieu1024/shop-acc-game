@@ -2,7 +2,7 @@
 import React from "react";
 import { Card, Badge } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
-import image from "../../../../public/client/images/image.jpg";
+import image from "../../../../public/client/assets/images/image.jpg";
 import Link from "next/link";
 import Image from "next/image";
 
