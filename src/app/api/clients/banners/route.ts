@@ -4,7 +4,11 @@ import {Banner} from "@/app/models/entities/Banner";
 export const GET = async () => {
     try {
         const bannerRepo = await initRepository(Banner)
-        const banners = await bannerRepo.find({where: {is_active: true}});
+        const banners = await bannerRepo
+            .createQueryBuilder("banner")
+            .select(["banner.image_url"])
+            .where("banner.is_active = :active", { active: true })
+            .getMany();
         return NextResponse.json({
             banners
         }, {status: 200})

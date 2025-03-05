@@ -5,6 +5,7 @@ import api from "@/app/services/axiosService";
 import {IProduct} from "@/app/interfaces/IProduct";
 import ErrorPage from "@/components/(admin)/Error";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Product() {
     const [products, setProducts] = useState<IProduct[]>([])
@@ -84,7 +85,7 @@ export default function Product() {
                                                         <td>{product.code}</td>
                                                         <td>
                                                             <div className="table-image">
-                                                                <img src={product.thumbnail}
+                                                                <Image width={500} height={500} src={product.thumbnail}
                                                                      className="img-fluid"
                                                                      alt={product.name}
                                                                      style={{maxWidth: '50px'}}/>

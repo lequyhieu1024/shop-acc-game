@@ -104,7 +104,7 @@ export default function DashboardPage() {
               <div>
                 <div className="dashboard-category">
                   <a href="#" className="category-image">
-                    <img
+                    <Image width={500} height={500}
                       src="/admin/assets/svg/vegetable.svg"
                       className="img-fluid"
                       alt=""
@@ -119,7 +119,7 @@ export default function DashboardPage() {
               <div>
                 <div className="dashboard-category">
                   <a href="#" className="category-image">
-                    <img
+                    <Image width={500} height={500}
                       src="/admin/assets/svg/cup.svg"
                       className="img-fluid"
                       alt=""
@@ -134,7 +134,7 @@ export default function DashboardPage() {
               <div>
                 <div className="dashboard-category">
                   <a href="#" className="category-image">
-                    <img
+                    <Image width={500} height={500}
                       src="/admin/assets/svg/meats.svg"
                       className="img-fluid"
                       alt=""
@@ -149,7 +149,7 @@ export default function DashboardPage() {
               <div>
                 <div className="dashboard-category">
                   <a href="#" className="category-image">
-                    <img
+                    <Image width={500} height={500}
                       src="/admin/assets/svg/breakfast.svg"
                       className="img-fluid"
                       alt=""
@@ -164,7 +164,7 @@ export default function DashboardPage() {
               <div>
                 <div className="dashboard-category">
                   <a href="#" className="category-image">
-                    <img
+                    <Image width={500} height={500}
                       src="/admin/assets/svg/frozen.svg"
                       className="img-fluid"
                       alt=""
@@ -179,7 +179,7 @@ export default function DashboardPage() {
               <div>
                 <div className="dashboard-category">
                   <a href="#" className="category-image">
-                    <img
+                    <Image width={500} height={500}
                       src="/admin/assets/svg/milk.svg"
                       className="img-fluid"
                       alt=""
@@ -194,7 +194,7 @@ export default function DashboardPage() {
               <div>
                 <div className="dashboard-category">
                   <a href="#" className="category-image">
-                    <img
+                    <Image width={500} height={500}
                       src="/admin/assets/svg/pet.svg"
                       className="img-fluid"
                       alt=""
@@ -209,7 +209,7 @@ export default function DashboardPage() {
               <div>
                 <div className="dashboard-category">
                   <a href="#" className="category-image">
-                    <img
+                    <Image width={500} height={500}
                       src="/admin/assets/svg/vegetable.svg"
                       className="img-fluid"
                       alt=""
@@ -224,7 +224,7 @@ export default function DashboardPage() {
               <div>
                 <div className="dashboard-category">
                   <a href="#" className="category-image">
-                    <img
+                    <Image width={500} height={500}
                       src="/admin/assets/svg/cup.svg"
                       className="img-fluid"
                       alt=""
@@ -239,7 +239,7 @@ export default function DashboardPage() {
               <div>
                 <div className="dashboard-category">
                   <a href="#" className="category-image">
-                    <img
+                    <Image width={500} height={500}
                       src="/admin/assets/svg/meats.svg"
                       className="img-fluid"
                       alt=""
@@ -254,7 +254,7 @@ export default function DashboardPage() {
               <div>
                 <div className="dashboard-category">
                   <a href="#" className="category-image">
-                    <img
+                    <Image width={500} height={500}
                       src="/admin/assets/svg/breakfast.svg"
                       className="img-fluid"
                       alt=""
@@ -269,7 +269,7 @@ export default function DashboardPage() {
               <div>
                 <div className="dashboard-category">
                   <a href="#" className="category-image">
-                    <img
+                    <Image width={500} height={500}
                       src="/admin/assets/svg/frozen.svg"
                       className="img-fluid"
                       alt=""
@@ -284,7 +284,7 @@ export default function DashboardPage() {
               <div>
                 <div className="dashboard-category">
                   <a href="#" className="category-image">
-                    <img
+                    <Image width={500} height={500}
                       src="/admin/assets/svg/milk.svg"
                       className="img-fluid"
                       alt=""
@@ -299,7 +299,7 @@ export default function DashboardPage() {
               <div>
                 <div className="dashboard-category">
                   <a href="#" className="category-image">
-                    <img
+                    <Image width={500} height={500}
                       src="/admin/assets/svg/pet.svg"
                       className="img-fluid"
                       alt=""
@@ -388,7 +388,7 @@ export default function DashboardPage() {
                       <td>
                         <div className="best-product-box">
                           <div className="product-image">
-                            <img
+                            <Image width={500} height={500}
                               src="/admin/assets/images/product/1.png"
                               className="img-fluid"
                               alt="Product"
@@ -434,7 +434,7 @@ export default function DashboardPage() {
                       <td>
                         <div className="best-product-box">
                           <div className="product-image">
-                            <img
+                            <Image width={500} height={500}
                               src="/admin/assets/images/product/2.png"
                               className="img-fluid"
                               alt="Product"
@@ -480,7 +480,7 @@ export default function DashboardPage() {
                       <td>
                         <div className="best-product-box">
                           <div className="product-image">
-                            <img
+                            <Image width={500} height={500}
                               src="/admin/assets/images/product/3.png"
                               className="img-fluid"
                               alt="Product"

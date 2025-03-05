@@ -138,8 +138,8 @@ export const POST = async (req: NextRequest) => {
                         if (cardData.status === 3) {
                             errorMessage = `Thẻ ${code} không hợp lệ (Hàng thứ ${index + 1})`;
                         }
-                    } catch (error: any) {
-                        errorMessage = error.message || `Lỗi khi xử lý thẻ ${code} (Hàng thứ ${index + 1})`;
+                    } catch (error) {
+                        errorMessage = (error as Error).message || `Lỗi khi xử lý thẻ ${code} (Hàng thứ ${index + 1})`;
                     }
                 }
 

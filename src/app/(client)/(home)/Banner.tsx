@@ -4,6 +4,7 @@ import { Carousel } from "antd";
 import {useEffect, useState} from "react";
 import {IBanner} from "@/app/interfaces/IBanner";
 import api from "@/app/services/axiosService";
+import Image from "next/image";
 
 const Banner = () => {
   const [banners, setBanners] = useState<IBanner[]>([])
@@ -28,7 +29,7 @@ const Banner = () => {
     >
       {banners.map((banner, index) => (
         <div key={index} className="">
-          <img
+          <Image width={500} height={500}
             src={banner.image_url}
             alt=""
             className="w-full h-[320px] object-cover"
