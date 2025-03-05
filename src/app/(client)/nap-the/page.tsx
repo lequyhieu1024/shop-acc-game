@@ -6,6 +6,7 @@ import SingleCardFormComponent from "@/app/(client)/nap-the/SingleCardFormCompon
 import MultipleCardFormComponent from "@/app/(client)/nap-the/MultipleCardFormComponent";
 import api from "@/app/services/axiosService";
 import { toast } from "react-toastify";
+import CardChargeHistory from "@/app/(client)/nap-the/CardChargeHistory";
 
 interface SingleFormData {
     telco: string;
@@ -71,6 +72,9 @@ export default function ChargeCard() {
                 </div>
             </div>
             <FeeComponent />
+
+
+            <CardChargeHistory mt={`mt-10`}/>
         </div>
     );
 }
