@@ -9,7 +9,12 @@ interface SingleFormData {
     amount: string;
 }
 
-export default function SingleCardFormComponent({ activeTab, onSubmit }) {
+interface SingleCardFormProps {
+    activeTab: string;
+    onSubmit: (formData: SingleFormData, formType: 'single') => Promise<void>;
+}
+
+export default function SingleCardFormComponent({ activeTab, onSubmit }: SingleCardFormProps) {
     const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
 
     const cardRules: Record<string, { code: number; serial?: number }> = {
@@ -27,14 +32,13 @@ export default function SingleCardFormComponent({ activeTab, onSubmit }) {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const form = e.target as HTMLFormElement;
-        const telco = form.elements["telco"].value;
-        const code = form.elements["code"].value;
-        const serial = form.elements["serial"].value;
-        const amount = form.elements["amount"].value;
+        const telco = (form.elements.namedItem("telco") as HTMLSelectElement)?.value;
+        const code = (form.elements.namedItem("code") as HTMLInputElement)?.value.trim();
+        const serial = (form.elements.namedItem("serial") as HTMLInputElement)?.value.trim();
+        const amount = (form.elements.namedItem("amount") as HTMLSelectElement)?.value;
 
         setFormErrors({});
-
-        let errors: { [key: string]: string } = {};
+        const errors: { [key: string]: string } = {};
 
         if (!telco) errors.telco = "Vui lòng chọn nhà mạng!";
         if (!code) errors.code = "Vui lòng nhập mã thẻ!";
@@ -57,14 +61,13 @@ export default function SingleCardFormComponent({ activeTab, onSubmit }) {
             return;
         }
 
-        if (onSubmit) {
-            const formData: SingleFormData = {
-                telco,
-                code,
-                serial,
-                amount,
-            };
-            onSubmit(formData, "single");
+        onSubmit({ telco, code, serial, amount }, "single");
+    };
+
+    const handleCopy = (value: string) => {
+        if (value) {
+            navigator.clipboard.writeText(value);
+            toast.success("Đã sao chép!");
         }
     };
 
@@ -75,27 +78,16 @@ export default function SingleCardFormComponent({ activeTab, onSubmit }) {
                     <div>
                         <select className="w-full p-2 border rounded" name="telco" defaultValue="">
                             <option value="">--- Nhà mạng ---</option>
-                            <option value="VIETTEL">Viettel</option>
-                            <option value="VINAPHONE">Vina</option>
-                            <option value="MOBIFONE">Mobifone</option>
-                            <option value="VNMOBI">Vietnammobi</option>
-                            <option value="ZING">Zing</option>
-                            <option value="GARENA">Garena</option>
-                            <option value="GATE">GATE</option>
-                            <option value="VCOIN">Vcoin</option>
-                            <option value="SCOIN">Scoin</option>
+                            {Object.keys(cardRules).map((key) => (
+                                <option key={key} value={key}>
+                                    {key}
+                                </option>
+                            ))}
                         </select>
-                        {formErrors.telco && (
-                            <p className="text-red-500 text-sm">{formErrors.telco}</p>
-                        )}
+                        {formErrors.telco && <p className="text-red-500 text-sm">{formErrors.telco}</p>}
                     </div>
                     <div className="relative">
-                        <input
-                            type="text"
-                            className="w-full p-2 border rounded"
-                            name="code"
-                            placeholder="Mã nạp"
-                        />
+                        <input type="text" className="w-full p-2 border rounded" name="code" placeholder="Mã nạp" />
                         <button
                             type="button"
                             className="absolute right-2 top-1/2 -translate-y-1/2"
@@ -107,17 +99,10 @@ export default function SingleCardFormComponent({ activeTab, onSubmit }) {
                         >
                             <i className="fas fa-paste"></i>
                         </button>
-                        {formErrors.code && (
-                            <p className="text-red-500 text-sm">{formErrors.code}</p>
-                        )}
+                        {formErrors.code && <p className="text-red-500 text-sm">{formErrors.code}</p>}
                     </div>
                     <div className="relative">
-                        <input
-                            type="text"
-                            className="w-full p-2 border rounded"
-                            name="serial"
-                            placeholder="Serial"
-                        />
+                        <input type="text" className="w-full p-2 border rounded" name="serial" placeholder="Serial" />
                         <button
                             type="button"
                             className="absolute right-2 top-1/2 -translate-y-1/2"
@@ -129,9 +114,7 @@ export default function SingleCardFormComponent({ activeTab, onSubmit }) {
                         >
                             <i className="fas fa-paste"></i>
                         </button>
-                        {formErrors.serial && (
-                            <p className="text-red-500 text-sm">{formErrors.serial}</p>
-                        )}
+                        {formErrors.serial && <p className="text-red-500 text-sm">{formErrors.serial}</p>}
                     </div>
                     <div>
                         <select className="w-full p-2 border rounded" name="amount" defaultValue="">
@@ -146,9 +129,7 @@ export default function SingleCardFormComponent({ activeTab, onSubmit }) {
                             <option value="500000">500,000 đ - Thực nhận 427,500 đ</option>
                             <option value="1000000">1,000,000 đ - Thực nhận 850,000 đ</option>
                         </select>
-                        {formErrors.amount && (
-                            <p className="text-red-500 text-sm">{formErrors.amount}</p>
-                        )}
+                        {formErrors.amount && <p className="text-red-500 text-sm">{formErrors.amount}</p>}
                     </div>
                 </div>
                 <div className="text-center mt-4">

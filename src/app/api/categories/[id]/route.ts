@@ -5,10 +5,10 @@ import { uploadFileToPinata } from "@/app/services/pinataService";
 
 export const GET = async (
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
-    const categoryId: string = params.id;
+    const categoryId: string = (await params).id;
     const categoryRepository = await initRepository(Category);
     const category: object | null = await categoryRepository.findOne({
       where: { id: Number(categoryId) }
@@ -36,9 +36,10 @@ export const GET = async (
 
 export const PATCH = async (
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
+    const categoryId: string = (await params).id;
     const categoryRepo = await initRepository(Category);
     const formData = await req.formData();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -53,7 +54,7 @@ export const PATCH = async (
     if (newData.image instanceof Blob) {
       newData.image = await uploadFileToPinata(newData.image, newData.name);
     }
-    await categoryRepo.update(params.id, newData);
+    await categoryRepo.update(categoryId, newData);
     return NextResponse.json({
       result: true,
       message: "Success",
@@ -69,11 +70,11 @@ export const PATCH = async (
 
 export const DELETE = async (
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
     const categoryRepo = await initRepository(Category);
-    const categoryId = params.id;
+    const categoryId: string = (await params).id;
     await categoryRepo.softDelete(categoryId);
     return NextResponse.json(
       {

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import {initRepository} from "@/app/models/connect";
 import {uploadFileToPinata} from "@/app/services/pinataService";
 import {Product} from "@/app/models/entities/Product";
-import {ProducrImage} from "@/app/models/entities/Image";
+import {ProductImage} from "@/app/models/entities/Image";
 
 export async function GET(req: NextRequest) {
     try {
@@ -107,7 +107,7 @@ export async function POST(req: NextRequest) {
         const savedProduct = await productRepository.save(newProduct);
 
         if (imageUrls.length > 0) {
-            const imageRepository = await initRepository(ProducrImage);
+            const imageRepository = await initRepository(ProductImage);
             const imageEntities = imageUrls.map((url) =>
                 imageRepository.create({
                     product_id: savedProduct.id,
