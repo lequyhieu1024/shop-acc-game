@@ -26,7 +26,7 @@ export default function ChargeCard() {
         setActiveTab(tabId);
     };
 
-    const handleSubmit = async (formData: SingleFormData | MultipleFormData, formType: 'single' | 'multiple'): void => {
+    const handleSubmit = async (formData: SingleFormData | MultipleFormData, formType: 'single' | 'multiple') => {
         console.log(`Form submitted: ${formType}`);
         console.log('Form data:', formData);
         try {
@@ -34,8 +34,8 @@ export default function ChargeCard() {
             if (response.status === 200) {
                 toast.success('Đã tiếp nhận đơn nạp thẻ, vui lòng kiểm tra số dư sau ít phút')
             }
-        } catch (e) {
-            toast.error(e.response.data.message)
+        } catch {
+            toast.error("Có lỗi sảy ra, vui lòng thử lại!");
         }
     };
 
