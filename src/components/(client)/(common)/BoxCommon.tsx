@@ -1,10 +1,11 @@
 "use client";
-import React, { useState } from "react";
-import { Card, Badge, Button, Modal } from "antd";
+import React, { useState, useEffect } from "react";
+import { Card, Badge, Modal } from "antd";
 import { ShoppingCartOutlined, RightOutlined, CheckCircleFilled } from "@ant-design/icons";
 import Link from "next/link";
 import Image from "next/image";
-
+import { FaShoppingCart } from "react-icons/fa";
+import { useCart } from "@/app/contexts/CartContext";
 interface ProductItem {
   id: number;
   name?: string;
@@ -33,28 +34,180 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
   showPrice = true
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [clicked, setClicked] = useState(false);
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Ngăn không cho sự kiện click lan sang Card
-    setIsModalVisible(true);
-    setClicked(true);
-    setTimeout(() => setClicked(false), 1500); // Reset sau 1.5 giây
+  // const [totalItems, setTotalItems] = useState(0);
+  const [clickedButtons, setClickedButtons] = useState<Record<number, boolean>>({});
+  const { totalItems, setTotalItems } = useCart();
+  useEffect(() => {
+    // Add CSS for animations to head
+    const styleElement = document.createElement("style");
+    styleElement.innerHTML = `
+      .cart-button {
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      
+      .cart-button .add-to-cart {
+        display: block;
+        transition: all 0.3s ease;
+      }
+      
+      .cart-button .added {
+        position: absolute;
+        width: 100%;
+        top: 50%;
+        left: 0;
+        transform: translateY(50%);
+        opacity: 0;
+        transition: all 0.3s ease;
+      }
+      
+      .cart-button.clicked .add-to-cart {
+        opacity: 0;
+        transform: translateY(-50%);
+      }
+      
+      .cart-button.clicked .added {
+        opacity: 1;
+        transform: translateY(-50%);
+      }
+      
+      .cart-button .cart-icon {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0;
+        z-index: 20;
+      }
+      
+      .cart-button.clicked .cart-icon {
+        animation: moveRight 1.3s forwards ease-in-out;
+        opacity: 1;
+      }
 
+      .cart {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        background: #292d48;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 5px;
+        z-index: 1000;
+      }
+      
+      .cart::before {
+        content: attr(data-totalitems);
+        font-size: 12px;
+        font-weight: 600;
+        position: absolute;
+        top: -12px;
+        right: -12px;
+        background: #2bd156;
+        line-height: 24px;
+        padding: 0 5px;
+        height: 24px;
+        min-width: 24px;
+        color: white;
+        text-align: center;
+        border-radius: 24px;
+      }
+      
+      .cart.shake {
+        animation: shakeCart 0.4s ease-in-out forwards;
+      }
+      
+      @keyframes moveRight {
+        0% {
+          left: 10px;
+          opacity: 1;
+        }
+        70% {
+          left: calc(100% - 30px);
+          opacity: 1;
+        }
+        100% {
+          left: calc(100% - 30px);
+          opacity: 0;
+        }
+      }
+      
+      @keyframes shakeCart {
+        25% {
+          transform: translateX(6px);
+        }
+        50% {
+          transform: translateX(-4px);
+        }
+        75% {
+          transform: translateX(2px);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
+    `;
+    document.head.appendChild(styleElement);
+    
+    return () => {
+      document.head.removeChild(styleElement);
+    };
+  }, []);
+
+  const handleAddToCart = (e: React.MouseEvent, itemId: number) => {
+    e.stopPropagation(); // Ngăn không cho sự kiện click lan sang Card
+    
+    // Đánh dấu nút đã được click
+    setClickedButtons(prev => ({
+      ...prev,
+      [itemId]: true
+    }));
+    
+    // Tăng số lượng item trong giỏ hàng
+    setTotalItems(prev => prev + 1);
+    
+    // Hiển thị modal
+    setIsModalVisible(true);
+    
     // Tự động đóng modal sau 2 giây
     setTimeout(() => {
       setIsModalVisible(false);
     }, 2000);
+    
+    // Reset trạng thái nút sau khi animation hoàn thành
+    setTimeout(() => {
+      setClickedButtons(prev => ({
+        ...prev,
+        [itemId]: false
+      }));
+    }, 1000);
+    
+    // Gây hiệu ứng lắc cho giỏ hàng
+    const cart = document.querySelector('.cart');
+    if (cart) {
+      cart.classList.add('shake');
+      setTimeout(() => {
+        cart.classList.remove('shake');
+      }, 500);
+    }
   };
 
   const handleRedirect = () => {
     console.log('ád');
   };
 
-
-
-
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto px-4 py-12 relative">
+      {/* Giỏ hàng */}
+      {/* <div className="cart" data-totalitems={totalItems}>
+        <ShoppingCartOutlined style={{ fontSize: 24, color: 'white' }} />
+      </div> */}
+      
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">{title}</h2>
         <Link
@@ -124,16 +277,26 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
               )}
 
               <div className="flex items-center gap-2 flex-col">
-                <button
-                  className={`relative w-52 h-14 bg-indigo-600 text-white rounded-lg overflow-hidden transition-transform duration-300 active:scale-90 ${clicked ? "clicked" : ""}`}
-                  onClick={handleAddToCart}
+                <button 
+                  className={`mt-3 w-full bg-blue-500 text-white py-2 px-4 rounded-md flex items-center justify-center text-sm hover:bg-blue-600 transition cart-button ${clickedButtons[item.id] ? 'clicked' : ''}`}
+                  onClick={(e) => handleAddToCart(e, item.id)}
                 >
-                  <span className={`absolute inset-0 flex items-center justify-center text-lg transition-opacity duration-300 ${clicked ? "opacity-0" : "opacity-100"}`}>Thêm vào giỏ hàng</span>
-                  <span className={`absolute inset-0 flex items-center justify-center text-lg transition-opacity duration-300 ${clicked ? "opacity-100" : "opacity-0"}`}>Đã thêm</span>
-                  <i className="fas fa-shopping-cart absolute text-2xl top-1/2 left-[-10%] transition-all duration-1500 ease-in-out" style={{ left: clicked ? "110%" : "-10%" }} />
-                  <i className="fas fa-box absolute text-xl top-[-20%] left-[52%] transition-all duration-1500 ease-in-out" style={{ top: clicked ? "40%" : "-20%", left: clicked ? "112%" : "52%" }} />
+                  <div className="cart-icon" style={{ 
+                    width: '24px', 
+                    height: '24px', 
+                    borderRadius: '50%', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center' 
+                  }}>
+                    <FaShoppingCart  style={{ fontSize: '16px', color: 'white' }} />
+                  </div>
+                  <span className="add-to-cart relative z-10 flex items-center">
+                    <ShoppingCartOutlined className="mr-1" /> Thêm vào giỏ hàng
+                  </span>
+                  <span className="added">Đã thêm</span>
                 </button>
-                <button className="w-full bg-pink-100 text-pink-500 py-1 px-2 rounded-md flex items-center justify-center text-sm hover:text-white hover:bg-pink-500 transition">
+                <button className="w-full bg-pink-100 text-pink-500 py-2 px-4 rounded-md flex items-center justify-center text-sm hover:text-white hover:bg-pink-500 transition">
                   Mua ngay
                 </button>
               </div>
@@ -149,7 +312,7 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
         closable={false}
         centered
         className="success-modal"
-        styles={{
+        styles={{ 
           mask: { backgroundColor: 'rgba(0, 0, 0, 0.45)' },
           body: { padding: '24px', textAlign: 'center' }
         }}

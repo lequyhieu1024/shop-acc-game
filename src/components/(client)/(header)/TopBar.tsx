@@ -8,13 +8,15 @@ import Link from "next/link";
 import { menu } from "./menu";
 import ChildMenuItem from "./ChildMenuItem";
 import { useEffect, useRef } from "react";
+import { useCart } from "@/app/contexts/CartContext";
+import './header.css'
 
 const NavBar = () => {
   const parentRef = useRef<HTMLLIElement>(null);
   const firstChildRef = useRef<HTMLUListElement>(null);
   const secondChild = useRef<HTMLUListElement>(null);
   const thirdChild = useRef<HTMLUListElement>(null);
-
+  const { totalItems } = useCart();
   useEffect(() => {
     console.log(parentRef.current?.offsetLeft);
     console.log(
@@ -95,11 +97,11 @@ const NavBar = () => {
           <button className="text-white text-xl">
             <BsBellFill />
           </button>
-          <div className="relative leading-[12px]">
+          <div className="relative leading-[12px] cart-icon" data-totalitems={totalItems}>
             <button className="text-white text-xl">
               <FaShoppingCart />
               <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                0
+              {totalItems}
               </span>
             </button>
           </div>
