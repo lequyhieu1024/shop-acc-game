@@ -107,6 +107,10 @@ export default function ProductForm({ isEditing = false, categories , initialDat
         }));
     };
 
+    if (initialData) {
+        console.log("editing");
+    }
+
     const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
         setFormData((prev) => ({

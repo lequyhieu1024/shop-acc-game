@@ -5,7 +5,7 @@ import api from "@/app/services/axiosService";
 import {IProduct} from "@/app/interfaces/IProduct";
 import ErrorPage from "@/components/(admin)/Error";
 import Link from "next/link";
-import {Table, Badge, Space, TableProps, Tag} from 'antd';
+import {Table, Space, TableProps, Tag} from 'antd';
 import {EyeOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
 import Image from "next/image";
 
