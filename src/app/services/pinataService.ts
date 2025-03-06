@@ -22,9 +22,10 @@ export const uploadFileToPinata = async (file: File, name:string = "" ): Promise
         }
         const uploadData = await pinata.upload.file(newFile)
         return await pinata.gateways.convert(uploadData.IpfsHash)
-    } catch {
+    } catch (error) {
+        console.error("Error uploading to Pinata:", error);
         return NextResponse.json(
-            { error: "Internal Server Error" },
+            { error: "Internal Server Error", details: (error as Error).message },
             { status: 500 }
         );
     }

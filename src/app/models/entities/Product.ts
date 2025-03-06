@@ -67,6 +67,9 @@ export class Product {
   @Column({ type: "bigint" })
   category_id!: number;
 
+  @Column({ type: "int" })
+  quantity!: number;
+
   @CreateDateColumn({ type: "timestamp" })
   created_at!: Date;
 
