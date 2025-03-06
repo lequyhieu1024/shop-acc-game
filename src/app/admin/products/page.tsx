@@ -5,6 +5,9 @@ import api from "@/app/services/axiosService";
 import {IProduct} from "@/app/interfaces/IProduct";
 import ErrorPage from "@/components/(admin)/Error";
 import Link from "next/link";
+import {Table, Space, TableProps, Tag} from 'antd';
+import {EyeOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
+import Image from "next/image";
 
 export default function Product() {
     const [products, setProducts] = useState<IProduct[]>([])
@@ -22,8 +25,7 @@ export default function Product() {
             }
         } catch (e) {
             console.log(e)
-        }
-        finally {
+        } finally {
             setLoading(false)
         }
     }
@@ -31,6 +33,70 @@ export default function Product() {
     useEffect(() => {
         fetchProducts()
     }, []);
+
+    const columns: TableProps<IProduct>['columns'] = [
+        {
+            title: 'Tên',
+            dataIndex: 'name',
+            key: 'name',
+        },
+        {
+            title: 'Mã',
+            dataIndex: 'code',
+            key: 'code',
+        },
+        {
+            title: 'Ảnh',
+            dataIndex: 'thumbnail',
+            key: 'thumbnail',
+            render: (thumbnail, record) => (
+                <Image width={200} height={200}
+                    src={thumbnail}
+                    alt={record.name}
+                    className="img-fluid"
+                />
+            ),
+        },
+        {
+            title: 'Giá',
+            key: 'price',
+            render: (record) => (
+                <div>
+                    <del>{record.regular_price}đ</del>
+                    <span> {record.sale_price}đ</span>
+                </div>
+            ),
+        },
+        {
+            title: 'Trạng thái',
+            dataIndex: 'status',
+            key: 'status',
+            render: (status: string) => (
+                <Tag color={status === 'active' ? 'success' : 'danger'}>{status === 'active' ? 'Hoạt động' : 'Không hoạt động'}</Tag>
+            ),
+        },
+        {
+            title: 'Tùy chọn',
+            key: 'action',
+            render: (record) => (
+                <Space size="middle">
+                    <a href={`product-detail/${record.id}`}>
+                        <EyeOutlined/>
+                    </a>
+                    <a href={`edit-product/${record.id}`}>
+                        <EditOutlined/>
+                    </a>
+                    <a
+                        href="javascript:void(0)"
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModalToggle"
+                    >
+                        <DeleteOutlined/>
+                    </a>
+                </Space>
+            ),
+        },
+    ];
 
     return (
         loading ? <Loading/> : (
@@ -43,7 +109,7 @@ export default function Product() {
                                     <h5>Tất Cả Sản Phẩm</h5>
                                     <form className="d-inline-flex">
                                         <Link href="/admin/products/create"
-                                           className="align-items-center btn btn-theme d-flex">
+                                              className="align-items-center btn btn-theme d-flex">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                  viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                  strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -59,77 +125,13 @@ export default function Product() {
                                 <div className="table-responsive product-table">
                                     <div>
                                         <div id="table_id_wrapper" className="dataTables_wrapper no-footer">
-                                            <div id="table_id_filter" className="dataTables_filter">
-                                                <label>Tìm kiếm:
-                                                    <input type="search" className="" placeholder=""
-                                                           aria-controls="table_id"/>
-                                                </label>
-                                            </div>
-                                            <table className="table all-package theme-table dataTable no-footer"
-                                                   id="table_id">
-                                                <thead>
-                                                <tr>
-                                                    <th>Tên</th>
-                                                    <th>Mã</th>
-                                                    <th>Ảnh</th>
-                                                    <th>Giá</th>
-                                                    <th>Trạng thái</th>
-                                                    <th>Tùy chọn</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                {products.map((product) => (
-                                                    <tr key={product.id}>
-                                                        <td>{product.name}</td>
-                                                        <td>{product.code}</td>
-                                                        <td>
-                                                            <div className="table-image">
-                                                                <img src={product.thumbnail}
-                                                                     className="img-fluid"
-                                                                     alt={product.name}
-                                                                     style={{maxWidth: '50px'}}/>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div>
-                                                                <del>{product.regular_price}đ</del>
-                                                                <span> {product.sale_price}đ</span>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                                <span className={`badge ${
-                                                                    product.status === 'active'
-                                                                        ? 'badge-success'
-                                                                        : 'badge-danger'
-                                                                }`}>
-                                                                    {product.status === 'active' ? 'Hoạt động' : 'Không hoạt động'}
-                                                                </span>
-                                                        </td>
-                                                        <td>
-                                                            <ul>
-                                                                <li>
-                                                                    <a href={`product-detail/${product.id}`}>
-                                                                        <i className="ri-eye-line"></i>
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href={`edit-product/${product.id}`}>
-                                                                        <i className="ri-pencil-line"></i>
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="javascript:void(0)"
-                                                                       data-bs-toggle="modal"
-                                                                       data-bs-target="#exampleModalToggle">
-                                                                        <i className="ri-delete-bin-line"></i>
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                                </tbody>
-                                            </table>
+                                            <Table
+                                                columns={columns}
+                                                dataSource={products}
+                                                rowKey="id"
+                                                className="theme-table"
+                                                bordered
+                                            />
                                         </div>
                                     </div>
                                 </div>

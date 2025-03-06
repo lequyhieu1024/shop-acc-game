@@ -5,10 +5,10 @@ import { Banner } from "@/app/models/entities/Banner";
 
 export const GET = async (
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
-    const bannerId: string = params.id;
+    const bannerId: string = (await params).id;
     const bannerRepository = await initRepository(Banner);
     const banner: object | null = await bannerRepository.findOne({
       where: { id: Number(bannerId) }
@@ -36,11 +36,11 @@ export const GET = async (
 
 export const PATCH = async (
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
     const bannerRepository = await initRepository(Banner);
-    const bannerId: string = params.id;
+    const bannerId: string = (await params).id;
     const banner = await bannerRepository.findOne({
       where: { id: Number(bannerId) }
     });
@@ -71,11 +71,11 @@ export const PATCH = async (
 
 export const DELETE = async (
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
     const bannerRepo = await initRepository(Banner);
-    const bannerId = params.id;
+    const bannerId: string = (await params).id;
     await bannerRepo.softDelete(bannerId);
     return NextResponse.json(
       {

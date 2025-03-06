@@ -3,11 +3,11 @@ import {initRepository} from "@/app/models/connect";
 import {CardTransaction} from "@/app/models/entities/CardTransaction";
 import {User} from "@/app/models/entities/User";
 
-export const GET = async (req: NextRequest, { params } : {params: {id: string}}) => {
+export const GET = async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
     try {
         const transRepo = await initRepository(CardTransaction)
         const userRepo = await initRepository(User)
-        const transaction = await transRepo.findOneBy({id: Number(params.id)})
+        const transaction = await transRepo.findOneBy({id: Number((await params).id)})
         const user = await userRepo.findOneBy({id: transaction?.user_id})
         return NextResponse.json({transaction, user})
     } catch (e) {

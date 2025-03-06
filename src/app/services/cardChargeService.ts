@@ -10,9 +10,9 @@ class CardService {
     this.partnerId = process.env.PARTNER_ID_SUPPER_CHEAP_CARD || "";
     this.partnerKey = process.env.PARTNER_KEY_SUPPER_CHEAP_CARD || "";
     this.apiUrl = process.env.URL_API_SUPPER_CHEAP_CARD || "";
-    console.log(this.apiUrl);
-    console.log(this.partnerId);
-    console.log(this.partnerKey);
+    // console.log(this.apiUrl);
+    // console.log(this.partnerId);
+    // console.log(this.partnerKey);
     if (!this.partnerId || !this.partnerKey || !this.apiUrl) {
       throw new Error(
         "Missing required environment variables for Supper Cheap Card API."

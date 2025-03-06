@@ -17,6 +17,7 @@ export interface IProduct {
     status: 'active' | 'inactive';
     is_for_sale: boolean;
     category_id: number;
+    quantity: number;
     created_at: string;
     updated_at: string;
     deleted_at?: string | null;

@@ -20,36 +20,37 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
   try {
     const bannerRepo = await initRepository(Banner);
     const formData = await req.formData();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const newData: any = Object.fromEntries(formData.entries());
-    if (!newData.image_url) {
+
+    const imageFile = formData.get("image_url");
+    if (!imageFile || !(imageFile instanceof File)) {
       return NextResponse.json(
-        {
-          result: false,
-          message: "Invalid data"
-        },
-        { status: 400 }
+          { result: false, message: "Invalid image file" },
+          { status: 400 }
       );
     }
-    const imgUrl: string | NextResponse = await uploadFileToPinata(
-      newData.image_url
-    );
+
+    const is_active = formData.get("is_active") === "1";
+
+    const imgUrl: string | NextResponse = await uploadFileToPinata(imageFile);
+    if (typeof imgUrl !== "string") {
+      return imgUrl;
+    }
 
     const newBanner = bannerRepo.create({
-      is_active: newData.is_active,
+      is_active,
       image_url: imgUrl
     });
+
     await bannerRepo.save(newBanner);
+
     return NextResponse.json(
-      {
-        category: newBanner
-      },
-      { status: 200 }
+        { banner: newBanner },
+        { status: 200 }
     );
   } catch (e) {
     return NextResponse.json(
-      { result: false, message: "Lỗi server", error: (e as Error).message },
-      { status: 500 }
+        { result: false, message: "Lỗi server", error: (e as Error).message },
+        { status: 500 }
     );
   }
 };

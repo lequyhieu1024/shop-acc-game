@@ -9,7 +9,7 @@ import { LuckyDrawItem } from "@/app/models/entities/LuckyDrawItem";
 import { System } from "@/app/models/entities/System";
 import { User } from "@/app/models/entities/User";
 import { UserView } from "@/app/models/entities/UserView";
-import { Image } from "@/app/models/entities/Image";
+import { ProductImage } from "@/app/models/entities/Image";
 import { Banner } from "@/app/models/entities/Banner";
 import { CardTransaction } from "@/app/models/entities/CardTransaction";
 
@@ -30,7 +30,7 @@ export const AppDataSource = new DataSource({
     System,
     UserView,
     User,
-    Image,
+    ProductImage,
     Banner,
     CardTransaction
   ],

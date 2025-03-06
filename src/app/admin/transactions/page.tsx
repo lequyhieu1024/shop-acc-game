@@ -8,7 +8,7 @@ import ErrorPage from "@/components/(admin)/Error";
 import { Space, Table, TableProps, Tag } from "antd";
 import { CardStatus } from "@/app/models/entities/CardTransaction";
 interface Filters {
-  [key: string]: string | number | boolean; // Thay đổi kiểu theo nhu cầu của bạn
+  [key: string]: string | number | boolean;
 }
 export default function Transaction() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -248,6 +248,8 @@ export default function Transaction() {
 
                     <Table
                       columns={columns}
+                      className="theme-table"
+                      bordered
                       dataSource={transactions.map((transaction) => ({
                         ...transaction,
                         key: transaction.id
