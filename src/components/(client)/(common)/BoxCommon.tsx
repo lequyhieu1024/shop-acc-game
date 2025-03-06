@@ -36,9 +36,8 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   // const [totalItems, setTotalItems] = useState(0);
   const [clickedButtons, setClickedButtons] = useState<Record<number, boolean>>({});
-  const { totalItems, setTotalItems } = useCart();
+  const {  setTotalItems } = useCart();
   useEffect(() => {
-    // Add CSS for animations to head
     const styleElement = document.createElement("style");
     styleElement.innerHTML = `
       .cart-button {
@@ -160,26 +159,19 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
   }, []);
 
   const handleAddToCart = (e: React.MouseEvent, itemId: number) => {
-    e.stopPropagation(); // Ngăn không cho sự kiện click lan sang Card
+    e.stopPropagation(); 
     
-    // Đánh dấu nút đã được click
     setClickedButtons(prev => ({
       ...prev,
       [itemId]: true
     }));
-    
-    // Tăng số lượng item trong giỏ hàng
     setTotalItems(prev => prev + 1);
-    
-    // Hiển thị modal
     setIsModalVisible(true);
     
-    // Tự động đóng modal sau 2 giây
     setTimeout(() => {
       setIsModalVisible(false);
     }, 2000);
     
-    // Reset trạng thái nút sau khi animation hoàn thành
     setTimeout(() => {
       setClickedButtons(prev => ({
         ...prev,
