@@ -162,8 +162,7 @@ export default function Voucher() {
                                         <div id="table_id_wrapper" className="dataTables_wrapper no-footer">
                                             <FormSearch onSearch={fetchVouchers}/>
                                             <div>
-                                                <Table
-                                                    columns={columns}
+                                                <Table columns={columns} className={`theme-table`} bordered
                                                    dataSource={vouchers.map((voucher) => ({ ...voucher, key: voucher.id }))}
                                                    locale={{ emptyText: "Không có dữ liệu" }}
                                                 />
