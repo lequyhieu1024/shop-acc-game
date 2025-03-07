@@ -1,13 +1,13 @@
 "use client"
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import Loading from "@/components/Loading";
 import api from "@/app/services/axiosService";
 import {IProduct} from "@/app/interfaces/IProduct";
 import ErrorPage from "@/components/(admin)/Error";
 import Link from "next/link";
 import {Table, Space, TableProps, Tag} from 'antd';
-import {EyeOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
 import Image from "next/image";
+import DeleteConfirm from "@/components/DeleteConfirm";
 
 export default function Product() {
     const [products, setProducts] = useState<IProduct[]>([])
@@ -28,6 +28,10 @@ export default function Product() {
         } finally {
             setLoading(false)
         }
+    }
+
+    const onDelete = async (id: number) => {
+        console.log(id)
     }
 
     useEffect(() => {
@@ -76,23 +80,14 @@ export default function Product() {
             ),
         },
         {
-            title: 'Tùy chọn',
-            key: 'action',
-            render: (record) => (
+            title: "Action",
+            key: "action",
+            render: (product) => (
                 <Space size="middle">
-                    <a href={`product-detail/${record.id}`}>
-                        <EyeOutlined/>
-                    </a>
-                    <a href={`edit-product/${record.id}`}>
-                        <EditOutlined/>
-                    </a>
-                    <a
-                        href="javascript:void(0)"
-                        data-bs-toggle="modal"
-                        data-bs-target="#exampleModalToggle"
-                    >
-                        <DeleteOutlined/>
-                    </a>
+                    <Link href={`/admin/products/${product.id}`}>
+                        <i className="ri-pencil-line"></i>
+                    </Link>
+                    <DeleteConfirm onConfirm={() => onDelete(product.id)} />
                 </Space>
             ),
         },

@@ -1,19 +1,20 @@
 "use client";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { ICategory } from "@/app/interfaces/ICategory";
 import {generateVoucherCode} from "@/app/services/commonService";
 import {IProduct} from "@/app/interfaces/IProduct";
 import api from "@/app/services/axiosService";
 import {toast} from "react-toastify";
 import Image from "next/image";
+import Loading from "@/components/Loading";
+import ErrorPage from "@/components/(admin)/Error";
 
 interface ProductFormProps {
     isEditing?: boolean;
     initialData?: IProduct | null;
-    categories: ICategory[];
 }
 
-export default function ProductForm({ isEditing = false, categories , initialData = null}: ProductFormProps) {
+export default function ProductForm({ isEditing = false , initialData = null}: ProductFormProps) {
     const [formData, setFormData] = useState({
         code: "",
         name: "",
@@ -38,6 +39,10 @@ export default function ProductForm({ isEditing = false, categories , initialDat
     const [fileReading, setFileReading] = useState<string | null>(null);
     const [imagesReading, setImagesReading] = useState<string[]>([]);
     const [errors, setErrors] = useState<Record<string, string>>({});
+
+    const [categories, setCategories] = useState<ICategory[] | []>([])
+    const [error, setError] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(true)
 
     const validateForm = () => {
         const newErrors: Record<string, string> = {};
@@ -107,9 +112,18 @@ export default function ProductForm({ isEditing = false, categories , initialDat
         }));
     };
 
-    if (initialData) {
-        console.log("editing");
-    }
+    // useEffect(() => {
+    //     if (isEditing && initialData) {
+    //         setFormData(initialData);
+    //     }
+    //     setLoading(false);
+    // }, [initialData, isEditing]);
+
+    useEffect(() => {
+        if (initialData) {
+            console.log('has data')
+        }
+    }, []);
 
     const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
@@ -149,11 +163,30 @@ export default function ProductForm({ isEditing = false, categories , initialDat
         setFormData({ ...formData, ["code"]: generateVoucherCode() });
     };
 
+    const getCategories = async () => {
+        try {
+            const response = await api.get('categories/get-list');
+            if (response.status === 200) {
+                setCategories(response.data.categories || [])
+            }
+        } catch (e) {
+            console.error("error: "+ e)
+            setError(true)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        getCategories();
+    }, []);
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
+        setLoading(true)
         if (!validateForm()) {
             toast.error("Vui lòng kiểm tra lại các trường thông tin");
+            setLoading(false)
             return;
         }
 
@@ -186,16 +219,11 @@ export default function ProductForm({ isEditing = false, categories , initialDat
             data.append("images", file);
         }
 
-        console.log("Dữ liệu FormData:");
-        for (const [key, value] of data.entries()) {
-            console.log(`${key}: ${value}`);
-        }
-
-
         try {
             const response = await api.post("products", data);
             if (response.status === 200) {
                 toast.success('Thêm mới thành công');
+                setError(false)
                 setFormData({
                     code: "",
                     name: "",
@@ -218,188 +246,195 @@ export default function ProductForm({ isEditing = false, categories , initialDat
                     images: [] as File[],
                 })
             } else {
+                setError(true)
                 toast.error('Có lỗi server')
             }
         } catch (error) {
+            setError(true)
             console.error("Lỗi khi gửi dữ liệu:", error);
+        } finally {
+            setLoading(false)
         }
     };
 
     return (
-        <div className="row">
-            <div className="col-12">
+        loading ? <Loading/> : (
+            error ? <ErrorPage/> : (
                 <div className="row">
-                    <div className="m-auto">
-                        <form
-                            className="theme-form theme-form-2 mega-form"
-                            onSubmit={handleSubmit}
-                            encType="multipart/form-data"
-                        >
-                            <div className="card">
-                                <div className="card-body">
-                                    <div className="card-header-2">
-                                        <h5>Thông tin sản phẩm</h5>
-                                    </div>
-                                    <div className="mb-4 row align-items-center">
-                                        <label className="form-label-title col-sm-3 mb-0">
-                                            Tên sản phẩm
-                                        </label>
-                                        <div className="col-sm-9">
-                                            <input
-                                                className={`form-control ${errors.name ? 'is-invalid' : ''}`}
-                                                type="text"
-                                                name="name"
-                                                value={formData.name}
-                                                onChange={handleChange}
-                                                placeholder="Nhập tên sản phẩm"
-                                            />
-                                            {errors.name && <div className="invalid-feedback">{errors.name}</div>}
-                                        </div>
-                                    </div>
+                    <div className="col-12">
+                        <div className="row">
+                            <div className="m-auto">
+                                <form
+                                    className="theme-form theme-form-2 mega-form"
+                                    onSubmit={handleSubmit}
+                                    encType="multipart/form-data"
+                                >
+                                    <div className="card">
+                                        <div className="card-body">
+                                            <div className="card-header-2">
+                                                <h5>Thông tin sản phẩm</h5>
+                                            </div>
+                                            <div className="mb-4 row align-items-center">
+                                                <label className="form-label-title col-sm-3 mb-0">
+                                                    Tên sản phẩm
+                                                </label>
+                                                <div className="col-sm-9">
+                                                    <input
+                                                        className={`form-control ${errors.name ? 'is-invalid' : ''}`}
+                                                        type="text"
+                                                        name="name"
+                                                        value={formData.name}
+                                                        onChange={handleChange}
+                                                        placeholder="Nhập tên sản phẩm"
+                                                    />
+                                                    {errors.name &&
+                                                        <div className="invalid-feedback">{errors.name}</div>}
+                                                </div>
+                                            </div>
 
-                                    <div className="mb-4 row align-items-center">
-                                        <label className="form-label-title col-sm-3 mb-0">
-                                            Mã tài khoản
-                                        </label>
-                                        <div className="col-sm-9 d-flex align-items-center">
-                                            <input
-                                                className={`form-control me-2 ${errors.code ? 'is-invalid' : ''}`}
-                                                disabled={true}
-                                                type="text"
-                                                value={formData.code}
-                                                onChange={handleChange}
-                                                name="code"
-                                            />
-                                            {!isEditing && (
-                                                <button
-                                                    className="btn btn-primary"
-                                                    onClick={autoGenareteCode}
-                                                >
-                                                    Tự động tạo
-                                                </button>
-                                            )}
-                                            {isEditing && (
-                                                <small className="text-danger ms-2">
-                                                    <i>Không được cập nhật trường này</i>
-                                                </small>
-                                            )}
-                                        </div>
-                                    </div>
+                                            <div className="mb-4 row align-items-center">
+                                                <label className="form-label-title col-sm-3 mb-0">
+                                                    Mã tài khoản
+                                                </label>
+                                                <div className="col-sm-9 d-flex align-items-center">
+                                                    <input
+                                                        className={`form-control me-2 ${errors.code ? 'is-invalid' : ''}`}
+                                                        disabled={true}
+                                                        type="text"
+                                                        value={formData.code}
+                                                        onChange={handleChange}
+                                                        name="code"
+                                                    />
+                                                    {!isEditing && (
+                                                        <button
+                                                            className="btn btn-primary"
+                                                            onClick={autoGenareteCode}
+                                                        >
+                                                            Tự động tạo
+                                                        </button>
+                                                    )}
+                                                    {isEditing && (
+                                                        <small className="text-danger ms-2">
+                                                            <i>Không được cập nhật trường này</i>
+                                                        </small>
+                                                    )}
+                                                </div>
+                                            </div>
 
-                                    <div className="mb-4 row align-items-center">
-                                        <label className="form-label-title col-sm-3 mb-0">
-                                            Loại skin súng
-                                        </label>
-                                        <div className="col-sm-9">
-                                            <input
-                                                className={`form-control ${errors.skin_type ? 'is-invalid' : ''}`}
-                                                type="text"
-                                                name="skin_type"
-                                                value={formData.skin_type}
-                                                onChange={handleChange}
-                                                placeholder="Ví dụ: Vip, Vip Pro, Bình thường, ..."
-                                            />
-                                            {errors.skin_type &&
-                                                <div className="invalid-feedback">{errors.skin_type}</div>}
-                                        </div>
-                                    </div>
+                                            <div className="mb-4 row align-items-center">
+                                                <label className="form-label-title col-sm-3 mb-0">
+                                                    Loại skin súng
+                                                </label>
+                                                <div className="col-sm-9">
+                                                    <input
+                                                        className={`form-control ${errors.skin_type ? 'is-invalid' : ''}`}
+                                                        type="text"
+                                                        name="skin_type"
+                                                        value={formData.skin_type}
+                                                        onChange={handleChange}
+                                                        placeholder="Ví dụ: Vip, Vip Pro, Bình thường, ..."
+                                                    />
+                                                    {errors.skin_type &&
+                                                        <div className="invalid-feedback">{errors.skin_type}</div>}
+                                                </div>
+                                            </div>
 
-                                    <div className="mb-4 row align-items-center">
-                                        <label className="form-label-title col-sm-3 mb-0">
-                                            Số lượng tài khoản
-                                        </label>
-                                        <div className="col-sm-9">
-                                            <input
-                                                className={`form-control ${errors.quantity ? 'is-invalid' : ''}`}
-                                                type="number"
-                                                name="quantity"
-                                                value={formData.quantity}
-                                                onChange={handleChange}
-                                                placeholder="Ví dụ: Vip, Vip Pro, Bình thường, ..."
-                                            />
-                                            {errors.quantity &&
-                                                <div className="invalid-feedback">{errors.quantity}</div>}
-                                        </div>
-                                    </div>
+                                            <div className="mb-4 row align-items-center">
+                                                <label className="form-label-title col-sm-3 mb-0">
+                                                    Số lượng tài khoản
+                                                </label>
+                                                <div className="col-sm-9">
+                                                    <input
+                                                        className={`form-control ${errors.quantity ? 'is-invalid' : ''}`}
+                                                        type="number"
+                                                        name="quantity"
+                                                        value={formData.quantity}
+                                                        onChange={handleChange}
+                                                        placeholder="Ví dụ: Vip, Vip Pro, Bình thường, ..."
+                                                    />
+                                                    {errors.quantity &&
+                                                        <div className="invalid-feedback">{errors.quantity}</div>}
+                                                </div>
+                                            </div>
 
-                                    <div className="mb-4 row align-items-center">
-                                        <label className="form-label-title col-sm-3 mb-0">
-                                            Trạng thái
-                                        </label>
-                                        <div className="col-sm-9">
-                                            <select
-                                                className="form-control"
-                                                name="status"
-                                                value={formData.status}
-                                                onChange={handleChange}
-                                            >
-                                                <option value="active">Hoạt động</option>
-                                                <option value="inactive">Không hoạt động</option>
-                                            </select>
-                                        </div>
-                                    </div>
+                                            <div className="mb-4 row align-items-center">
+                                                <label className="form-label-title col-sm-3 mb-0">
+                                                    Trạng thái
+                                                </label>
+                                                <div className="col-sm-9">
+                                                    <select
+                                                        className="form-control"
+                                                        name="status"
+                                                        value={formData.status}
+                                                        onChange={handleChange}
+                                                    >
+                                                        <option value="active">Hoạt động</option>
+                                                        <option value="inactive">Không hoạt động</option>
+                                                    </select>
+                                                </div>
+                                            </div>
 
-                                    <div className="mb-4 row align-items-center">
-                                        <label className="form-label-title col-sm-3 mb-0">
-                                            Có bán
-                                        </label>
-                                        <div className="col-sm-9">
-                                            <label className="switch">
-                                                <input
-                                                    type="checkbox"
-                                                    name="is_for_sale"
-                                                    checked={formData.is_for_sale}
-                                                    onChange={handleChange}
-                                                />
-                                                <span className="switch-state"></span>
-                                            </label>
-                                        </div>
-                                    </div>
+                                            <div className="mb-4 row align-items-center">
+                                                <label className="form-label-title col-sm-3 mb-0">
+                                                    Có bán
+                                                </label>
+                                                <div className="col-sm-9">
+                                                    <label className="switch">
+                                                        <input
+                                                            type="checkbox"
+                                                            name="is_for_sale"
+                                                            checked={formData.is_for_sale}
+                                                            onChange={handleChange}
+                                                        />
+                                                        <span className="switch-state"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
 
-                                    <div className="mb-4 row align-items-center">
-                                        <label className="form-label-title col-sm-3 mb-0">
-                                            Danh mục
-                                        </label>
-                                        <div className="col-sm-9">
-                                            <select
-                                                className={`form-control ${errors.category_id ? 'is-invalid' : ''}`}
-                                                name="category_id"
-                                                value={formData.category_id}
-                                                onChange={handleChange}
-                                            >
-                                                {categories.length === 0 ? (
-                                                    <option value="" disabled>
-                                                        Chưa có danh mục
-                                                    </option>
-                                                ) : (
-                                                    <>
-                                                        <option value={0} disabled>
-                                                            Chọn danh mục
-                                                        </option>
-                                                        {categories.map((category) => (
-                                                            <option key={category.id} value={category.id}>
-                                                                {category.name}
+                                            <div className="mb-4 row align-items-center">
+                                                <label className="form-label-title col-sm-3 mb-0">
+                                                    Danh mục
+                                                </label>
+                                                <div className="col-sm-9">
+                                                    <select
+                                                        className={`form-control ${errors.category_id ? 'is-invalid' : ''}`}
+                                                        name="category_id"
+                                                        value={formData.category_id}
+                                                        onChange={handleChange}
+                                                    >
+                                                        {categories.length === 0 ? (
+                                                            <option value="" disabled>
+                                                                Chưa có danh mục
                                                             </option>
-                                                        ))}
-                                                    </>
-                                                )}
-                                            </select>
-                                            {errors.category_id &&
-                                                <div className="invalid-feedback">{errors.category_id}</div>}
+                                                        ) : (
+                                                            <>
+                                                                <option value={0} disabled>
+                                                                    Chọn danh mục
+                                                                </option>
+                                                                {categories.map((category) => (
+                                                                    <option key={category.id} value={category.id}>
+                                                                        {category.name}
+                                                                    </option>
+                                                                ))}
+                                                            </>
+                                                        )}
+                                                    </select>
+                                                    {errors.category_id &&
+                                                        <div className="invalid-feedback">{errors.category_id}</div>}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
 
-                            {/* Mô tả */}
-                            <div className="card">
-                                <div className="card-body">
-                                    <div className="card-header-2">
-                                        <h5>Mô tả sản phẩm</h5>
-                                    </div>
-                                    <div className="row">
-                                        <label className="form-label-title col-sm-3 mb-0">Mô tả</label>
-                                        <div className="col-sm-9">
+                                    {/* Mô tả */}
+                                    <div className="card">
+                                        <div className="card-body">
+                                            <div className="card-header-2">
+                                                <h5>Mô tả sản phẩm</h5>
+                                            </div>
+                                            <div className="row">
+                                                <label className="form-label-title col-sm-3 mb-0">Mô tả</label>
+                                                <div className="col-sm-9">
                                           <textarea
                                               className="form-control"
                                               name="description"
@@ -408,247 +443,255 @@ export default function ProductForm({ isEditing = false, categories , initialDat
                                               rows={5}
                                               placeholder="Nhập mô tả sản phẩm"
                                           />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="card">
-                                <div className="card-body">
-                                    <div className="card-header-2">
-                                        <h5>Hình ảnh sản phẩm</h5>
-                                    </div>
-                                    <div className="mb-4 row align-items-center">
-                                        <label className="form-label-title col-sm-3 mb-0">
-                                            Ảnh thumbnail
-                                        </label>
-                                        <div className="col-sm-9">
-                                            <input
-                                                className={`form-control ${errors.thumbnail ? 'is-invalid' : ''}`}
-                                                type="file"
-                                                name="thumbnail"
-                                                onChange={handleThumbnailChange}
-                                                accept="image/*"
-                                            />
-                                            {fileReading && (
-                                                <div className="mt-2">
-                                                    <Image
-                                                        height={120}
-                                                        width={180}
-                                                        src={fileReading}
-                                                        alt="Danh mục"
-                                                    />
                                                 </div>
-                                            )}
-                                            {errors.thumbnail && <div className="invalid-feedback">{errors.thumbnail}</div>}
+                                            </div>
                                         </div>
                                     </div>
-
-                                    <div className="mb-4 row align-items-center">
-                                        <label className="form-label-title col-sm-3 mb-0">
-                                            Ảnh bổ sung
-                                        </label>
-                                        <div className="col-sm-9">
-                                            <input
-                                                className="form-control"
-                                                type="file"
-                                                name="images"
-                                                onChange={handleImagesChange}
-                                                accept="image/*"
-                                                multiple
-                                            />
-                                            {imagesReading && (
-                                                <div className="d-flex flex-wrap gap-2 mt-2">
-                                                    {imagesReading.map((imageReading: string, index: number) => (
-                                                        <div key={index}>
+                                    <div className="card">
+                                        <div className="card-body">
+                                            <div className="card-header-2">
+                                                <h5>Hình ảnh sản phẩm</h5>
+                                            </div>
+                                            <div className="mb-4 row align-items-center">
+                                                <label className="form-label-title col-sm-3 mb-0">
+                                                    Ảnh thumbnail
+                                                </label>
+                                                <div className="col-sm-9">
+                                                    <input
+                                                        className={`form-control ${errors.thumbnail ? 'is-invalid' : ''}`}
+                                                        type="file"
+                                                        name="thumbnail"
+                                                        onChange={handleThumbnailChange}
+                                                        accept="image/*"
+                                                    />
+                                                    {fileReading && (
+                                                        <div className="mt-2">
                                                             <Image
-                                                                height={100}
-                                                                width={100}
-                                                                src={imageReading}
+                                                                height={120}
+                                                                width={180}
+                                                                src={fileReading}
                                                                 alt="Danh mục"
-                                                                style={{ objectFit: "cover", borderRadius: "8px" }}
                                                             />
                                                         </div>
-                                                    ))}
+                                                    )}
+                                                    {errors.thumbnail &&
+                                                        <div className="invalid-feedback">{errors.thumbnail}</div>}
                                                 </div>
-                                            )}
+                                            </div>
+
+                                            <div className="mb-4 row align-items-center">
+                                                <label className="form-label-title col-sm-3 mb-0">
+                                                    Ảnh bổ sung
+                                                </label>
+                                                <div className="col-sm-9">
+                                                    <input
+                                                        className="form-control"
+                                                        type="file"
+                                                        name="images"
+                                                        onChange={handleImagesChange}
+                                                        accept="image/*"
+                                                        multiple
+                                                    />
+                                                    {imagesReading && (
+                                                        <div className="d-flex flex-wrap gap-2 mt-2">
+                                                            {imagesReading.map((imageReading: string, index: number) => (
+                                                                <div key={index}>
+                                                                    <Image
+                                                                        height={100}
+                                                                        width={100}
+                                                                        src={imageReading}
+                                                                        alt="Danh mục"
+                                                                        style={{
+                                                                            objectFit: "cover",
+                                                                            borderRadius: "8px"
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                    <div className="card">
+                                        <div className="card-body">
+                                            <div className="card-header-2">
+                                                <h5>Giá sản phẩm</h5>
+                                            </div>
+                                            <div className="mb-4 row align-items-center">
+                                                <label className="form-label-title col-sm-3 mb-0">
+                                                    Giá gốc
+                                                </label>
+                                                <div className="col-sm-9">
+                                                    <input
+                                                        className={`form-control ${errors.regular_price ? 'is-invalid' : ''}`}
+                                                        type="number"
+                                                        name="regular_price"
+                                                        value={formData.regular_price}
+                                                        onChange={handleChange}
+                                                        min={0}
+                                                    />
+                                                    {errors.regular_price &&
+                                                        <div className="invalid-feedback">{errors.regular_price}</div>}
+                                                </div>
+                                            </div>
+
+                                            <div className="mb-4 row align-items-center">
+                                                <label className="form-label-title col-sm-3 mb-0">
+                                                    Giá bán
+                                                </label>
+                                                <div className="col-sm-9">
+                                                    <input
+                                                        className={`form-control ${errors.sale_price ? 'is-invalid' : ''}`}
+                                                        type="number"
+                                                        name="sale_price"
+                                                        value={formData.sale_price}
+                                                        onChange={handleChange}
+                                                        min={0}
+                                                    />
+                                                    {errors.sale_price &&
+                                                        <div className="invalid-feedback">{errors.sale_price}</div>}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="card">
+                                        <div className="card-body">
+                                            <div className="card-header-2">
+                                                <h5>Thông tin bổ sung</h5>
+                                            </div>
+                                            <div className="mb-4 row align-items-center">
+                                                <label className="form-label-title col-sm-3 mb-0">
+                                                    ID Tài Khoản
+                                                </label>
+                                                <div className="col-sm-9">
+                                                    <input
+                                                        className={`form-control ${errors.account_id ? 'is-invalid' : ''}`}
+                                                        type="text"
+                                                        name="account_id"
+                                                        value={formData.account_id}
+                                                        onChange={handleChange}
+                                                        min={0}
+                                                    />
+                                                    {errors.account_id &&
+                                                        <div className="invalid-feedback">{errors.account_id}</div>}
+                                                </div>
+                                            </div>
+                                            <div className="mb-4 row align-items-center">
+                                                <label className="form-label-title col-sm-3 mb-0">
+                                                    Tên người chơi
+                                                </label>
+                                                <div className="col-sm-9">
+                                                    <input
+                                                        className={`form-control ${errors.account_name ? 'is-invalid' : ''}`}
+                                                        type="text"
+                                                        name="account_name"
+                                                        value={formData.account_name}
+                                                        onChange={handleChange}
+                                                        min={0}
+                                                    />
+                                                    {errors.account_name &&
+                                                        <div className="invalid-feedback">{errors.account_name}</div>}
+                                                </div>
+                                            </div>
+                                            <div className="mb-4 row align-items-center">
+                                                <label className="form-label-title col-sm-3 mb-0">
+                                                    Số kim cương
+                                                </label>
+                                                <div className="col-sm-9">
+                                                    <input
+                                                        className={`form-control ${errors.number_diamond_availale ? 'is-invalid' : ''}`}
+                                                        type="number"
+                                                        name="number_diamond_available"
+                                                        value={formData.number_diamond_available}
+                                                        onChange={handleChange}
+                                                        min={0}
+                                                    />
+                                                    {errors.number_diamond_available && <div
+                                                        className="invalid-feedback">{errors.number_diamond_available}</div>}
+                                                </div>
+                                            </div>
+
+                                            <div className="mb-4 row align-items-center">
+                                                <label className="form-label-title col-sm-3 mb-0">Rank</label>
+                                                <div className="col-sm-9">
+                                                    <input
+                                                        className="form-control"
+                                                        type="text"
+                                                        name="rank"
+                                                        value={formData.rank}
+                                                        onChange={handleChange}
+                                                        placeholder="Nhập rank"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="mb-4 row align-items-center">
+                                                <label className="form-label-title col-sm-3 mb-0">
+                                                    Server
+                                                </label>
+                                                <div className="col-sm-9">
+                                                    <input
+                                                        className="form-control"
+                                                        type="text"
+                                                        name="server"
+                                                        value={formData.server}
+                                                        onChange={handleChange}
+                                                        placeholder="Nhập server"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="mb-4 row align-items-center">
+                                                <label className="form-label-title col-sm-3 mb-0">
+                                                    Đăng ký bằng:
+                                                </label>
+                                                <div className="col-sm-9">
+                                                    <input
+                                                        className={`form-control ${errors.register_by ? 'is-invalid' : ""}`}
+                                                        type="text"
+                                                        name="register_by"
+                                                        value={formData.register_by}
+                                                        onChange={handleChange}
+                                                        placeholder="Garena, Facebook, Google, ..."
+                                                    />
+                                                    {errors.register_by &&
+                                                        <div className="invalid-feedback">{errors.register_by}</div>}
+                                                </div>
+                                            </div>
+
+                                            <div className="mb-4 row align-items-center">
+                                                <label className="form-label-title col-sm-3 mb-0">
+                                                    Thẻ vô cực
+                                                </label>
+                                                <div className="col-sm-9">
+                                                    <label className="switch">
+                                                        <input
+                                                            type="checkbox"
+                                                            name="is_infinity_card"
+                                                            checked={formData.is_infinity_card}
+                                                            onChange={handleChange}
+                                                        />
+                                                        <span className="switch-state"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div className="row">
+                                                <div className="col-sm-9 offset-sm-3">
+                                                    <button type="submit" className="btn btn-primary">
+                                                        Lưu sản phẩm
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
-                            <div className="card">
-                                <div className="card-body">
-                                    <div className="card-header-2">
-                                        <h5>Giá sản phẩm</h5>
-                                    </div>
-                                    <div className="mb-4 row align-items-center">
-                                    <label className="form-label-title col-sm-3 mb-0">
-                                            Giá gốc
-                                        </label>
-                                        <div className="col-sm-9">
-                                            <input
-                                                className={`form-control ${errors.regular_price ? 'is-invalid' : ''}`}
-                                                type="number"
-                                                name="regular_price"
-                                                value={formData.regular_price}
-                                                onChange={handleChange}
-                                                min={0}
-                                            />
-                                            {errors.regular_price && <div className="invalid-feedback">{errors.regular_price}</div>}
-                                        </div>
-                                    </div>
-
-                                    <div className="mb-4 row align-items-center">
-                                        <label className="form-label-title col-sm-3 mb-0">
-                                            Giá bán
-                                        </label>
-                                        <div className="col-sm-9">
-                                            <input
-                                                className={`form-control ${errors.sale_price ? 'is-invalid' : ''}`}
-                                                type="number"
-                                                name="sale_price"
-                                                value={formData.sale_price}
-                                                onChange={handleChange}
-                                                min={0}
-                                            />
-                                            {errors.sale_price && <div className="invalid-feedback">{errors.sale_price}</div>}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="card">
-                                <div className="card-body">
-                                    <div className="card-header-2">
-                                        <h5>Thông tin bổ sung</h5>
-                                    </div>
-                                    <div className="mb-4 row align-items-center">
-                                        <label className="form-label-title col-sm-3 mb-0">
-                                            ID Tài Khoản
-                                        </label>
-                                        <div className="col-sm-9">
-                                            <input
-                                                className={`form-control ${errors.account_id ? 'is-invalid' : ''}`}
-                                                type="text"
-                                                name="account_id"
-                                                value={formData.account_id}
-                                                onChange={handleChange}
-                                                min={0}
-                                            />
-                                            {errors.account_id &&
-                                                <div className="invalid-feedback">{errors.account_id}</div>}
-                                        </div>
-                                    </div>
-                                    <div className="mb-4 row align-items-center">
-                                        <label className="form-label-title col-sm-3 mb-0">
-                                            Tên người chơi
-                                        </label>
-                                        <div className="col-sm-9">
-                                            <input
-                                                className={`form-control ${errors.account_name ? 'is-invalid' : ''}`}
-                                                type="text"
-                                                name="account_name"
-                                                value={formData.account_name}
-                                                onChange={handleChange}
-                                                min={0}
-                                            />
-                                            {errors.account_name &&
-                                                <div className="invalid-feedback">{errors.account_name}</div>}
-                                        </div>
-                                    </div>
-                                    <div className="mb-4 row align-items-center">
-                                        <label className="form-label-title col-sm-3 mb-0">
-                                            Số kim cương
-                                        </label>
-                                        <div className="col-sm-9">
-                                            <input
-                                                className={`form-control ${errors.number_diamond_availale ? 'is-invalid' : ''}`}
-                                                type="number"
-                                                name="number_diamond_available"
-                                                value={formData.number_diamond_available}
-                                                onChange={handleChange}
-                                                min={0}
-                                            />
-                                            {errors.number_diamond_available && <div
-                                                className="invalid-feedback">{errors.number_diamond_available}</div>}
-                                        </div>
-                                    </div>
-
-                                    <div className="mb-4 row align-items-center">
-                                        <label className="form-label-title col-sm-3 mb-0">Rank</label>
-                                        <div className="col-sm-9">
-                                            <input
-                                                className="form-control"
-                                                type="text"
-                                                name="rank"
-                                                value={formData.rank}
-                                                onChange={handleChange}
-                                                placeholder="Nhập rank"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="mb-4 row align-items-center">
-                                        <label className="form-label-title col-sm-3 mb-0">
-                                            Server
-                                        </label>
-                                        <div className="col-sm-9">
-                                            <input
-                                                className="form-control"
-                                                type="text"
-                                                name="server"
-                                                value={formData.server}
-                                                onChange={handleChange}
-                                                placeholder="Nhập server"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="mb-4 row align-items-center">
-                                        <label className="form-label-title col-sm-3 mb-0">
-                                            Đăng ký bằng:
-                                        </label>
-                                        <div className="col-sm-9">
-                                            <input
-                                                className={`form-control ${errors.register_by ? 'is-invalid' : ""}`}
-                                                type="text"
-                                                name="register_by"
-                                                value={formData.register_by}
-                                                onChange={handleChange}
-                                                placeholder="Garena, Facebook, Google, ..."
-                                            />
-                                            {errors.register_by &&
-                                                <div className="invalid-feedback">{errors.register_by}</div>}
-                                        </div>
-                                    </div>
-
-                                    <div className="mb-4 row align-items-center">
-                                        <label className="form-label-title col-sm-3 mb-0">
-                                            Thẻ vô cực
-                                        </label>
-                                        <div className="col-sm-9">
-                                            <label className="switch">
-                                                <input
-                                                    type="checkbox"
-                                                    name="is_infinity_card"
-                                                    checked={formData.is_infinity_card}
-                                                    onChange={handleChange}
-                                                />
-                                                <span className="switch-state"></span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div className="row">
-                                        <div className="col-sm-9 offset-sm-3">
-                                            <button type="submit" className="btn btn-primary">
-                                                Lưu sản phẩm
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            )
+        )
     );
 }
