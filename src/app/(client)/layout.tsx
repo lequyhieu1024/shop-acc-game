@@ -15,7 +15,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         <title>Client</title>
       </head>
       <body>
-        <CartProvider> {/* Wrap the entire body in CartProvider */}
+        <CartProvider>
           <Header />
           <div className="page-body">
             <div className="container-fluid">

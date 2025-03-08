@@ -1,7 +1,11 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Card, Badge, Modal } from "antd";
-import { ShoppingCartOutlined, RightOutlined, CheckCircleFilled } from "@ant-design/icons";
+import {
+  ShoppingCartOutlined,
+  RightOutlined,
+  CheckCircleFilled
+} from "@ant-design/icons";
 import Link from "next/link";
 import Image from "next/image";
 import { FaShoppingCart } from "react-icons/fa";
@@ -9,7 +13,7 @@ import { useCart } from "@/app/contexts/CartContext";
 interface ProductItem {
   id: number;
   name?: string;
-  price?: string;
+  price: string;
   oldPrice?: string;
   discount?: string;
   image: string;
@@ -34,9 +38,10 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
   showPrice = true
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  // const [totalItems, setTotalItems] = useState(0);
-  const [clickedButtons, setClickedButtons] = useState<Record<number, boolean>>({});
-  const {  setTotalItems } = useCart();
+  const [clickedButtons, setClickedButtons] = useState<Record<number, boolean>>(
+    {}
+  );
+  const { addItem, totalItems } = useCart();
   useEffect(() => {
     const styleElement = document.createElement("style");
     styleElement.innerHTML = `
@@ -152,45 +157,52 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
       }
     `;
     document.head.appendChild(styleElement);
-    
+
     return () => {
       document.head.removeChild(styleElement);
     };
   }, []);
 
-  const handleAddToCart = (e: React.MouseEvent, itemId: number) => {
-    e.stopPropagation(); 
-    
-    setClickedButtons(prev => ({
+  const handleAddToCart = (e: React.MouseEvent, item: ProductItem) => {
+    e.stopPropagation();
+
+    setClickedButtons((prev) => ({
       ...prev,
-      [itemId]: true
+      [item.id]: true
     }));
-    setTotalItems(prev => prev + 1);
+    const cartItem = {
+      id: item.id.toString(),
+      name: item.name || "",
+      price: parseFloat(item.price?.replace(/[^0-9.-]+/g, "")) || 0, // Chuyển đổi giá thành số
+      quantity: 1,
+      image: item.image
+    };
+    addItem(cartItem);
     setIsModalVisible(true);
-    
+
     setTimeout(() => {
       setIsModalVisible(false);
     }, 2000);
-    
+
     setTimeout(() => {
-      setClickedButtons(prev => ({
+      setClickedButtons((prev) => ({
         ...prev,
-        [itemId]: false
+        [item.id]: false
       }));
     }, 1000);
-    
+
     // Gây hiệu ứng lắc cho giỏ hàng
-    const cart = document.querySelector('.cart');
+    const cart = document.querySelector(".cart");
     if (cart) {
-      cart.classList.add('shake');
+      cart.classList.add("shake");
       setTimeout(() => {
-        cart.classList.remove('shake');
+        cart.classList.remove("shake");
       }, 500);
     }
   };
 
   const handleRedirect = () => {
-    console.log('ád');
+    console.log("ád");
   };
 
   return (
@@ -199,7 +211,7 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
       {/* <div className="cart" data-totalitems={totalItems}>
         <ShoppingCartOutlined style={{ fontSize: 24, color: 'white' }} />
       </div> */}
-      
+
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">{title}</h2>
         <Link
@@ -224,7 +236,9 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
                   </div>
                 )}
                 <div className="group w-full h-full overflow-hidden">
-                  <Image width={500} height={500}
+                  <Image
+                    width={500}
+                    height={500}
                     alt={item?.name || "Product image"}
                     src={item.image}
                     className="h-full object-contain transition-transform duration-500 ease-in-out group-hover:scale-110"
@@ -269,19 +283,26 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
               )}
 
               <div className="flex items-center gap-2 flex-col">
-                <button 
-                  className={`mt-3 w-full bg-blue-500 text-white py-2 px-4 rounded-md flex items-center justify-center text-sm hover:bg-blue-600 transition cart-button ${clickedButtons[item.id] ? 'clicked' : ''}`}
-                  onClick={(e) => handleAddToCart(e, item.id)}
+                <button
+                  className={`mt-3 w-full bg-blue-500 text-white py-2 px-4 rounded-md flex items-center justify-center text-sm hover:bg-blue-600 transition cart-button ${
+                    clickedButtons[item.id] ? "clicked" : ""
+                  }`}
+                  onClick={(e) => handleAddToCart(e, item)}
                 >
-                  <div className="cart-icon" style={{ 
-                    width: '24px', 
-                    height: '24px', 
-                    borderRadius: '50%', 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center' 
-                  }}>
-                    <FaShoppingCart  style={{ fontSize: '16px', color: 'white' }} />
+                  <div
+                    className="cart-icon"
+                    style={{
+                      width: "24px",
+                      height: "24px",
+                      borderRadius: "50%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center"
+                    }}
+                  >
+                    <FaShoppingCart
+                      style={{ fontSize: "16px", color: "white" }}
+                    />
                   </div>
                   <span className="add-to-cart relative z-10 flex items-center">
                     <ShoppingCartOutlined className="mr-1" /> Thêm vào giỏ hàng
@@ -304,13 +325,13 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
         closable={false}
         centered
         className="success-modal"
-        styles={{ 
-          mask: { backgroundColor: 'rgba(0, 0, 0, 0.45)' },
-          body: { padding: '24px', textAlign: 'center' }
+        styles={{
+          mask: { backgroundColor: "rgba(0, 0, 0, 0.45)" },
+          body: { padding: "24px", textAlign: "center" }
         }}
       >
         <div className="flex flex-col items-center">
-          <CheckCircleFilled style={{ fontSize: 48, color: '#52c41a' }} />
+          <CheckCircleFilled style={{ fontSize: 48, color: "#52c41a" }} />
           <p className="mt-4 text-lg">Thêm sản phẩm thành công!</p>
         </div>
       </Modal>
