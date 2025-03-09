@@ -13,6 +13,7 @@ import { useCart } from "@/app/contexts/CartContext";
 import "./header.css";
 import DrawerCommon from "../(common)/DrawerCommon";
 import CartDrawerContent from "../(common)/CartDrawerContent";
+import { useViewport } from "@/app/hook/useViewport";
 
 const NavBar = () => {
   const parentRef = useRef<HTMLLIElement>(null);
@@ -21,20 +22,14 @@ const NavBar = () => {
   const thirdChild = useRef<HTMLUListElement>(null);
   const { totalItems } = useCart();
   const [cartDrawerVisible, setCartDrawerVisible] = useState(false);
-
+  const { screenSize = "md" } = useViewport();
   useEffect(() => {
-    console.log(parentRef.current?.offsetLeft);
-    console.log(
-      firstChildRef.current?.offsetLeft,
-      firstChildRef.current?.offsetWidth
-    );
     const res = document.body.clientWidth;
     console.log("🦎 ~ NavBar ~ res:", res);
   }, []);
 
   const showCartDrawer = () => {
     setCartDrawerVisible(true);
-    console.log("dsf");
   };
 
   const closeCartDrawer = () => {
@@ -161,6 +156,7 @@ const NavBar = () => {
 
       {/* Cart Drawer */}
       <DrawerCommon
+        screenSize={screenSize}
         open={cartDrawerVisible}
         onClose={closeCartDrawer}
         title="Giỏ hàng của bạn"

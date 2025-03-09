@@ -7,7 +7,7 @@ export const exclusiveOffers = [
     name: "Máy Gắp Kim Cương",
     image: image.src,
     played: 16401,
-    price: "19.000",
+    price: "19,000",
     oldPrice: "23.750",
     discount: "20%"
   },
@@ -16,7 +16,7 @@ export const exclusiveOffers = [
     name: "Rung Cây Robux Hứng Nhiều Không Hết",
     image: image.src,
     played: 27711,
-    price: "39.000",
+    price: "39,000",
     oldPrice: "48.750",
     discount: "20%"
   },
@@ -25,7 +25,7 @@ export const exclusiveOffers = [
     name: "VQ AK Rồng Xanh",
     image: image.src,
     played: 3249,
-    price: "39.000",
+    price: "39,000",
     oldPrice: "18.750",
     discount: "20%"
   },
@@ -34,7 +34,7 @@ export const exclusiveOffers = [
     name: "Máy Xèng Robux",
     image: image.src,
     played: 16056,
-    price: "15.000",
+    price: "15,000",
     oldPrice: "18.750",
     discount: "20%"
   },
@@ -43,13 +43,12 @@ export const exclusiveOffers = [
     name: "Vòng Quay Robux",
     image: image.src,
     played: 11247,
-    price: "19.000",
+    price: "19,000",
     oldPrice: "38.000",
     discount: "50%"
   }
 ];
 const ExclusiveOffers = () => {
-  
   return <BoxCommon title="🔥 Ưu đãi độc quyền" items={exclusiveOffers} />;
 };
 

@@ -9,7 +9,7 @@ import React, {
 export interface CartItem {
   id: string;
   name: string;
-  price: number;
+  price: number | string;
   quantity: number;
   image?: string;
 }
@@ -40,41 +40,50 @@ interface CartProviderProps {
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>([]);
   const [totalItems, setTotalItems] = useState<number>(0);
+  console.log(items);
 
-  // Load cart from localStorage on initial render
+  // ✅ Load cart from localStorage on first render
   useEffect(() => {
     const storedItems = localStorage.getItem("cartItems");
     if (storedItems) {
       const parsedItems: CartItem[] = JSON.parse(storedItems);
       setItems(parsedItems);
-      const total = parsedItems.reduce((sum, item) => sum + item.quantity, 0);
-      setTotalItems(total);
     }
   }, []);
 
-  // Save cart to localStorage whenever it changes
+  // ✅ Save cart to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem("cartItems", JSON.stringify(items));
+    if (items.length > 0) {
+      localStorage.setItem("cartItems", JSON.stringify(items));
+    } else {
+      localStorage.removeItem("cartItems"); // Xóa nếu giỏ hàng trống
+    }
+
     const total = items.reduce((sum, item) => sum + item.quantity, 0);
     setTotalItems(total);
     localStorage.setItem("totalItems", total.toString());
   }, [items]);
 
   const addItem = (newItem: CartItem) => {
-    setItems((prevItems) => {
-      const existingItemIndex = prevItems.findIndex(
-        (item) => item.id === newItem.id
-      );
-      if (existingItemIndex !== -1) {
-        // Update quantity if item exists
-        const updatedItems = [...prevItems];
-        updatedItems[existingItemIndex].quantity += newItem.quantity;
-        return updatedItems;
-      } else {
-        // Add new item if it doesn't exist
-        return [...prevItems, newItem];
-      }
-    });
+    console.log(items);
+
+    // setItems((prevItems) => {
+    //   const existingItemIndex = prevItems.findIndex(
+    //     (item) => item.id === newItem.id
+    //   );
+
+    //   if (existingItemIndex !== -1) {
+    //     // Nếu sản phẩm đã tồn tại, chỉ tăng thêm 1 đơn vị
+    //     const updatedItems = [...prevItems];
+    //     updatedItems[existingItemIndex].quantity += 1;
+    //     return updatedItems;
+    //   } else {
+    //     console.log("dsfsd");
+
+    //     // Nếu chưa có, thêm mới vào giỏ hàng với số lượng mặc định là 1
+    //     return [...prevItems, { ...newItem, quantity: 1 }];
+    //   }
+    // });
   };
 
   const updateItem = (id: string, quantity: number) => {
@@ -94,24 +103,10 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const clearCart = () => {
     setItems([]);
     setTotalItems(0);
+    localStorage.removeItem("cartItems");
+    localStorage.removeItem("totalItems");
   };
-  useEffect(() => {
-    const storedItems = localStorage.getItem("cartItems");
-    if (storedItems) {
-      const parsedItems: CartItem[] = JSON.parse(storedItems);
-      setItems(parsedItems);
-      const total = parsedItems.reduce((sum, item) => sum + item.quantity, 0);
-      setTotalItems(total);
-    }
-  }, []);
 
-  // Save cart to localStorage whenever it changes
-  useEffect(() => {
-    localStorage.setItem("cartItems", JSON.stringify(items));
-    const total = items.reduce((sum, item) => sum + item.quantity, 0);
-    setTotalItems(total);
-    localStorage.setItem("totalItems", total.toString());
-  }, [items]);
   const value: CartContextType = {
     items,
     totalItems,
@@ -120,6 +115,5 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     removeItem,
     clearCart
   };
-
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };

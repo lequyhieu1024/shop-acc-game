@@ -13,8 +13,8 @@ import { useCart } from "@/app/contexts/CartContext";
 interface ProductItem {
   id: number;
   name?: string;
-  price: string;
-  oldPrice?: string;
+  price: string | number;
+  oldPrice?: string | number;
   discount?: string;
   image: string;
   transactions?: number;
@@ -41,7 +41,7 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
   const [clickedButtons, setClickedButtons] = useState<Record<number, boolean>>(
     {}
   );
-  const { addItem, totalItems } = useCart();
+  const { addItem } = useCart();
   useEffect(() => {
     const styleElement = document.createElement("style");
     styleElement.innerHTML = `
@@ -173,10 +173,11 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
     const cartItem = {
       id: item.id.toString(),
       name: item.name || "",
-      price: parseFloat(item.price?.replace(/[^0-9.-]+/g, "")) || 0, // Chuyển đổi giá thành số
+      price: item.price.toString() || "0", // Chuyển đổi giá thành số
       quantity: 1,
       image: item.image
     };
+
     addItem(cartItem);
     setIsModalVisible(true);
 
