@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Card, Badge, Modal } from "antd";
 import {
   ShoppingCartOutlined,
@@ -41,6 +41,7 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
   const [clickedButtons, setClickedButtons] = useState<Record<number, boolean>>(
     {}
   );
+  const [isAdding, setIsAdding] = useState(false);
   const { addItem } = useCart();
   useEffect(() => {
     const styleElement = document.createElement("style");
@@ -163,44 +164,42 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
     };
   }, []);
 
-  const handleAddToCart = (e: React.MouseEvent, item: ProductItem) => {
-    e.stopPropagation();
-
-    setClickedButtons((prev) => ({
-      ...prev,
-      [item.id]: true
-    }));
-    const cartItem = {
-      id: item.id.toString(),
-      name: item.name || "",
-      price: item.price.toString() || "0", // Chuyển đổi giá thành số
-      quantity: 1,
-      image: item.image
-    };
-
-    addItem(cartItem);
-    setIsModalVisible(true);
-
-    setTimeout(() => {
-      setIsModalVisible(false);
-    }, 2000);
-
-    setTimeout(() => {
+  const handleAddToCart = useCallback(
+    (e: React.MouseEvent, item: ProductItem) => {
+      console.log("handleAddToCart called for item:", item.id);
+      e.stopPropagation();
+      if (isAdding) return;
+      setIsAdding(true);
       setClickedButtons((prev) => ({
         ...prev,
-        [item.id]: false
+        [item.id]: true
       }));
-    }, 1000);
+      const cartItem = {
+        id: item.id.toString(),
+        name: item.name || "",
+        price: item.price.toString() || "0",
+        quantity: 1,
+        image: item.image
+      };
 
-    // Gây hiệu ứng lắc cho giỏ hàng
-    const cart = document.querySelector(".cart");
-    if (cart) {
-      cart.classList.add("shake");
+      addItem(cartItem);
+      setIsModalVisible(true);
       setTimeout(() => {
-        cart.classList.remove("shake");
-      }, 500);
-    }
-  };
+        setIsModalVisible(false);
+      }, 2000);
+
+      setTimeout(() => {
+        setClickedButtons((prev) => ({
+          ...prev,
+          [item.id]: false
+        }));
+      }, 1000);
+      setTimeout(() => {
+        setIsAdding(false);
+      }, 1000);
+    },
+    [isAdding, addItem]
+  );
 
   const handleRedirect = () => {
     console.log("ád");
@@ -288,6 +287,7 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
                   className={`mt-3 w-full bg-blue-500 text-white py-2 px-4 rounded-md flex items-center justify-center text-sm hover:bg-blue-600 transition cart-button ${
                     clickedButtons[item.id] ? "clicked" : ""
                   }`}
+                  disabled={isAdding}
                   onClick={(e) => handleAddToCart(e, item)}
                 >
                   <div

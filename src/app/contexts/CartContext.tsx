@@ -40,7 +40,7 @@ interface CartProviderProps {
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>([]);
   const [totalItems, setTotalItems] = useState<number>(0);
-  console.log(items);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   // ✅ Load cart from localStorage on first render
   useEffect(() => {
@@ -65,25 +65,32 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   }, [items]);
 
   const addItem = (newItem: CartItem) => {
-    console.log(items);
+    if (isProcessing) return; // Ngăn gọi lại nếu đang xử lý
+    setIsProcessing(true);
+    setItems((prevItems) => {
+      const existingItemIndex = prevItems.findIndex(
+        (item) => item.id === newItem.id
+      );
 
-    // setItems((prevItems) => {
-    //   const existingItemIndex = prevItems.findIndex(
-    //     (item) => item.id === newItem.id
-    //   );
-
-    //   if (existingItemIndex !== -1) {
-    //     // Nếu sản phẩm đã tồn tại, chỉ tăng thêm 1 đơn vị
-    //     const updatedItems = [...prevItems];
-    //     updatedItems[existingItemIndex].quantity += 1;
-    //     return updatedItems;
-    //   } else {
-    //     console.log("dsfsd");
-
-    //     // Nếu chưa có, thêm mới vào giỏ hàng với số lượng mặc định là 1
-    //     return [...prevItems, { ...newItem, quantity: 1 }];
-    //   }
-    // });
+      if (existingItemIndex !== -1) {
+        const updatedItems = [...prevItems];
+        console.log(
+          "Before update - Quantity:",
+          updatedItems[existingItemIndex].quantity
+        );
+        updatedItems[existingItemIndex].quantity =
+          updatedItems[existingItemIndex].quantity + 1;
+        console.log(
+          "After update - Quantity:",
+          updatedItems[existingItemIndex].quantity
+        );
+        return updatedItems;
+      } else {
+        console.log("Adding new item with quantity 1");
+        return [...prevItems, { ...newItem, quantity: 1 }];
+      }
+    });
+    setTimeout(() => setIsProcessing(false), 100);
   };
 
   const updateItem = (id: string, quantity: number) => {
