@@ -1,13 +1,19 @@
 import { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-    images: {
-        domains: ["blush-secure-parrot-598.mypinata.cloud"],
-    },
-    webpack: (config) => {
-        config.module.exprContextCritical = false;
-        return config;
-    }
+  reactStrictMode: false,
+  images: {
+    domains: ["blush-secure-parrot-598.mypinata.cloud"]
+  },
+  webpack: (config) => {
+    config.module.exprContextCritical = false;
+    return config;
+  },
+  optimizeFonts: true,
+  swcMinify: true,
+  compiler: {
+    styledComponents: true
+  }
 };
 
 export default nextConfig;
