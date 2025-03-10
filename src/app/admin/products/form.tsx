@@ -121,7 +121,7 @@ export default function ProductForm({ isEditing = false , initialData = null}: P
 
     useEffect(() => {
         if (initialData) {
-            console.log('has data')
+            setFormData(initialData)
         }
     }, []);
 
@@ -158,7 +158,7 @@ export default function ProductForm({ isEditing = false , initialData = null}: P
         });
     };
 
-    const autoGenareteCode = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const autoGenerateCode = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setFormData({ ...formData, ["code"]: generateVoucherCode() });
     };
@@ -275,10 +275,10 @@ export default function ProductForm({ isEditing = false , initialData = null}: P
                                                 <h5>Thông tin sản phẩm</h5>
                                             </div>
                                             <div className="mb-4 row align-items-center">
-                                                <label className="form-label-title col-sm-3 mb-0">
+                                                <label className="form-label-title col-md-3 mb-0">
                                                     Tên sản phẩm
                                                 </label>
-                                                <div className="col-sm-9">
+                                                <div className="col-md-9">
                                                     <input
                                                         className={`form-control ${errors.name ? 'is-invalid' : ''}`}
                                                         type="text"
@@ -293,39 +293,43 @@ export default function ProductForm({ isEditing = false , initialData = null}: P
                                             </div>
 
                                             <div className="mb-4 row align-items-center">
-                                                <label className="form-label-title col-sm-3 mb-0">
-                                                    Mã tài khoản
+                                                <label className="col-md-3 col-form-label form-label-title">
+                                                    Mã giảm
                                                 </label>
-                                                <div className="col-sm-9 d-flex align-items-center">
+                                                <div
+                                                    className={
+                                                        isEditing ? "col-md-9" : "col-md-7"
+                                                    }
+                                                >
                                                     <input
-                                                        className={`form-control me-2 ${errors.code ? 'is-invalid' : ''}`}
+                                                        className="form-control"
                                                         disabled={true}
                                                         type="text"
                                                         value={formData.code}
                                                         onChange={handleChange}
                                                         name="code"
                                                     />
-                                                    {!isEditing && (
-                                                        <button
-                                                            className="btn btn-primary"
-                                                            onClick={autoGenareteCode}
-                                                        >
-                                                            Tự động tạo
-                                                        </button>
-                                                    )}
                                                     {isEditing && (
-                                                        <small className="text-danger ms-2">
+                                                        <small className={`text-danger`}>
                                                             <i>Không được cập nhật trường này</i>
                                                         </small>
                                                     )}
                                                 </div>
+                                                <div className={isEditing ? "d-none" : "col-md-2"}>
+                                                    <button
+                                                        className="btn btn-primary"
+                                                        onClick={autoGenerateCode}
+                                                    >
+                                                        Tự động tạo
+                                                    </button>
+                                                </div>
                                             </div>
 
                                             <div className="mb-4 row align-items-center">
-                                                <label className="form-label-title col-sm-3 mb-0">
+                                                <label className="form-label-title col-md-3 mb-0">
                                                     Loại skin súng
                                                 </label>
-                                                <div className="col-sm-9">
+                                                <div className="col-md-9">
                                                     <input
                                                         className={`form-control ${errors.skin_type ? 'is-invalid' : ''}`}
                                                         type="text"
@@ -340,17 +344,16 @@ export default function ProductForm({ isEditing = false , initialData = null}: P
                                             </div>
 
                                             <div className="mb-4 row align-items-center">
-                                                <label className="form-label-title col-sm-3 mb-0">
+                                                <label className="form-label-title col-md-3 mb-0">
                                                     Số lượng tài khoản
                                                 </label>
-                                                <div className="col-sm-9">
+                                                <div className="col-md-9">
                                                     <input
                                                         className={`form-control ${errors.quantity ? 'is-invalid' : ''}`}
                                                         type="number"
                                                         name="quantity"
                                                         value={formData.quantity}
                                                         onChange={handleChange}
-                                                        placeholder="Ví dụ: Vip, Vip Pro, Bình thường, ..."
                                                     />
                                                     {errors.quantity &&
                                                         <div className="invalid-feedback">{errors.quantity}</div>}
@@ -358,10 +361,10 @@ export default function ProductForm({ isEditing = false , initialData = null}: P
                                             </div>
 
                                             <div className="mb-4 row align-items-center">
-                                                <label className="form-label-title col-sm-3 mb-0">
+                                                <label className="form-label-title col-md-3 mb-0">
                                                     Trạng thái
                                                 </label>
-                                                <div className="col-sm-9">
+                                                <div className="col-md-9">
                                                     <select
                                                         className="form-control"
                                                         name="status"
@@ -375,10 +378,10 @@ export default function ProductForm({ isEditing = false , initialData = null}: P
                                             </div>
 
                                             <div className="mb-4 row align-items-center">
-                                                <label className="form-label-title col-sm-3 mb-0">
+                                                <label className="form-label-title col-md-3 mb-0">
                                                     Có bán
                                                 </label>
-                                                <div className="col-sm-9">
+                                                <div className="col-md-9">
                                                     <label className="switch">
                                                         <input
                                                             type="checkbox"
@@ -392,10 +395,10 @@ export default function ProductForm({ isEditing = false , initialData = null}: P
                                             </div>
 
                                             <div className="mb-4 row align-items-center">
-                                                <label className="form-label-title col-sm-3 mb-0">
+                                                <label className="form-label-title col-md-3 mb-0">
                                                     Danh mục
                                                 </label>
-                                                <div className="col-sm-9">
+                                                <div className="col-md-9">
                                                     <select
                                                         className={`form-control ${errors.category_id ? 'is-invalid' : ''}`}
                                                         name="category_id"
@@ -433,8 +436,8 @@ export default function ProductForm({ isEditing = false , initialData = null}: P
                                                 <h5>Mô tả sản phẩm</h5>
                                             </div>
                                             <div className="row">
-                                                <label className="form-label-title col-sm-3 mb-0">Mô tả</label>
-                                                <div className="col-sm-9">
+                                                <label className="form-label-title col-md-3 mb-0">Mô tả</label>
+                                                <div className="col-md-9">
                                           <textarea
                                               className="form-control"
                                               name="description"
@@ -453,10 +456,10 @@ export default function ProductForm({ isEditing = false , initialData = null}: P
                                                 <h5>Hình ảnh sản phẩm</h5>
                                             </div>
                                             <div className="mb-4 row align-items-center">
-                                                <label className="form-label-title col-sm-3 mb-0">
+                                                <label className="form-label-title col-md-3 mb-0">
                                                     Ảnh thumbnail
                                                 </label>
-                                                <div className="col-sm-9">
+                                                <div className="col-md-9">
                                                     <input
                                                         className={`form-control ${errors.thumbnail ? 'is-invalid' : ''}`}
                                                         type="file"
@@ -480,10 +483,10 @@ export default function ProductForm({ isEditing = false , initialData = null}: P
                                             </div>
 
                                             <div className="mb-4 row align-items-center">
-                                                <label className="form-label-title col-sm-3 mb-0">
+                                                <label className="form-label-title col-md-3 mb-0">
                                                     Ảnh bổ sung
                                                 </label>
-                                                <div className="col-sm-9">
+                                                <div className="col-md-9">
                                                     <input
                                                         className="form-control"
                                                         type="file"
@@ -520,10 +523,10 @@ export default function ProductForm({ isEditing = false , initialData = null}: P
                                                 <h5>Giá sản phẩm</h5>
                                             </div>
                                             <div className="mb-4 row align-items-center">
-                                                <label className="form-label-title col-sm-3 mb-0">
+                                                <label className="form-label-title col-md-3 mb-0">
                                                     Giá gốc
                                                 </label>
-                                                <div className="col-sm-9">
+                                                <div className="col-md-9">
                                                     <input
                                                         className={`form-control ${errors.regular_price ? 'is-invalid' : ''}`}
                                                         type="number"
@@ -538,10 +541,10 @@ export default function ProductForm({ isEditing = false , initialData = null}: P
                                             </div>
 
                                             <div className="mb-4 row align-items-center">
-                                                <label className="form-label-title col-sm-3 mb-0">
+                                                <label className="form-label-title col-md-3 mb-0">
                                                     Giá bán
                                                 </label>
-                                                <div className="col-sm-9">
+                                                <div className="col-md-9">
                                                     <input
                                                         className={`form-control ${errors.sale_price ? 'is-invalid' : ''}`}
                                                         type="number"
@@ -562,10 +565,10 @@ export default function ProductForm({ isEditing = false , initialData = null}: P
                                                 <h5>Thông tin bổ sung</h5>
                                             </div>
                                             <div className="mb-4 row align-items-center">
-                                                <label className="form-label-title col-sm-3 mb-0">
+                                                <label className="form-label-title col-md-3 mb-0">
                                                     ID Tài Khoản
                                                 </label>
-                                                <div className="col-sm-9">
+                                                <div className="col-md-9">
                                                     <input
                                                         className={`form-control ${errors.account_id ? 'is-invalid' : ''}`}
                                                         type="text"
@@ -579,10 +582,10 @@ export default function ProductForm({ isEditing = false , initialData = null}: P
                                                 </div>
                                             </div>
                                             <div className="mb-4 row align-items-center">
-                                                <label className="form-label-title col-sm-3 mb-0">
+                                                <label className="form-label-title col-md-3 mb-0">
                                                     Tên người chơi
                                                 </label>
-                                                <div className="col-sm-9">
+                                                <div className="col-md-9">
                                                     <input
                                                         className={`form-control ${errors.account_name ? 'is-invalid' : ''}`}
                                                         type="text"
@@ -596,10 +599,10 @@ export default function ProductForm({ isEditing = false , initialData = null}: P
                                                 </div>
                                             </div>
                                             <div className="mb-4 row align-items-center">
-                                                <label className="form-label-title col-sm-3 mb-0">
+                                                <label className="form-label-title col-md-3 mb-0">
                                                     Số kim cương
                                                 </label>
-                                                <div className="col-sm-9">
+                                                <div className="col-md-9">
                                                     <input
                                                         className={`form-control ${errors.number_diamond_availale ? 'is-invalid' : ''}`}
                                                         type="number"
@@ -614,8 +617,8 @@ export default function ProductForm({ isEditing = false , initialData = null}: P
                                             </div>
 
                                             <div className="mb-4 row align-items-center">
-                                                <label className="form-label-title col-sm-3 mb-0">Rank</label>
-                                                <div className="col-sm-9">
+                                                <label className="form-label-title col-md-3 mb-0">Rank</label>
+                                                <div className="col-md-9">
                                                     <input
                                                         className="form-control"
                                                         type="text"
@@ -628,10 +631,10 @@ export default function ProductForm({ isEditing = false , initialData = null}: P
                                             </div>
 
                                             <div className="mb-4 row align-items-center">
-                                                <label className="form-label-title col-sm-3 mb-0">
+                                                <label className="form-label-title col-md-3 mb-0">
                                                     Server
                                                 </label>
-                                                <div className="col-sm-9">
+                                                <div className="col-md-9">
                                                     <input
                                                         className="form-control"
                                                         type="text"
@@ -644,10 +647,10 @@ export default function ProductForm({ isEditing = false , initialData = null}: P
                                             </div>
 
                                             <div className="mb-4 row align-items-center">
-                                                <label className="form-label-title col-sm-3 mb-0">
+                                                <label className="form-label-title col-md-3 mb-0">
                                                     Đăng ký bằng:
                                                 </label>
-                                                <div className="col-sm-9">
+                                                <div className="col-md-9">
                                                     <input
                                                         className={`form-control ${errors.register_by ? 'is-invalid' : ""}`}
                                                         type="text"
@@ -662,10 +665,10 @@ export default function ProductForm({ isEditing = false , initialData = null}: P
                                             </div>
 
                                             <div className="mb-4 row align-items-center">
-                                                <label className="form-label-title col-sm-3 mb-0">
+                                                <label className="form-label-title col-md-3 mb-0">
                                                     Thẻ vô cực
                                                 </label>
-                                                <div className="col-sm-9">
+                                                <div className="col-md-9">
                                                     <label className="switch">
                                                         <input
                                                             type="checkbox"

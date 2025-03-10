@@ -8,6 +8,7 @@ import Link from "next/link";
 import {Table, Space, TableProps, Tag} from 'antd';
 import Image from "next/image";
 import DeleteConfirm from "@/components/DeleteConfirm";
+import {toast} from "react-toastify";
 
 export default function Product() {
     const [products, setProducts] = useState<IProduct[]>([])
@@ -31,7 +32,16 @@ export default function Product() {
     }
 
     const onDelete = async (id: number) => {
-        console.log(id)
+        try {
+            const res = await api.delete(`products/${id}`)
+            if (res) {
+               toast.success("Xóa sản phẩm thành công");
+                await fetchProducts();
+            }
+        } catch (e) {
+            setError(true)
+            console.log((e as Error).message)
+        }
     }
 
     useEffect(() => {
@@ -65,9 +75,9 @@ export default function Product() {
             title: 'Giá',
             key: 'price',
             render: (record) => (
-                <div>
-                    <del>{record.regular_price}đ</del>
-                    <span> {record.sale_price}đ</span>
+                <div className={`d-flex flex-column`}>
+                    <del className={`text-danger`}>{record.regular_price} đ</del>
+                    <span> {record.sale_price} đ</span>
                 </div>
             ),
         },

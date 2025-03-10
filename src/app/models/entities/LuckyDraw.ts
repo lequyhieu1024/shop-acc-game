@@ -14,7 +14,7 @@ export enum LuckyDrawType {
     COMBINE = "combine"
 }
 
-@Entity('lucky_draws')
+@Entity('lucky-draws')
 export class LuckyDraw {
     @PrimaryGeneratedColumn()
     id!: number;

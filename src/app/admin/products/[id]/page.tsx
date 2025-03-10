@@ -11,12 +11,12 @@ export default function EditProduct() {
     const [product, setProduct] = useState<IProduct | null>(null)
     const params = useParams();
     const [loading, setLoading] = useState<boolean>(true)
-    console.log(params.id)
 
     const fetchProduct = async () => {
         try {
-            const response = await api.get(`product/${params.id}`)
-            setProduct(response.data.product);
+            const response = await api.get(`products/${params.id}`)
+            const { product, images } = response.data
+            setProduct({...product, images} as IProduct)
         } catch (e) {
             console.log(e)
         } finally {
@@ -25,8 +25,7 @@ export default function EditProduct() {
     }
     useEffect(() => {
         fetchProduct();
-    }, [product]);
-
+    }, []);
     if (loading) return <Loading/>;
     if (!product) return <p>Product not found</p>;
 

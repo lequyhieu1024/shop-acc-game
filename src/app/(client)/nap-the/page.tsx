@@ -44,7 +44,7 @@ export default function ChargeCard() {
     };
 
     return (
-        <div className="container mx-auto p-4">
+        <div className="container mx-auto p-4 pt-10">
             <ChargeCardTextComponent />
             <div className="tabs-m1">
                 <ul className="flex border-b mb-4">

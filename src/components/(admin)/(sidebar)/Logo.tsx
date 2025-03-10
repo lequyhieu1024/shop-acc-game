@@ -1,10 +1,11 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export const Logo = () => {
   return (
     <>
-      <div className="logo-wrapper logo-wrapper-center">
-        <a
+      <div className="logo-wrapper logo-wrapper-center justify-content-between">
+        <Link
           href="/admin/dashboard"
           data-bs-original-title=""
           title="Dashboard"
@@ -12,7 +13,7 @@ export const Logo = () => {
           style={{ fontSize: 24 }}
         >
           Quản trị viên
-        </a>
+        </Link>
         <div className="back-btn">
           <i className="fa fa-angle-left"></i>
         </div>
@@ -21,7 +22,7 @@ export const Logo = () => {
         </div>
       </div>
       <div className="logo-icon-wrapper">
-        <a href="index.html">
+        <Link href="/admin/dashboard">
           <Image
             height={100}
             width={100}
@@ -36,7 +37,7 @@ export const Logo = () => {
             src="/admin/assets/images/logo/logo-white.png"
             alt="logo"
           />
-        </a>
+        </Link>
       </div>
     </>
   );
