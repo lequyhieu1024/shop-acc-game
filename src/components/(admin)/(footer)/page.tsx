@@ -68,8 +68,13 @@ const AppFooter: React.FC = () => {
               Facebook Fanpage
             </Link>
           </div>
-          <Image src="/path-to-your-image.jpg" alt="Hỗ Trợ" className="mt-4"   height={100}
-            width={100}/>
+          <Image
+            src="/path-to-your-image.jpg"
+            alt="Hỗ Trợ"
+            className="mt-4"
+            height={100}
+            width={100}
+          />
         </div>
 
         {/* Map */}

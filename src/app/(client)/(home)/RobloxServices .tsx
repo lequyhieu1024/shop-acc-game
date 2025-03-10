@@ -1,6 +1,6 @@
 import { Card } from "antd";
 import { RightOutlined } from "@ant-design/icons";
-import image from "../../../../public/client/images/image.jpg";
+import image from "../../../../public/client/assets/images/image.jpg";
 import Image from "next/image";
 
 const services = [

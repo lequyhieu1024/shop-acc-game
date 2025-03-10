@@ -3,7 +3,7 @@ import React from "react";
 import { Card, Tag } from "antd";
 import { RightOutlined } from "@ant-design/icons";
 import Link from "next/link";
-import image from "../../../../public/client/images/image.jpg";
+import image from "../../../../public/client/assets/images/image.jpg";
 
 const GetDiamondsHot = () => {
   const products = [

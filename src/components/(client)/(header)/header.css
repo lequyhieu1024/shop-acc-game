@@ -1,0 +1,24 @@
+.cart-icon {
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    z-index: 1000;
+  }
+  
+  .cart-icon::before {
+    content: attr(data-totalitems);
+    font-size: 12px;
+    font-weight: 600;
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    line-height: 24px;
+    padding: 0 5px;
+    height: 24px;
+    min-width: 24px;
+    color: white;
+    text-align: center;
+    border-radius: 24px;
+  }
