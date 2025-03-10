@@ -1,6 +1,5 @@
 import React from "react";
 import { Drawer, Button } from "antd";
-import { useViewport } from "@/app/hook/useViewport";
 
 interface DrawerCommonProps {
   open: boolean; // Updated from 'visible' to 'open'

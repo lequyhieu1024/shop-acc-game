@@ -1,23 +1,25 @@
 import { useState, useEffect } from "react";
 
 export const useViewport = () => {
-  const [width, setWidth] = useState(window.innerWidth);
-  const [height, setHeight] = useState(window.innerHeight);
+  const [width, setWidth] = useState<number | undefined>(undefined);
+  const [height, setHeight] = useState<number | undefined>(undefined);
   const [screenSize, setScreenSize] = useState<string>("xl"); // Default to 'xl'
 
   useEffect(() => {
     const handleWindowResize = () => {
-      const newWidth = window.innerWidth;
-      setWidth(newWidth);
-      setHeight(window.innerHeight);
+      if (typeof window !== "undefined") {
+        const newWidth = window.innerWidth;
+        setWidth(newWidth);
+        setHeight(window.innerHeight);
 
-      // Determine screen size based on width
-      if (newWidth < 576) {
-        setScreenSize("sm"); // Mobile
-      } else if (newWidth < 768) {
-        setScreenSize("md"); // Tablet
-      } else {
-        setScreenSize("xl"); // Desktop and larger
+        // Determine screen size based on width
+        if (newWidth < 576) {
+          setScreenSize("sm"); // Mobile
+        } else if (newWidth < 768) {
+          setScreenSize("md"); // Tablet
+        } else {
+          setScreenSize("xl"); // Desktop and larger
+        }
       }
     };
 

@@ -74,16 +74,8 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
       if (existingItemIndex !== -1) {
         const updatedItems = [...prevItems];
-        console.log(
-          "Before update - Quantity:",
-          updatedItems[existingItemIndex].quantity
-        );
         updatedItems[existingItemIndex].quantity =
           updatedItems[existingItemIndex].quantity + 1;
-        console.log(
-          "After update - Quantity:",
-          updatedItems[existingItemIndex].quantity
-        );
         return updatedItems;
       } else {
         console.log("Adding new item with quantity 1");

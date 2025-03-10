@@ -37,12 +37,14 @@ const NavBar = () => {
   };
 
   const handleCheckout = () => {
-    // Navigate to checkout page or process checkout
-    console.log("Proceeding to checkout");
-    window.location.href = "/thanh-toan";
+    // Kiểm tra xem đang ở trên client
+    if (typeof window !== "undefined") {
+      // Navigate to checkout page or process checkout
+      console.log("Proceeding to checkout");
+      window.location.href = "/thanh-toan";
+    }
     closeCartDrawer();
   };
-
   return (
     <>
       <nav className="flex h-[50px] select-none items-center bg-blue-500 fixed z-20 w-full">

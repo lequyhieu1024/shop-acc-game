@@ -63,7 +63,7 @@ const LuckyWheelToggle: React.FC = () => {
             >
               {/* Wheel segments */}
               {colors.map((color, index) => {
-                const angle = (360 / colors.length) * index;
+                // const angle = (360 / colors.length) * index;
                 return (
                   <div
                     key={index}
