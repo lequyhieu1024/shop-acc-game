@@ -1,10 +1,12 @@
 import Image from "next/image";
+import Link from "next/link";
+import {FaBars} from "react-icons/fa";
 
 export const Logo = () => {
   return (
     <div className="header-logo-wrapper p-0">
       <div className="logo-wrapper">
-        <a href="index.html">
+        <Link href="/admin/dashboard">
           <Image
             height={100}
                     width={100}
@@ -19,22 +21,14 @@ export const Logo = () => {
             src="/admin/assets/images/logo/1-white.png"
             alt="logo"
           />
-        </a>
+        </Link>
       </div>
       <div className="toggle-sidebar">
         <i
           className="status_toggle middle sidebar-toggle"
           data-feather="align-center"
         ></i>
-        <a href="index.html">
-          <Image
-            height={100}
-                    width={100}
-            src="/admin/assets/images/logo/1.png"
-            className="img-fluid"
-            alt=""
-          />
-        </a>
+          <FaBars size="2em" />
       </div>
     </div>
   );

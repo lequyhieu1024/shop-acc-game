@@ -46,7 +46,7 @@ const TransactionDetail = () => {
     if (!transaction) return <p>Không tìm thấy giao dịch</p>;
 
     return (
-            <Card title="Chi tiết thông tin giao dịch" extra={<Button onClick={() => router.push("/admin/transactions")}>Quay lại</Button>}>
+            <Card className={`overflow-x-auto`} title="Chi tiết thông tin giao dịch" extra={<Button onClick={() => router.push("/admin/transactions")}>Quay lại</Button>}>
             <Descriptions bordered column={1}>
                 {/*<Descriptions.Item label="Mã giao dịch">{transaction.id}</Descriptions.Item>*/}
                 <Descriptions.Item label="Mã yêu cầu"><span className="text-danger fw-bold">{transaction.request_id}</span></Descriptions.Item>

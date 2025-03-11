@@ -59,14 +59,6 @@ export async function POST(req: NextRequest) {
         const quantity = formData.get("quantity") as string;
         const category_id = formData.get("category_id") as string;
         const register_by = formData.get("register_by") as string;
-        // console.log(name)
-        // console.log(thumbnailFile)
-        // console.log(regularPrice)
-        // console.log(salePrice)
-        // console.log(skinType)
-        // console.log(quantity)
-        // console.log(category_id)
-        // console.log(register_by)
         if (!name || !code || !thumbnailFile || !regularPrice || !salePrice || !skinType || !quantity || !category_id || !register_by) {
             return NextResponse.json(
                 {

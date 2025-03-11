@@ -20,7 +20,9 @@ export default function Layout({ children }: { children: ReactNode }) {
           <div className="page-body">
             <div className="container-fluid">
               {/* Extend Here */}
-              {children}
+              <div style={{ paddingTop: "10px" }}>
+                  {children}
+              </div>
               <ToastContainer />
             </div>
             <AppFooter />

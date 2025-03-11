@@ -1,13 +1,14 @@
 "use client"
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import Loading from "@/components/Loading";
 import api from "@/app/services/axiosService";
 import {IProduct} from "@/app/interfaces/IProduct";
 import ErrorPage from "@/components/(admin)/Error";
 import Link from "next/link";
 import {Table, Space, TableProps, Tag} from 'antd';
-import {EyeOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
 import Image from "next/image";
+import DeleteConfirm from "@/components/DeleteConfirm";
+import {toast} from "react-toastify";
 
 export default function Product() {
     const [products, setProducts] = useState<IProduct[]>([])
@@ -30,6 +31,19 @@ export default function Product() {
         }
     }
 
+    const onDelete = async (id: number) => {
+        try {
+            const res = await api.delete(`products/${id}`)
+            if (res) {
+               toast.success("Xóa sản phẩm thành công");
+                await fetchProducts();
+            }
+        } catch (e) {
+            setError(true)
+            console.log((e as Error).message)
+        }
+    }
+
     useEffect(() => {
         fetchProducts()
     }, []);
@@ -41,16 +55,16 @@ export default function Product() {
             key: 'name',
         },
         {
-            title: 'Mã',
-            dataIndex: 'code',
-            key: 'code',
+            title: 'Số lượng còn',
+            dataIndex: 'quantity',
+            key: 'quantity',
         },
         {
             title: 'Ảnh',
             dataIndex: 'thumbnail',
             key: 'thumbnail',
             render: (thumbnail, record) => (
-                <Image width={200} height={200}
+                <Image width={100} height={100}
                     src={thumbnail}
                     alt={record.name}
                     className="img-fluid"
@@ -61,9 +75,9 @@ export default function Product() {
             title: 'Giá',
             key: 'price',
             render: (record) => (
-                <div>
-                    <del>{record.regular_price}đ</del>
-                    <span> {record.sale_price}đ</span>
+                <div className={`d-flex flex-column`}>
+                    <del className={`text-danger`}>{record.regular_price.toLocaleString('vi-VN')} đ</del>
+                    <span> {record.sale_price.toLocaleString('vi-VN')} đ</span>
                 </div>
             ),
         },
@@ -76,23 +90,14 @@ export default function Product() {
             ),
         },
         {
-            title: 'Tùy chọn',
-            key: 'action',
-            render: (record) => (
+            title: "Action",
+            key: "action",
+            render: (product) => (
                 <Space size="middle">
-                    <a href={`product-detail/${record.id}`}>
-                        <EyeOutlined/>
-                    </a>
-                    <a href={`edit-product/${record.id}`}>
-                        <EditOutlined/>
-                    </a>
-                    <a
-                        href="javascript:void(0)"
-                        data-bs-toggle="modal"
-                        data-bs-target="#exampleModalToggle"
-                    >
-                        <DeleteOutlined/>
-                    </a>
+                    <Link href={`/admin/products/${product.id}`}>
+                        <i className="ri-pencil-line"></i>
+                    </Link>
+                    <DeleteConfirm onConfirm={() => onDelete(product.id)} />
                 </Space>
             ),
         },

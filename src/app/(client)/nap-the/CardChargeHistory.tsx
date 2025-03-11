@@ -78,7 +78,7 @@ export default function CardChargeHistory({ mt = 'mt-0' }: {mt: string}) {
     // const totalReceived = histories.reduce((sum, item) => sum + item.amount, 0);
 
     return (
-        <div className={`${mt}`}>
+        <div className={`${mt} overflow-x-auto`}>
             <h2 className="text-center text-xl font-bold mb-4">Lịch sử nạp thẻ</h2>
             <Table
                 columns={columns}
