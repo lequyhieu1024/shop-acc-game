@@ -37,9 +37,7 @@ const NavBar = () => {
   };
 
   const handleCheckout = () => {
-    // Kiểm tra xem đang ở trên client
     if (typeof window !== "undefined") {
-      // Navigate to checkout page or process checkout
       console.log("Proceeding to checkout");
       window.location.href = "/thanh-toan";
     }

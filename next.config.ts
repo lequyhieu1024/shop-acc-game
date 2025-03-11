@@ -13,7 +13,8 @@ const nextConfig: NextConfig = {
   swcMinify: true,
   compiler: {
     styledComponents: true
-  }
+  },
+  trailingSlash: false
 };
 
 export default nextConfig;

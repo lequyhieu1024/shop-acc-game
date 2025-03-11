@@ -10,16 +10,17 @@ import Link from "next/link";
 import Image from "next/image";
 import { FaShoppingCart } from "react-icons/fa";
 import { useCart } from "@/app/contexts/CartContext";
-interface ProductItem {
+import { useRouter } from "next/navigation";
+export interface ProductItem {
   id: number;
   name?: string;
-  price: string | number;
+  price?: string | number;
   oldPrice?: string | number;
   discount?: string;
   image: string;
   transactions?: number;
   top?: number;
-  played?: number;
+  played?: number | string;
 }
 
 interface BoxCommonProps {
@@ -33,14 +34,15 @@ interface BoxCommonProps {
 const BoxCommon: React.FC<BoxCommonProps> = ({
   title,
   items,
-  link = "/products",
-  badgeText = "NEW",
+  link = "/dich-vu",
+  badgeText = "",
   showPrice = true
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [clickedButtons, setClickedButtons] = useState<Record<number, boolean>>(
     {}
   );
+  const router = useRouter();
   const [isAdding, setIsAdding] = useState(false);
   const { addItem } = useCart();
   useEffect(() => {
@@ -177,7 +179,7 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
       const cartItem = {
         id: item.id.toString(),
         name: item.name || "",
-        price: item.price.toString() || "0",
+        price: item?.price!.toString() || "0",
         quantity: 1,
         image: item.image
       };
@@ -201,8 +203,11 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
     [isAdding, addItem]
   );
 
-  const handleRedirect = () => {
-    console.log("ád");
+  const handleRedirect = (item: ProductItem) => {
+    if (typeof window !== "undefined") {
+      console.log("Proceeding to checkout");
+      router.push(`/mua-the/${item.id}`);
+    }
   };
 
   return (
@@ -226,13 +231,21 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
           <Card
             key={item.id}
             hoverable
-            onClick={() => handleRedirect()}
+            onClick={() => handleRedirect(item)}
             className="overflow-hidden border rounded-lg"
             cover={
               <div className="relative bg-purple-100 flex items-center justify-center overflow-hidden">
                 {badgeText && (
                   <div className="absolute right-2 z-10">
-                    <Badge.Ribbon text={badgeText} color="magenta" />
+                    <Badge.Ribbon
+                      className="animate-bounce"
+                      text={
+                        <span className="animate-bounce inline-block">
+                          {badgeText}
+                        </span>
+                      }
+                      color="magenta"
+                    />
                   </div>
                 )}
                 <div className="group w-full h-full overflow-hidden">
@@ -248,9 +261,11 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
             }
           >
             <div className="mt-2">
-              <h3 className="text-sm font-medium line-clamp-2 h-10">
-                {item.name}
-              </h3>
+              {item.name && (
+                <h3 className="text-sm font-medium line-clamp-2 h-10">
+                  {item.name}
+                </h3>
+              )}
               {item.played && (
                 <div className="mt-2 text-gray-500">Đã chơi: {item.played}</div>
               )}
@@ -271,8 +286,37 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
               )}
 
               {item?.top && (
-                <div className="absolute top-2 left-2 bg-yellow-200 px-2 rounded text-sm">
-                  {item.top}
+                <div
+                  className="absolute top-2 right-2 bg-pink-500 text-white px-2 py-1 rounded-full flex items-center justify-center z-10"
+                  style={{
+                    backgroundColor:
+                      item.top === 1
+                        ? "#FF9800"
+                        : item.top === 2
+                        ? "#E91E63"
+                        : item.top === 3
+                        ? "#9C27B0"
+                        : item.top === 4
+                        ? "#2196F3"
+                        : "#00BCD4"
+                  }}
+                >
+                  <div className="flex items-center justify-center">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="mr-1"
+                    >
+                      <path
+                        d="M12 2L15 8L21 9L16.5 14L18 20L12 17L6 20L7.5 14L3 9L9 8L12 2Z"
+                        fill="white"
+                      />
+                    </svg>
+                    Top {item.top}
+                  </div>
                 </div>
               )}
 
