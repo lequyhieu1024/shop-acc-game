@@ -1,8 +1,10 @@
+import {IProductImage} from "@/app/interfaces/IProductImage";
+
 export interface IProduct {
     id: number;
     code: string;
     name: string;
-    thumbnail: string;
+    thumbnail: string | null | File;
     account_id?: string | null;
     account_name?: string | null;
     description?: string | null;
@@ -21,4 +23,5 @@ export interface IProduct {
     created_at: string;
     updated_at: string;
     deleted_at?: string | null;
+    images: IProductImage[] | null | File | File[];
 }

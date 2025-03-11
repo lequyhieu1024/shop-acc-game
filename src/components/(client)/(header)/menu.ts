@@ -16,10 +16,6 @@ export type IMenuItem = WithPath | WithChildren;
 
 export const menu: IMenuItem[] = [
   {
-    label: "Trang chủ",
-    path: "/"
-  },
-  {
     label: "Danh mục",
     path: "/dich-vu"
   },

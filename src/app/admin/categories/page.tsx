@@ -72,7 +72,7 @@ export default function CategoryPage() {
         <div className="card card-table">
           <div className="card-body">
             <div className="title-header option-title">
-              <h5>All Categories</h5>
+              <h5>Tất cả danh mục</h5>
               <form className="d-inline-flex">
                 <Link
                   href="/admin/categories/create"
@@ -101,7 +101,7 @@ export default function CategoryPage() {
                     <line x1="12" y1="8" x2="12" y2="16"></line>
                     <line x1="8" y1="12" x2="16" y2="12"></line>
                   </svg>
-                  Add New
+                  Thêm mới
                 </Link>
               </form>
             </div>

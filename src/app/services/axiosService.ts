@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const api = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/',
-    timeout: 60000, // 60 giây
+    timeout: 180000, // 180 giây
 });
 
 api.interceptors.response.use(
