@@ -55,16 +55,16 @@ export default function Product() {
             key: 'name',
         },
         {
-            title: 'Mã',
-            dataIndex: 'code',
-            key: 'code',
+            title: 'Số lượng còn',
+            dataIndex: 'quantity',
+            key: 'quantity',
         },
         {
             title: 'Ảnh',
             dataIndex: 'thumbnail',
             key: 'thumbnail',
             render: (thumbnail, record) => (
-                <Image width={200} height={200}
+                <Image width={100} height={100}
                     src={thumbnail}
                     alt={record.name}
                     className="img-fluid"
@@ -76,8 +76,8 @@ export default function Product() {
             key: 'price',
             render: (record) => (
                 <div className={`d-flex flex-column`}>
-                    <del className={`text-danger`}>{record.regular_price} đ</del>
-                    <span> {record.sale_price} đ</span>
+                    <del className={`text-danger`}>{record.regular_price.toLocaleString('vi-VN')} đ</del>
+                    <span> {record.sale_price.toLocaleString('vi-VN')} đ</span>
                 </div>
             ),
         },

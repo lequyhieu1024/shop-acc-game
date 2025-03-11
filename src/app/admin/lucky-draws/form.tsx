@@ -17,13 +17,13 @@ interface AccGameItem {
     name: string;
 }
 
-interface CombineItem {
-    id: number;
-    item_type: string;
-    name?: string;
-    username?: string;
-    [key: string]: any;
-}
+// interface CombineItem {
+//     id: number;
+//     item_type: string;
+//     name?: string;
+//     username?: string;
+//     [key: string]: any;
+// }
 
 interface LuckyDrawProps {
     isEditing?: boolean;
@@ -32,7 +32,7 @@ interface LuckyDrawProps {
 
 export default function LuckyDrawForm({ isEditing = false, initialData = null }: LuckyDrawProps) {
     const [loading, setLoading] = useState<boolean>(true);
-    const [message, setMessage] = useState<string>("");
+    // const [message, setMessage] = useState<string>("");
     const [formData, setFormData] = useState<ILuckyDraw>({
         id: 0,
         name: "",
@@ -51,7 +51,7 @@ export default function LuckyDrawForm({ isEditing = false, initialData = null }:
 
     const [voucherOptions, setVoucherOptions] = useState<VoucherItem[]>([]);
     const [accGameOptions, setAccGameOptions] = useState<AccGameItem[]>([]);
-    const [combineOptions, setCombineOptions] = useState<CombineItem[][]>([]);
+    // const [combineOptions, setCombineOptions] = useState<CombineItem[][]>([]);
     const [selectedItemIds, setSelectedItemIds] = useState<number[]>([]);
 
     useEffect(() => {
@@ -89,20 +89,20 @@ export default function LuckyDrawForm({ isEditing = false, initialData = null }:
                     setAccGameOptions(accGameResp.data.products || []);
                     break;
                 }
-                case "combine": {
-                    const accGameResp = await api.get("products/get-list");
-                    const voucherResp = await api.get("vouchers/get-list");
-                    const accGameData = Array.isArray(accGameResp.data.products) ? accGameResp.data.products : [];
-                    const voucherData = Array.isArray(voucherResp.data.vouchers) ? voucherResp.data.vouchers : [];
-
-                    const combineResp: CombineItem[][] = [
-                        voucherData.map((item: any) => ({ ...item, item_type: "voucher" })),
-                        accGameData.map((item: any) => ({ ...item, item_type: "product" })),
-                    ];
-
-                    setCombineOptions(combineResp || []);
-                    break;
-                }
+                // case "combine": {
+                //     const accGameResp = await api.get("products/get-list");
+                //     const voucherResp = await api.get("vouchers/get-list");
+                //     const accGameData = Array.isArray(accGameResp.data.products) ? accGameResp.data.products : [];
+                //     const voucherData = Array.isArray(voucherResp.data.vouchers) ? voucherResp.data.vouchers : [];
+                //
+                //     const combineResp: CombineItem[][] = [
+                //         voucherData.map((item: any) => ({ ...item, item_type: "voucher" })),
+                //         accGameData.map((item: any) => ({ ...item, item_type: "product" })),
+                //     ];
+                //
+                //     setCombineOptions(combineResp || []);
+                //     break;
+                // }
                 default:
                     break;
             }
@@ -140,13 +140,13 @@ export default function LuckyDrawForm({ isEditing = false, initialData = null }:
             if (!formData.expired_date) {
                 newErrors.expired_date = "Ngày hết hạn là bắt buộc.";
             }
-            if (formData.issue_date && formData.expired_date) {
-                const issueDate = new Date(formData.issue_date);
-                const expiredDate = new Date(formData.expired_date);
-                if (issueDate >= expiredDate) {
-                    newErrors.expired_date = "Ngày hết hạn phải lớn hơn ngày phát hành.";
-                }
-            }
+            // if (formData.issue_date && formData.expired_date) {
+            //     const issueDate = new Date(formData.issue_date);
+            //     const expiredDate = new Date(formData.expired_date);
+            //     if (issueDate >= expiredDate) {
+            //         newErrors.expired_date = "Ngày hết hạn phải lớn hơn ngày phát hành.";
+            //     }
+            // }
         }
 
         // Validate loại
@@ -248,7 +248,7 @@ export default function LuckyDrawForm({ isEditing = false, initialData = null }:
             }
             window.location.href = "/admin/lucky-draws";
         } catch (error) {
-            setMessage("Đã có lỗi xảy ra khi lưu dữ liệu");
+            // setMessage("Đã có lỗi xảy ra khi lưu dữ liệu");
             console.error("Error saving lucky draw:", error);
             toast.error("Đã có lỗi xảy ra khi lưu dữ liệu");
         } finally {
@@ -437,30 +437,30 @@ export default function LuckyDrawForm({ isEditing = false, initialData = null }:
                                                     onChange={handleItemChange}
                                                 >
                                                     <option value="">Chọn nhiều mục</option>
-                                                    {formData.type === "combine" &&
-                                                        Array.isArray(combineOptions) &&
-                                                        combineOptions.length > 0 && (
-                                                            <>
-                                                                {combineOptions[0].length > 0 && (
-                                                                    <optgroup label="Vouchers">
-                                                                        {combineOptions[0].map((item) => (
-                                                                            <option key={item.id} value={item.id}>
-                                                                                {item.name}
-                                                                            </option>
-                                                                        ))}
-                                                                    </optgroup>
-                                                                )}
-                                                                {combineOptions[1].length > 0 && (
-                                                                    <optgroup label="Products">
-                                                                        {combineOptions[1].map((item) => (
-                                                                            <option key={item.id} value={item.id}>
-                                                                                {item.name}
-                                                                            </option>
-                                                                        ))}
-                                                                    </optgroup>
-                                                                )}
-                                                            </>
-                                                        )}
+                                                    {/*{formData.type === "combine" &&*/}
+                                                    {/*    Array.isArray(combineOptions) &&*/}
+                                                    {/*    combineOptions.length > 0 && (*/}
+                                                    {/*        <>*/}
+                                                    {/*            {combineOptions[0].length > 0 && (*/}
+                                                    {/*                <optgroup label="Vouchers">*/}
+                                                    {/*                    {combineOptions[0].map((item) => (*/}
+                                                    {/*                        <option key={item.id} value={item.id}>*/}
+                                                    {/*                            {item.name}*/}
+                                                    {/*                        </option>*/}
+                                                    {/*                    ))}*/}
+                                                    {/*                </optgroup>*/}
+                                                    {/*            )}*/}
+                                                    {/*            {combineOptions[1].length > 0 && (*/}
+                                                    {/*                <optgroup label="Products">*/}
+                                                    {/*                    {combineOptions[1].map((item) => (*/}
+                                                    {/*                        <option key={item.id} value={item.id}>*/}
+                                                    {/*                            {item.name}*/}
+                                                    {/*                        </option>*/}
+                                                    {/*                    ))}*/}
+                                                    {/*                </optgroup>*/}
+                                                    {/*            )}*/}
+                                                    {/*        </>*/}
+                                                    {/*    )}*/}
                                                     {formData.type === "voucher" &&
                                                         Array.isArray(voucherOptions) &&
                                                         voucherOptions.map((item) => (

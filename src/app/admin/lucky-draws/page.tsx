@@ -2,7 +2,7 @@
 import Loading from "@/components/Loading";
 import ErrorPage from "@/components/(admin)/Error";
 import Link from "next/link";
-import { Space, Table, TableProps, Tag } from "antd";
+import { Space, Table, TableProps } from "antd";
 import React, { useEffect, useState } from "react";
 import api from "@/app/services/axiosService";
 import { toast } from "react-toastify";
