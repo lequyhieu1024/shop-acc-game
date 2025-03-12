@@ -1,59 +1,63 @@
 "use client";
-
-import { useState } from "react";
-import { Button, Form, Input } from "antd";
+import { useState, useEffect } from "react";
+import { Button, Input, Form, Tabs } from "antd";
 import { MailOutlined, LockOutlined, GoogleOutlined } from "@ant-design/icons";
-import Image from "next/image";
 
-const AuthForm = () => {
+type AuthInputProps = {
+  name: string;
+  placeholder: string;
+  type?: "text" | "password";
+  rules?: object[];
+  label?: string;
+};
+
+const AuthInput: React.FC<AuthInputProps> = ({ name, placeholder, type = "text", rules, label }) => (
+  <Form.Item name={name} rules={rules} label={label} >
+    {type === "password" ? (
+      <Input.Password size="large" placeholder={placeholder} prefix={<LockOutlined />} />
+    ) : (
+      <Input size="large" placeholder={placeholder} prefix={<MailOutlined />} />
+    )}
+  </Form.Item>
+);
+
+const AuthForm: React.FC = () => {
+  const [activeTab, setActiveTab] = useState("login");
   const [loading, setLoading] = useState(false);
 
+
   const onFinish = (values: any) => {
-    console.log("Success:", values);
     setLoading(true);
-    setTimeout(() => setLoading(false), 2000);
+    setTimeout(() => {
+      console.log("Submitted: ", values);
+      setLoading(false);
+    }, 2000);
   };
 
   return (
-    <section className="bg-gray-50 min-h-screen flex items-center justify-center p-4">
-      <div className="bg-gray-100 flex flex-col md:flex-row rounded-2xl shadow-lg max-w-3xl p-5 items-center w-full">
-        {/* Form Container */}
-        <div className="md:w-1/2 px-8 md:px-16 w-full">
-          <h2 className="font-bold text-2xl text-[#002D74] text-center md:text-left">
-            Login
-          </h2>
-          <p className="text-xs mt-2 text-[#002D74] text-center md:text-left">
-            If you are already a member, easily log in
-          </p>
+    <div className="flex justify-center items-center min-h-screen bg-gray-50">
+      <div className="relative w-96 bg-white ring-8 ring-gray-100 border border-gray-200 rounded-xl overflow-hidden p-6">
+        <h2 className="font-bold text-2xl text-[#002D74] text-center">
+          {activeTab === "login" ? "Đăng nhập" : "Đăng ký"}
+        </h2>
+        <Tabs
+          activeKey={activeTab}
+          onChange={setActiveTab}
+          centered
+          className="border-b"
+          items={[
+            { key: "login", label: "Đăng nhập" },
+            { key: "register", label: "Đăng ký" }
+          ]}
+        />
 
-          <Form
-            layout="vertical"
-            onFinish={onFinish}
-            className="flex flex-col gap-4 mt-6"
-          >
-            <Form.Item
-              name="email"
-              rules={[{ required: true, message: "Please enter your email!" }]}
-            >
-              <Input
-                size="large"
-                placeholder="Email"
-                prefix={<MailOutlined />}
-              />
-            </Form.Item>
-            <Form.Item
-              name="password"
-              rules={[
-                { required: true, message: "Please enter your password!" }
-              ]}
-            >
-              <Input.Password
-                size="large"
-                placeholder="Password"
-                prefix={<LockOutlined />}
-              />
-            </Form.Item>
-
+        <div id="form-wrapper" className="transition-all duration-500 ease-in-out" >
+          <Form id={`${activeTab}-form`} layout="vertical" onFinish={onFinish} className="flex flex-col gap-4 mt-6">
+            <AuthInput name="email" placeholder="Email" rules={[{ required: true, message: "Vui lòng không để trống!" }]} label="Email/Sđt"/>
+            <AuthInput name="password" placeholder="Password" type="password" rules={[{ required: true, message: "Vui lòng không để trống!" }]} label="Mật khẩu"/>
+            {activeTab === "register" && (
+              <AuthInput name="confirm-password" placeholder="Nhập lại mật khẩu" label="Nhập lại mật khẩu" type="password" rules={[{ required: true, message: "Vui lòng không để trống!" }]} />
+            )}
             <Button
               type="primary"
               htmlType="submit"
@@ -61,51 +65,27 @@ const AuthForm = () => {
               className="bg-[#002D74] hover:scale-105 duration-300 w-full text-white"
               size="large"
             >
-              Login
+              {activeTab === "login" ? "Đăng nhập" : "Đăng ký"}
             </Button>
           </Form>
-
           <div className="mt-6 grid grid-cols-3 items-center text-gray-400">
             <hr className="border-gray-400" />
-            <p className="text-center text-sm">OR</p>
+            <p className="text-center text-sm">Hoặc</p>
             <hr className="border-gray-400" />
           </div>
-
           <Button
             icon={<GoogleOutlined />}
             className="border w-full rounded-xl mt-5 flex justify-center items-center text-[#002D74] hover:scale-105 duration-300"
             size="large"
           >
-            Login with Google
+            Đăng nhập với Google
           </Button>
-
           <div className="mt-5 text-xs border-b border-[#002D74] py-4 text-center text-[#002D74]">
-            <a href="#">Forgot your password?</a>
-          </div>
-
-          <div className="mt-3 text-xs flex justify-between items-center text-[#002D74]">
-            <p>Don't have an account?</p>
-            <Button
-              type="default"
-              className="border px-5 rounded-xl hover:scale-110 duration-300"
-            >
-              Register
-            </Button>
+            <a href="#">Quên mật khẩu?</a>
           </div>
         </div>
-
-        {/* Image */}
-        {/* <div className="md:block hidden w-1/2">
-          <Image
-            className="rounded-2xl"
-            src="dgfjd"
-            alt="Auth Image"
-            width={400}
-            height={400}
-          />
-        </div> */}
       </div>
-    </section>
+    </div>
   );
 };
 
