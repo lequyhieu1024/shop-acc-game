@@ -30,6 +30,7 @@ export const menu: IMenuItem[] = [
     label: "Giới thiệu"
   },
   {
-    label: "Liên hệ"
+    label: "Liên hệ",
+    path: "/lien-he"
   }
 ];
