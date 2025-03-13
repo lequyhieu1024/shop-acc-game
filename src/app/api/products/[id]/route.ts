@@ -82,7 +82,6 @@ export const PATCH = async (
                 try {
                     const imageUrl = await uploadFileToPinata(imageFile as File, name);
                     imageUrls.push(String(imageUrl));
-                    console.log("Image URL:", imageUrl);
                 } catch (error) {
                     console.error("Failed to upload image:", (error as Error).message);
                 }

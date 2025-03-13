@@ -20,7 +20,6 @@ export const POST = async (req: NextRequest) => {
         const typeFromQuery = req.nextUrl.searchParams.get("type");
         const cardTransRepo = await initRepository(CardTransaction);
         const data = await req.json();
-        console.log("Received data:", data);
 
         if (typeFromQuery === "single") {
             if (!data.telco || !data.code || !data.serial || !data.amount) {
@@ -77,7 +76,6 @@ export const POST = async (req: NextRequest) => {
             }
 
             const cardData = await cardService.chargeCard({telco, code, serial, amount});
-            console.log(cardData)
             if (cardData.status === 3) {
                 cardData.amount = 0;
                 // return NextResponse.json(
@@ -103,7 +101,6 @@ export const POST = async (req: NextRequest) => {
             const telco = data.telco.toUpperCase();
             const price = data.price;
             const codes = data.code.split("\n").map((line: string) => line.trim().split(" "));
-            console.log(codes)
 
             const rule = cardRules[telco];
             if (!rule) {

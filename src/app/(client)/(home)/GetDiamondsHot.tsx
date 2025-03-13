@@ -1,115 +1,110 @@
 "use client";
 import React from "react";
-import { Card, Tag } from "antd";
-import { RightOutlined } from "@ant-design/icons";
-import Link from "next/link";
-import image from "../../../../public/client/assets/images/image.jpg";
-import BoxCommon from "@/components/(client)/(common)/BoxCommon";
 
 const GetDiamondsHot = () => {
-  const products = [
-    {
-      id: 1,
-      name: "M4A1 Phong Cách Naruto",
-      played: "6970",
-      price: "19.000",
-      oldPrice: "38.000",
-      discount: "50%",
-      image: image.src,
-      top: 1
-    },
-    {
-      id: 2,
-      name: "AK47 Rồng Xanh Lv 7",
-      played: "1953",
-      price: "19.000",
-      oldPrice: "38.000",
-      discount: "50%",
-      image: image.src,
-      top: 2
-    },
-    {
-      id: 3,
-      name: "Lật thẻ săn kim cương",
-      played: "17777",
-      price: "9.000",
-      oldPrice: "11.250",
-      discount: "20%",
-      image: image.src,
-      top: 3
-    },
-    {
-      id: 4,
-      name: "Pịc Cà Bón săn Kim Cương",
-      played: "17374",
-      price: "9.000",
-      oldPrice: "18.000",
-      discount: "50%",
-      image: image.src,
-      top: 4
-    },
-    {
-      id: 5,
-      name: "Lật hình săn M1014 Huyết...",
-      played: "68101",
-      price: "19.000",
-      oldPrice: "38.000",
-      discount: "50%",
-      image: image.src,
-      top: 5
-    },
-    {
-      id: 6,
-      name: "M4A1 Phong Cách Naruto",
-      played: "6970",
-      price: "19.000",
-      oldPrice: "38.000",
-      discount: "50%",
-      image: image.src,
-      top: 6
-    },
-    {
-      id: 7,
-      name: "AK47 Rồng Xanh Lv 7",
-      played: "1953",
-      price: "19.000",
-      oldPrice: "38.000",
-      discount: "50%",
-      image: image.src,
-      top: 7
-    },
-    {
-      id: 8,
-      name: "Lật thẻ săn kim cương",
-      played: "17777",
-      price: "9.000",
-      oldPrice: "11.250",
-      discount: "20%",
-      image: image.src,
-      top: 8
-    },
-    {
-      id: 9,
-      name: "Pịc Cà Bón săn Kim Cương",
-      played: "17374",
-      price: "9.000",
-      oldPrice: "18.000",
-      discount: "50%",
-      image: image.src,
-      top: 9
-    },
-    {
-      id: 10,
-      name: "Lật hình săn M1014 Huyết...",
-      played: "68101",
-      price: "19.000",
-      oldPrice: "38.000",
-      discount: "50%",
-      image: image.src,
-      top: 10
-    }
-  ];
-  const productCount = products.length;
+  // const products = [
+  //   {
+  //     id: 1,
+  //     name: "M4A1 Phong Cách Naruto",
+  //     played: "6970",
+  //     price: "19.000",
+  //     oldPrice: "38.000",
+  //     discount: "50%",
+  //     image: image.src,
+  //     top: 1
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "AK47 Rồng Xanh Lv 7",
+  //     played: "1953",
+  //     price: "19.000",
+  //     oldPrice: "38.000",
+  //     discount: "50%",
+  //     image: image.src,
+  //     top: 2
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Lật thẻ săn kim cương",
+  //     played: "17777",
+  //     price: "9.000",
+  //     oldPrice: "11.250",
+  //     discount: "20%",
+  //     image: image.src,
+  //     top: 3
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "Pịc Cà Bón săn Kim Cương",
+  //     played: "17374",
+  //     price: "9.000",
+  //     oldPrice: "18.000",
+  //     discount: "50%",
+  //     image: image.src,
+  //     top: 4
+  //   },
+  //   {
+  //     id: 5,
+  //     name: "Lật hình săn M1014 Huyết...",
+  //     played: "68101",
+  //     price: "19.000",
+  //     oldPrice: "38.000",
+  //     discount: "50%",
+  //     image: image.src,
+  //     top: 5
+  //   },
+  //   {
+  //     id: 6,
+  //     name: "M4A1 Phong Cách Naruto",
+  //     played: "6970",
+  //     price: "19.000",
+  //     oldPrice: "38.000",
+  //     discount: "50%",
+  //     image: image.src,
+  //     top: 6
+  //   },
+  //   {
+  //     id: 7,
+  //     name: "AK47 Rồng Xanh Lv 7",
+  //     played: "1953",
+  //     price: "19.000",
+  //     oldPrice: "38.000",
+  //     discount: "50%",
+  //     image: image.src,
+  //     top: 7
+  //   },
+  //   {
+  //     id: 8,
+  //     name: "Lật thẻ săn kim cương",
+  //     played: "17777",
+  //     price: "9.000",
+  //     oldPrice: "11.250",
+  //     discount: "20%",
+  //     image: image.src,
+  //     top: 8
+  //   },
+  //   {
+  //     id: 9,
+  //     name: "Pịc Cà Bón săn Kim Cương",
+  //     played: "17374",
+  //     price: "9.000",
+  //     oldPrice: "18.000",
+  //     discount: "50%",
+  //     image: image.src,
+  //     top: 9
+  //   },
+  //   {
+  //     id: 10,
+  //     name: "Lật hình săn M1014 Huyết...",
+  //     played: "68101",
+  //     price: "19.000",
+  //     oldPrice: "38.000",
+  //     discount: "50%",
+  //     image: image.src,
+  //     top: 10
+  //   }
+  // ];
+  // const productCount = products.length;
 
   // const maxCols = 5; // Tối đa 5 cột trên 1 hàng
   // const cols = productCount <= maxCols ? productCount : maxCols;
@@ -219,11 +214,12 @@ const GetDiamondsHot = () => {
   // );
 
   return (
-    <BoxCommon
-      title="Nhận Kim Cương Siêu Hot"
-      items={products}
-      badgeText={undefined}
-    />
+      <h1>GetDiamondsHot</h1>
+    // <BoxCommon
+    //   title="Nhận Kim Cương Siêu Hot"
+    //   items={products}
+    //   badgeText={undefined}
+    // />
   );
 };
 

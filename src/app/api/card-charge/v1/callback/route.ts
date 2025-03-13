@@ -9,7 +9,6 @@ export const POST = async (req: NextRequest) => {
     const cardTransRepo = await initRepository(CardTransaction);
     const userRepo = await initRepository(User);
     const callbackResult = await req.json();
-    console.log("callbackResult " + callbackResult);
     if (!callbackResult) {
       return NextResponse.json(
         { message: "Lỗi từ thẻ siêu rẻ api" },

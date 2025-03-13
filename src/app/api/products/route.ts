@@ -80,13 +80,10 @@ export async function POST(req: NextRequest) {
             try {
                 const imageUrl = await uploadFileToPinata(imageFile as File, name);
                 imageUrls.push(String(imageUrl));
-                console.log("Image URL:", imageUrl);
             } catch (error) {
                 console.error("Failed to upload image:", (error as Error).message);
             }
         }
-        // console.log(imageUrls)
-        // return;
 
         const newProduct = productRepository.create({
             code,
