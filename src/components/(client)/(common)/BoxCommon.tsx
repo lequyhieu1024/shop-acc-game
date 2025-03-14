@@ -10,22 +10,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { FaShoppingCart } from "react-icons/fa";
 import { useCart } from "@/app/contexts/CartContext";
+import {IProduct} from "@/app/interfaces/IProduct";
 import { useRouter } from "next/navigation";
-export interface ProductItem {
-  id: number;
-  name?: string;
-  price?: string | number;
-  oldPrice?: string | number;
-  discount?: string;
-  image: string;
-  transactions?: number;
-  top?: number;
-  played?: number | string;
-}
 
 interface BoxCommonProps {
   title: string;
-  items: ProductItem[];
+  items: IProduct[];
   link?: string;
   badgeText?: string;
   showPrice?: boolean;
@@ -34,7 +24,7 @@ interface BoxCommonProps {
 const BoxCommon: React.FC<BoxCommonProps> = ({
   title,
   items,
-  link = "/dich-vu",
+  link = "/danh-muc",
   badgeText = "",
   showPrice = true
 }) => {
@@ -167,7 +157,7 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
   }, []);
 
   const handleAddToCart = useCallback(
-    (e: React.MouseEvent, item: ProductItem) => {
+    (e: React.MouseEvent, item: IProduct) => {
       console.log("handleAddToCart called for item:", item.id);
       e.stopPropagation();
       if (isAdding) return;
@@ -179,9 +169,9 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
       const cartItem = {
         id: item.id.toString(),
         name: item.name || "",
-        price: item?.price!.toString() || "0",
+        price: item?.sale_price!.toString() || "0",
         quantity: 1,
-        image: item.image
+        image: item.thumbnail
       };
 
       addItem(cartItem);
@@ -203,10 +193,9 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
     [isAdding, addItem]
   );
 
-  const handleRedirect = (item: ProductItem) => {
+  const handleRedirect = (item: IProduct) => {
     if (typeof window !== "undefined") {
-      console.log("Proceeding to checkout");
-      router.push(`/mua-the/${item.id}`);
+      router.push(`/san-pham/${item.id}`);
     }
   };
 
@@ -248,12 +237,12 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
                     />
                   </div>
                 )}
-                <div className="group w-full h-full overflow-hidden">
+                <div className="group w-full h-full overflow-hidden" style={{ height: "120px" }}>
                   <Image
                     width={500}
-                    height={500}
+                    height={120}
                     alt={item?.name || "Product image"}
-                    src={item.image}
+                    src={String(item.thumbnail) || "/client/assets/images/placeholder.png"}
                     className="h-full object-contain transition-transform duration-500 ease-in-out group-hover:scale-110"
                   />
                 </div>
@@ -266,63 +255,25 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
                   {item.name}
                 </h3>
               )}
-              {item.played && (
-                <div className="mt-2 text-gray-500">Đã chơi: {item.played}</div>
-              )}
               {showPrice && (
                 <div className="flex items-center mt-2">
-                  <span className="text-blue-600 font-bold">{item.price}</span>
-                  {item.oldPrice && (
+                  <span className="text-blue-600 font-bold">{item.sale_price}</span>
+                  {item.regular_price && (
                     <span className="ml-2 text-gray-400 line-through text-xs">
-                      {item.oldPrice}
+                      {item.regular_price}
                     </span>
                   )}
-                  {item.discount && (
+                  {item.sale_price && (
                     <span className="ml-2 text-xs text-white bg-pink-500 px-1 rounded">
-                      {item.discount}
+                                {Math.round(((item.regular_price - item.sale_price) / item.regular_price) * 100)}%
                     </span>
                   )}
                 </div>
               )}
 
-              {item?.top && (
-                <div
-                  className="absolute top-2 right-2 bg-pink-500 text-white px-2 py-1 rounded-full flex items-center justify-center z-10"
-                  style={{
-                    backgroundColor:
-                      item.top === 1
-                        ? "#FF9800"
-                        : item.top === 2
-                        ? "#E91E63"
-                        : item.top === 3
-                        ? "#9C27B0"
-                        : item.top === 4
-                        ? "#2196F3"
-                        : "#00BCD4"
-                  }}
-                >
-                  <div className="flex items-center justify-center">
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="mr-1"
-                    >
-                      <path
-                        d="M12 2L15 8L21 9L16.5 14L18 20L12 17L6 20L7.5 14L3 9L9 8L12 2Z"
-                        fill="white"
-                      />
-                    </svg>
-                    Top {item.top}
-                  </div>
-                </div>
-              )}
-
-              {item.transactions !== undefined && (
+              {item.register_by && (
                 <p className="text-xs text-gray-500">
-                  Giao dịch: {item.transactions.toLocaleString()}
+                  Đăng ký: {item.register_by}
                 </p>
               )}
 

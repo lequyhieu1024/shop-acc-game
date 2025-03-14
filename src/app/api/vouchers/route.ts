@@ -55,7 +55,6 @@ export const POST = async (req: NextRequest) => {
     const data = await req.json();
     const newVoucher = voucherRepo.create(data);
     await voucherRepo.save(newVoucher);
-    console.log(newVoucher);
     return NextResponse.json({ newVoucher }, { status: 200 });
   } catch (e) {
     console.log((e as Error).message);

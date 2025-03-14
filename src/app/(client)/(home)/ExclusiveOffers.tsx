@@ -1,55 +1,31 @@
+"use client";
 import BoxCommon from "@/components/(client)/(common)/BoxCommon";
-import React from "react";
-import image from "../../../../public/client/assets/images/image.jpg";
-export const exclusiveOffers = [
-  {
-    id: 1,
-    name: "Máy Gắp Kim Cương",
-    image: image.src,
-    played: 16401,
-    price: "19,000",
-    oldPrice: "23.750",
-    discount: "20%"
-  },
-  {
-    id: 2,
-    name: "Rung Cây Robux Hứng Nhiều Không Hết",
-    image: image.src,
-    played: 27711,
-    price: "39,000",
-    oldPrice: "48.750",
-    discount: "20%"
-  },
-  {
-    id: 3,
-    name: "VQ AK Rồng Xanh",
-    image: image.src,
-    played: 3249,
-    price: "39,000",
-    oldPrice: "18.750",
-    discount: "20%"
-  },
-  {
-    id: 4,
-    name: "Máy Xèng Robux",
-    image: image.src,
-    played: 16056,
-    price: "15,000",
-    oldPrice: "18.750",
-    discount: "20%"
-  },
-  {
-    id: 5,
-    name: "Vòng Quay Robux",
-    image: image.src,
-    played: 11247,
-    price: "19,000",
-    oldPrice: "38.000",
-    discount: "50%"
-  }
-];
+import React, { useState, useEffect } from "react";
+import { IProduct } from "@/app/interfaces/IProduct";
+import api from "@/app/services/axiosService";
+
 const ExclusiveOffers = () => {
-  return <BoxCommon title="🔥 Ưu đãi độc quyền" items={exclusiveOffers} />;
+  const [exclusiveOffers, setExclusiveOffers] = useState<IProduct[]>([]);
+
+  useEffect(() => {
+    const fetchExclusiveOffers = async () => {
+      try {
+        const response = await api.get('/clients/home/product-sale');
+        setExclusiveOffers(response.data.products || []);
+      } catch (error) {
+        console.error('Error fetching exclusive offers:', error);
+      }
+    };
+
+    fetchExclusiveOffers();
+  }, []);
+
+  return (
+      <BoxCommon
+          title="🔥 Ưu đãi độc quyền"
+          items={exclusiveOffers}
+      />
+  );
 };
 
 export default ExclusiveOffers;

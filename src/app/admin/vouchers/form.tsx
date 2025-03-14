@@ -38,17 +38,14 @@ export default function VoucherForm({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setData({ ...data, [e.target.name]: e.target.value });
-    // console.log(data)
   };
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setData({ ...data, [e.target.name]: e.target.value });
-    // console.log(data)
   };
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setData({ ...data, type: e.target.checked ? "private" : "public" });
-    // console.log(data)
   };
 
   const handleDateChange = (name: string, value: string) => {

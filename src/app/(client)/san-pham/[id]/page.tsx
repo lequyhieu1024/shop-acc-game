@@ -2,10 +2,9 @@
 import React from "react";
 import AVATAR from "../../../../../public/client/assets/images/avatar.png";
 import DetailProduct from "@/components/(client)/product/DetailProduct";
-import { useParams } from "next/navigation";
+// import { useParams } from "next/navigation";
 const DetailAcc = () => {
-  const params = useParams();
-  console.log(params);
+  // const params = useParams();
 
   const productData = {
     id: 12,
