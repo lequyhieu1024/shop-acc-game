@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import image from "../../../../public/client/assets/images/image.jpg";
+// import image from "../../../../public/client/assets/images/image.jpg";
 // import BoxCommon from "@/components/(client)/(common)/BoxCommon";
 
 const GetDiamondsHot = () => {
