@@ -26,7 +26,7 @@ export const POST = async (req: NextRequest) => {
       );
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const user: any = await userRepo.findOneBy({ id: transLogs.id });
+    const user: any = await userRepo.findOneBy({ id: transLogs.user_id });
     if (!user) {
       return NextResponse.json(
         { message: "Không tìm thấy dữ liệu user hợp lệ" },
