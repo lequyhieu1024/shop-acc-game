@@ -29,8 +29,6 @@ export default function ChargeCard() {
     };
 
     const handleSubmit = async (formData: SingleFormData | MultipleFormData, formType: "single" | "multiple") => {
-        console.log(`Form submitted: ${formType}`);
-        console.log("Form data:", formData);
 
         try {
             const response = await api.post(`card-charge/v1/charging?type=${formType}`, formData);

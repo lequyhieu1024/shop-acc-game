@@ -8,7 +8,6 @@ import {
   List,
   Avatar,
   Image,
-  Divider,
   Modal
 } from "antd";
 import {
@@ -19,8 +18,8 @@ import {
   CheckCircleFilled
 } from "@ant-design/icons";
 import { FaShoppingCart } from "react-icons/fa";
-import { ProductItem } from "../(common)/BoxCommon";
 import { useCart } from "@/app/contexts/CartContext";
+import {IProduct} from "@/app/interfaces/IProduct";
 
 interface Review {
   id: string;
@@ -55,7 +54,6 @@ interface DetailProductProps {
 }
 
 const DetailProduct: React.FC<DetailProductProps> = ({ product }) => {
-  if (!product) return <div>Loading...</div>;
   const [clickedButtons, setClickedButtons] = useState<Record<number, boolean>>(
     {}
   );
@@ -206,7 +204,7 @@ const DetailProduct: React.FC<DetailProductProps> = ({ product }) => {
   };
 
   const handleAddToCart = useCallback(
-    (e: React.MouseEvent, item: ProductItem) => {
+    (e: React.MouseEvent, item: IProduct) => {
       console.log("handleAddToCart called for item:", item);
       e.stopPropagation();
       if (isAdding) return;
@@ -218,9 +216,9 @@ const DetailProduct: React.FC<DetailProductProps> = ({ product }) => {
       const cartItem = {
         id: item.id.toString(),
         name: item.name || "",
-        price: item?.price!.toString() || "0",
+        price: item?.sale_price!.toString() || "0",
         quantity: 1,
-        image: item.image
+        image: item.thumbnail || "",
       };
 
       addItem(cartItem);
@@ -247,11 +245,11 @@ const DetailProduct: React.FC<DetailProductProps> = ({ product }) => {
         {/* Image Slideshow */}
         <div>
           <Carousel autoplay>
-            {product.images.map((img, index) => (
+            {product!.images.map((img, index) => (
               <img
                 key={index}
                 src={img}
-                alt={product.name}
+                alt={product!.name}
                 className="w-full h-auto rounded-lg"
               />
             ))}
@@ -260,26 +258,26 @@ const DetailProduct: React.FC<DetailProductProps> = ({ product }) => {
 
         {/* Product Info */}
         <div>
-          <h1 className="text-2xl font-bold">{product.name}</h1>
-          <p className="text-lg text-gray-600">{product.description}</p>
+          <h1 className="text-2xl font-bold">{product?.name}</h1>
+          <p className="text-lg text-gray-600">{product?.description}</p>
           <div className="flex items-center mt-2">
-            <Rate allowHalf defaultValue={product.rating} disabled />
+            <Rate allowHalf defaultValue={product?.rating} disabled />
             <span className="ml-2 text-gray-500">
-              ({product.reviews.length} đánh giá)
+              ({product?.reviews.length} đánh giá)
             </span>
           </div>
           <p className="text-xl font-semibold text-red-500 mt-2">
-            {product.price}₫
+            {product?.price}₫
           </p>
-          <p className="text-gray-500">Đã bán: {product.sold}</p>
+          <p className="text-gray-500">Đã bán: {product?.sold}</p>
           <div className="flex items-center gap-2 flex-col">
             <button
               className={`mt-3 w-full bg-blue-500 text-white py-2 px-4 rounded-md flex items-center justify-center text-sm hover:bg-blue-600 transition cart-button ${
-                clickedButtons[product?.id!] ? "clicked" : ""
+                clickedButtons[product!.id!] ? "clicked" : ""
               }`}
               disabled={isAdding}
               onClick={(e) =>
-                handleAddToCart(e, product as unknown as ProductItem)
+                handleAddToCart(e, product as unknown as IProduct)
               }
             >
               <div
@@ -325,7 +323,7 @@ const DetailProduct: React.FC<DetailProductProps> = ({ product }) => {
       {/* Reviews & Comments */}
       <div className="mt-6">
         <h2 className="text-xl font-bold">Đánh giá sản phẩm</h2>
-        {product.reviews.map((review) => (
+        {product?.reviews.map((review) => (
           <Card key={review.id} className="mt-4 shadow-sm">
             <div className="flex items-start">
               <Avatar
@@ -351,7 +349,7 @@ const DetailProduct: React.FC<DetailProductProps> = ({ product }) => {
 
                 {/* Review date and product details */}
                 <div className="text-sm text-gray-500 mt-1">
-                  {review.date} {product.name && `| Tên nick: ${product.name}`}
+                  {review.date} {product!.name && `| Tên nick: ${product!.name}`}
                 </div>
 
                 {/* Review comment */}

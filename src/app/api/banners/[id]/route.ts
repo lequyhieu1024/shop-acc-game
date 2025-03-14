@@ -48,7 +48,6 @@ export const PATCH = async (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const newData: any = Object.fromEntries(formData.entries());
     newData.is_active = newData.is_active === "1";
-    console.log(newData);
     if (!newData.image_url) {
       newData.image_url = banner?.image_url;
     } else {

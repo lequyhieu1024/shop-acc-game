@@ -28,7 +28,6 @@ export default function CardChargeHistory({ mt = 'mt-0' }: {mt: string}) {
             dataIndex: 'status',
             key: 'status',
             render: (status: string) => {
-                console.log(status);
                 let color = '';
                 let text = '';
                 switch (String(status)) {

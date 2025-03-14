@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button, Input, Form, Tabs } from "antd";
 import { MailOutlined, LockOutlined, GoogleOutlined } from "@ant-design/icons";
 
@@ -25,7 +25,7 @@ const AuthForm: React.FC = () => {
   const [activeTab, setActiveTab] = useState("login");
   const [loading, setLoading] = useState(false);
 
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onFinish = (values: any) => {
     setLoading(true);
     setTimeout(() => {

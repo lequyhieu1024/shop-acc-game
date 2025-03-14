@@ -3,6 +3,7 @@ import { Button, Empty, Table, Typography, InputNumber } from "antd";
 import Link from "next/link";
 import { DeleteOutlined } from "@ant-design/icons";
 import { useCart } from "@/app/contexts/CartContext";
+import Image from "next/image";
 
 const { Text } = Typography;
 
@@ -69,12 +70,12 @@ const CartDrawerContent: React.FC = () => {
       render: (_: any, record: CartItem) => (
         <div className="flex items-center">
           {record.image ? (
-            <img
+            <Image
+              width={ 50}
+              height={50}
               src={record.image}
               alt={record.name}
               style={{
-                width: 50,
-                height: 50,
                 objectFit: "cover",
                 marginRight: 12
               }}
