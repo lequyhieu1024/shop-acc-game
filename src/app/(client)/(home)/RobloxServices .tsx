@@ -1,40 +1,38 @@
-import image from "../../../../public/client/assets/images/image.jpg";
-import BoxCommon from "@/components/(client)/(common)/BoxCommon";
-
-const services = [
-  {
-    id: 1,
-    title: "Bán Gems - Unit Toilet Tower Defense",
-    image: image.src,
-    transactions: 251
-  },
-  {
-    id: 2,
-    title: "Bán Item Anime Defenders",
-    image: image.src,
-    transactions: 1413
-  },
-  {
-    id: 3,
-    title: "Mua Gamepass Blox Fruits",
-    image: image.src,
-    transactions: 3359
-  },
-  {
-    id: 4,
-    title: "Bán Trái Ác Quỷ Rương",
-    image: image.src,
-    transactions: 23513
-  },
-  {
-    id: 5,
-    title: "Dịch Vụ Blade Ball",
-    image: image.src,
-    transactions: 6363
-  }
-];
+// const services = [
+//   {
+//     id: 1,
+//     title: "Bán Gems - Unit Toilet Tower Defense",
+//     image: image.src,
+//     transactions: 251
+//   },
+//   {
+//     id: 2,
+//     title: "Bán Item Anime Defenders",
+//     image: image.src,
+//     transactions: 1413
+//   },
+//   {
+//     id: 3,
+//     title: "Mua Gamepass Blox Fruits",
+//     image: image.src,
+//     transactions: 3359
+//   },
+//   {
+//     id: 4,
+//     title: "Bán Trái Ác Quỷ Rương",
+//     image: image.src,
+//     transactions: 23513
+//   },
+//   {
+//     id: 5,
+//     title: "Dịch Vụ Blade Ball",
+//     image: image.src,
+//     transactions: 6363
+//   }
+// ];
 
 const RobloxServices = () => (
+    <h1>RobloxService</h1>
   // <div className="container mx-auto px-4 py-8">
   //   <div className="flex items-center justify-between mb-4">
   //     <h2 className="text-xl font-bold flex items-center">🎮 Dịch vụ Roblox</h2>
@@ -68,7 +66,7 @@ const RobloxServices = () => (
   //     ))}
   //   </div>
   // </div>
-  <BoxCommon title="Nick ngon giá rẻ" items={services} badgeText={undefined} />
+  // <BoxCommon title="Nick ngon giá rẻ" items={services} badgeText={undefined} />
 );
 
 export default RobloxServices;

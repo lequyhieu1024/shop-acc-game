@@ -56,7 +56,6 @@ export default function LuckyDrawForm({ isEditing = false, initialData = null }:
 
     useEffect(() => {
         if (isEditing && initialData) {
-            console.log("has data: ", initialData);
             setFormData({
                 ...initialData,
                 accept_draw: initialData.accept_draw === "1" || initialData.accept_draw === true,

@@ -1,51 +1,51 @@
 "use client";
 import React from "react";
-import image from "../../../../public/client/assets/images/image.jpg";
-import BoxCommon from "@/components/(client)/(common)/BoxCommon";
+// import image from "../../../../public/client/assets/images/image.jpg";
+// import BoxCommon from "@/components/(client)/(common)/BoxCommon";
 
 const NickChip = () => {
-  const products = [
-    {
-      id: 1,
-      name: "Random fisch lv500+ random nhiều cần + coin",
-      price: "250.000đ",
-      oldPrice: "507.000đ",
-      discount: "51%",
-      image: image.src
-    },
-    {
-      id: 2,
-      name: "Random fisch lv750+ random nhiều cần + coin",
-      price: "350.000đ",
-      oldPrice: "455.000đ",
-      discount: "23%",
-      image: image.src
-    },
-    {
-      id: 3,
-      name: "Random fisch lv300+ random nhiều cần + coin",
-      price: "100.000đ",
-      oldPrice: "200.000đ",
-      discount: "50%",
-      image: image.src
-    },
-    {
-      id: 4,
-      name: "Random fisch 2m Coins",
-      price: "20.000đ",
-      oldPrice: "104.000đ",
-      discount: "81%",
-      image: image.src
-    },
-    {
-      id: 5,
-      name: "Random Fisch 5M Coin",
-      price: "65.000đ",
-      oldPrice: "100.000đ",
-      discount: "35%",
-      image: image.src
-    }
-  ];
+  // const products = [
+  //   {
+  //     id: 1,
+  //     name: "Random fisch lv500+ random nhiều cần + coin",
+  //     price: "250.000đ",
+  //     oldPrice: "507.000đ",
+  //     discount: "51%",
+  //     image: image.src
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Random fisch lv750+ random nhiều cần + coin",
+  //     price: "350.000đ",
+  //     oldPrice: "455.000đ",
+  //     discount: "23%",
+  //     image: image.src
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Random fisch lv300+ random nhiều cần + coin",
+  //     price: "100.000đ",
+  //     oldPrice: "200.000đ",
+  //     discount: "50%",
+  //     image: image.src
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "Random fisch 2m Coins",
+  //     price: "20.000đ",
+  //     oldPrice: "104.000đ",
+  //     discount: "81%",
+  //     image: image.src
+  //   },
+  //   {
+  //     id: 5,
+  //     name: "Random Fisch 5M Coin",
+  //     price: "65.000đ",
+  //     oldPrice: "100.000đ",
+  //     discount: "35%",
+  //     image: image.src
+  //   }
+  // ];
 
   // return (
   //   <div className="container mx-auto px-4 py-8">
@@ -108,11 +108,12 @@ const NickChip = () => {
   //   </div>
   // );
   return (
-    <BoxCommon
-      title="Nick ngon giá rẻ"
-      items={products}
-      badgeText={undefined}
-    />
+      <h1>NickChip</h1>
+    // <BoxCommon
+    //   title="Nick ngon giá rẻ"
+    //   items={products}
+    //   badgeText={undefined}
+    // />
   );
 };
 

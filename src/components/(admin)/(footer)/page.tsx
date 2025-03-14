@@ -69,7 +69,7 @@ const AppFooter: React.FC = () => {
             </Link>
           </div>
           <Image
-            src="/path-to-your-image.jpg"
+            src="/client/assets/images/placeholder.png"
             alt="Hỗ Trợ"
             className="mt-4"
             height={100}

@@ -1,5 +1,5 @@
 "use client"
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {IProduct} from "@/app/interfaces/IProduct";
 import api from "@/app/services/axiosService";
 import {useParams} from "next/navigation";
@@ -12,21 +12,22 @@ export default function EditProduct() {
     const params = useParams();
     const [loading, setLoading] = useState<boolean>(true)
 
-    const fetchProduct = async () => {
+    const fetchProduct = useCallback(async () => {
         try {
-            const response = await api.get(`products/${params.id}`)
-            const { product, images } = response.data
-            setProduct({...product, images} as IProduct)
+            const response = await api.get(`products/${params.id}`);
+            const { product, images } = response.data;
+            setProduct({ ...product, images } as IProduct);
         } catch (e) {
-            console.log(e)
+            console.log(e);
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
-    }
+    }, [params.id]);
+
     useEffect(() => {
         fetchProduct();
-          // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [fetchProduct]);
+
     if (loading) return <Loading/>;
     if (!product) return <p>Product not found</p>;
 
