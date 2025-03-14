@@ -31,7 +31,7 @@ export default function ProductForm({
         regular_price: initialData?.regular_price || 0,
         sale_price: initialData?.sale_price || 0,
         skin_type: initialData?.skin_type || "",
-        is_infinity_card: initialData?.is_infinity_card || false,
+        is_infinity_card: initialData?.is_infinity_card ?? false,
         account_id: initialData?.account_id || "",
         account_name: initialData?.account_name || "",
         register_by: initialData?.register_by || "",
@@ -39,7 +39,7 @@ export default function ProductForm({
         server: initialData?.server || "",
         number_diamond_available: initialData?.number_diamond_available || 0,
         status: initialData?.status || "active",
-        is_for_sale: initialData?.is_for_sale || true,
+        is_for_sale: initialData?.is_for_sale ?? true,
         category_id: initialData?.category_id || 0,
         quantity: initialData?.quantity || 0,
         images: initialData?.images || [],
@@ -203,7 +203,9 @@ export default function ProductForm({
             let response;
             if (isEditing) {
                 response = await api.patch(`products/${formData.id}`, data)
-                router.push('/admin/products')
+                if (response.status === 200) {
+                    router.push('/admin/products')
+                }
             } else {
                 response = await api.post(`products`, data)
             }
