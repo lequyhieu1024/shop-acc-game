@@ -116,7 +116,7 @@ export const PATCH = async (
             regular_price: parseInt(regularPrice) || product.regular_price,
             sale_price: parseInt(salePrice) || product.sale_price,
             skin_type: skinType || product.skin_type,
-            is_infinity_card: formData.get("is_infinity_card") === "true" || product.is_infinity_card,
+            is_infinity_card: formData.get("is_infinity_card") === "true",
             register_by: register_by || product.register_by,
             rank: (formData.get("rank") as string) || product.rank,
             server: (formData.get("server") as string) || product.server,
@@ -125,7 +125,7 @@ export const PATCH = async (
                 product.number_diamond_available,
             status:
                 (formData.get("status") as "active" | "inactive") || product.status,
-            is_for_sale: formData.get("is_for_sale") === "true" || product.is_for_sale,
+            is_for_sale: formData.get("is_for_sale") === "true",
             category_id: parseInt(category_id) || product.category_id,
             quantity: Number(quantity) || product.quantity,
             account_id: (formData.get("account_id") as string) || product.account_id,

@@ -3,17 +3,56 @@ import {initRepository} from "@/app/models/connect";
 import {uploadFileToPinata} from "@/app/services/pinataService";
 import {Product} from "@/app/models/entities/Product";
 import {ProductImage} from "@/app/models/entities/Image";
+import {Between, LessThanOrEqual, Like} from "typeorm";
 
 export async function GET(req: NextRequest) {
     try {
-        const productRepository = await initRepository(Product)
+        const productRepository = await initRepository(Product);
 
         const { searchParams } = new URL(req.url);
+
         const page = parseInt(searchParams.get("page") || "1");
         const limit = parseInt(searchParams.get("limit") || "10");
         const skip = (page - 1) * limit;
 
+        const name = searchParams.get("name") || undefined;
+        const categoryId = searchParams.get("category_id") ? parseInt(searchParams.get("category_id") as string) : undefined;
+        const status = searchParams.get("status") as "active" | "inactive" | undefined;
+        const minPrice = searchParams.get("min_price") ? parseInt(searchParams.get("min_price") as string) : undefined;
+        const maxPrice = searchParams.get("max_price") ? parseInt(searchParams.get("max_price") as string) : undefined;
+        const isForSale = searchParams.get("is_for_sale") ? parseInt(searchParams.get("is_for_sale") as string) : undefined;
+        const code = searchParams.get("code") ? searchParams.get("code") : undefined;
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const where: any = {};
+
+        if (name) {
+            where.name = Like(`%${name}%`);
+        }
+        if (categoryId !== undefined) {
+            where.category_id = categoryId;
+        }
+        if (status) {
+            where.status = status;
+        }
+        if (code) {
+            where.code = code;
+        }
+
+        if (minPrice !== undefined && maxPrice !== undefined) {
+            where.sale_price = Between(minPrice, maxPrice);
+        } else if (minPrice !== undefined) {
+            where.sale_price = LessThanOrEqual(minPrice);
+        } else if (maxPrice !== undefined) {
+            where.sale_price = LessThanOrEqual(maxPrice);
+        }
+
+        if (isForSale !== undefined) {
+            where.is_for_sale = isForSale;
+        }
+
         const [products, total] = await productRepository.findAndCount({
+            where,
             skip,
             take: limit,
             order: {
