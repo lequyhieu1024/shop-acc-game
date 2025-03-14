@@ -1,16 +1,6 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
-import {
-  Carousel,
-  Card,
-  Button,
-  Rate,
-  List,
-  Avatar,
-  Image,
-  Divider,
-  Modal
-} from "antd";
+import { Carousel, Card, Button, Rate, List, Avatar, Image, Modal } from "antd";
 import {
   DeleteOutlined,
   UserOutlined,
