@@ -1,10 +1,6 @@
 "use client";
 import React from "react";
-import { Card, Badge } from "antd";
-import { ShoppingCartOutlined } from "@ant-design/icons";
 import image from "../../../../public/client/assets/images/image.jpg";
-import Link from "next/link";
-import Image from "next/image";
 import BoxCommon from "@/components/(client)/(common)/BoxCommon";
 
 const LatestProducts = () => {

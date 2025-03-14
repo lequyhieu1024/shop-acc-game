@@ -1,7 +1,4 @@
-import { Card } from "antd";
-import { RightOutlined } from "@ant-design/icons";
 import image from "../../../../public/client/assets/images/image.jpg";
-import Image from "next/image";
 import BoxCommon from "@/components/(client)/(common)/BoxCommon";
 
 const services = [

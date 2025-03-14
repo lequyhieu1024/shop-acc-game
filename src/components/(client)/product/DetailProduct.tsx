@@ -8,7 +8,6 @@ import {
   List,
   Avatar,
   Image,
-  Divider,
   Modal
 } from "antd";
 import {
@@ -55,10 +54,10 @@ interface DetailProductProps {
 }
 
 const DetailProduct: React.FC<DetailProductProps> = ({ product }) => {
-  if (!product) return <div>Loading...</div>;
   const [clickedButtons, setClickedButtons] = useState<Record<number, boolean>>(
     {}
   );
+  
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const [isAdding, setIsAdding] = useState(false);
@@ -241,6 +240,7 @@ const DetailProduct: React.FC<DetailProductProps> = ({ product }) => {
     },
     [isAdding, addItem]
   );
+  if (!product) return <div>Loading...</div>;
   return (
     <div className="container mx-auto px-4 py-14">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -275,7 +275,7 @@ const DetailProduct: React.FC<DetailProductProps> = ({ product }) => {
           <div className="flex items-center gap-2 flex-col">
             <button
               className={`mt-3 w-full bg-blue-500 text-white py-2 px-4 rounded-md flex items-center justify-center text-sm hover:bg-blue-600 transition cart-button ${
-                clickedButtons[product?.id!] ? "clicked" : ""
+                clickedButtons[product?.id as number] ? "clicked" : ""
               }`}
               disabled={isAdding}
               onClick={(e) =>

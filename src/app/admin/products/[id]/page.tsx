@@ -25,6 +25,7 @@ export default function EditProduct() {
     }
     useEffect(() => {
         fetchProduct();
+          // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     if (loading) return <Loading/>;
     if (!product) return <p>Product not found</p>;

@@ -1,8 +1,5 @@
 "use client";
 import React from "react";
-import { Card, Tag } from "antd";
-import { RightOutlined } from "@ant-design/icons";
-import Link from "next/link";
 import image from "../../../../public/client/assets/images/image.jpg";
 import BoxCommon from "@/components/(client)/(common)/BoxCommon";
 
@@ -109,7 +106,7 @@ const GetDiamondsHot = () => {
       top: 10
     }
   ];
-  const productCount = products.length;
+  // const productCount = products.length;
 
   // const maxCols = 5; // Tối đa 5 cột trên 1 hàng
   // const cols = productCount <= maxCols ? productCount : maxCols;
