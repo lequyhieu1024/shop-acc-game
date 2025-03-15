@@ -1,15 +1,6 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
-import {
-  Carousel,
-  Card,
-  Button,
-  Rate,
-  List,
-  Avatar,
-  Image,
-  Modal
-} from "antd";
+import { Carousel, Card, Button, Rate, List, Avatar, Image, Modal } from "antd";
 import {
   DeleteOutlined,
   UserOutlined,
@@ -19,7 +10,7 @@ import {
 } from "@ant-design/icons";
 import { FaShoppingCart } from "react-icons/fa";
 import { useCart } from "@/app/contexts/CartContext";
-import {IProduct} from "@/app/interfaces/IProduct";
+import { IProduct } from "@/app/interfaces/IProduct";
 
 interface Review {
   id: string;
@@ -57,7 +48,7 @@ const DetailProduct: React.FC<DetailProductProps> = ({ product }) => {
   const [clickedButtons, setClickedButtons] = useState<Record<number, boolean>>(
     {}
   );
-  
+
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const [isAdding, setIsAdding] = useState(false);
@@ -219,7 +210,7 @@ const DetailProduct: React.FC<DetailProductProps> = ({ product }) => {
         name: item.name || "",
         price: item?.sale_price!.toString() || "0",
         quantity: 1,
-        image: item.thumbnail || "",
+        image: item.thumbnail || ""
       };
 
       addItem(cartItem);
@@ -351,7 +342,8 @@ const DetailProduct: React.FC<DetailProductProps> = ({ product }) => {
 
                 {/* Review date and product details */}
                 <div className="text-sm text-gray-500 mt-1">
-                  {review.date} {product!.name && `| Tên nick: ${product!.name}`}
+                  {review.date}{" "}
+                  {product!.name && `| Tên nick: ${product!.name}`}
                 </div>
 
                 {/* Review comment */}

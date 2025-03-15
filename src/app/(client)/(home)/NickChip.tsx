@@ -108,7 +108,7 @@ const NickChip = () => {
   //   </div>
   // );
   return (
-      <h1>NickChip</h1>
+    <h1>NickChip</h1>
     // <BoxCommon
     //   title="Nick ngon giá rẻ"
     //   items={products}

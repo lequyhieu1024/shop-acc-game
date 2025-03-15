@@ -216,7 +216,7 @@ const GetDiamondsHot = () => {
   // );
 
   return (
-      <h1>GetDiamondsHot</h1>
+    <h1>GetDiamondsHot</h1>
     // <BoxCommon
     //   title="Nhận Kim Cương Siêu Hot"
     //   items={products}
