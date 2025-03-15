@@ -184,7 +184,7 @@ export default function LuckyDrawForm({ isEditing = false, initialData = null }:
                     [name]:
                         type === "checkbox"
                             ? checked
-                            : name === "amount_draw" || name === "quality"
+                            : name === "amount_draw"
                                 ? Number(value)
                                 : value,
                 };
