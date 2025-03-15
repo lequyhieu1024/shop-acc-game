@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
         }
 
         const thumbnailUrl = await uploadFileToPinata(thumbnailFile, name);
-        const imageFilesRaw = formData.getAll("images"); // Lấy dữ liệu thô
+        const imageFilesRaw = formData.getAll("images");
         const imageFiles = imageFilesRaw.filter(
             (file) => file instanceof File && file.name && file.size > 0
         );
