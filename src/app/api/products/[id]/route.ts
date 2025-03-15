@@ -3,6 +3,7 @@ import {initRepository} from "@/app/models/connect";
 import {Product} from "@/app/models/entities/Product";
 import {ProductImage} from "@/app/models/entities/Image";
 import {uploadFileToPinata} from "@/app/services/pinataService";
+import {In} from "typeorm";
 
 export const GET = async (
     req: NextRequest,
@@ -28,7 +29,7 @@ export const PATCH = async (
     req: NextRequest,
     { params }: { params: Promise<{ id: string }> }
 ) => {
-    const productId = (await params).id
+    const productId = (await params).id;
     try {
         const productRepo = await initRepository(Product);
         const imageRepo = await initRepository(ProductImage);
@@ -46,6 +47,7 @@ export const PATCH = async (
 
         const formData = await req.formData();
 
+        // Lấy các trường dữ liệu từ formData
         const name = formData.get("name") as string;
         const code = formData.get("code") as string;
         const thumbnailFile = formData.get("thumbnail") as File;
@@ -56,11 +58,21 @@ export const PATCH = async (
         const category_id = formData.get("category_id") as string;
         const register_by = formData.get("register_by") as string;
 
-        if (!name || !code || !regularPrice || !salePrice || !skinType || !quantity || !category_id || !register_by) {
+        if (
+            !name ||
+            !code ||
+            !regularPrice ||
+            !salePrice ||
+            !skinType ||
+            !quantity ||
+            !category_id ||
+            !register_by
+        ) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: "Vui lòng cung cấp đầy đủ thông tin: tên, mã, giá gốc, giá bán, số lượng, ...",
+                    message:
+                        "Vui lòng cung cấp đầy đủ thông tin: tên, mã, giá gốc, giá bán, số lượng, ...",
                 },
                 { status: 400 }
             );
@@ -71,29 +83,36 @@ export const PATCH = async (
             thumbnailUrl = await uploadFileToPinata(thumbnailFile, name);
         }
 
+        const deletedImageIdsRaw = formData.get("deletedImageIds") as string;
+        const deletedImageIds: number[] = deletedImageIdsRaw
+            ? JSON.parse(deletedImageIdsRaw)
+            : [];
+
+        if (deletedImageIds.length > 0) {
+            console.log("Deleting images with IDs:", deletedImageIds);
+            await imageRepo.delete({
+                id: In(deletedImageIds),
+            });
+        }
+
         const imageFilesRaw = formData.getAll("images");
         const imageFiles = imageFilesRaw.filter(
             (file) => file instanceof File && file.name && file.size > 0
         );
-        let imageUrls: string[] = [];
+        const newImageUrls: string[] = [];
 
         if (imageFiles.length > 0) {
             for (const imageFile of imageFiles) {
                 try {
                     const imageUrl = await uploadFileToPinata(imageFile as File, name);
-                    imageUrls.push(String(imageUrl));
+                    newImageUrls.push(String(imageUrl));
                 } catch (error) {
                     console.error("Failed to upload image:", (error as Error).message);
                 }
             }
 
-            const existingImages = await imageRepo.findBy({ product_id: Number(productId) });
-            if (existingImages.length > 0) {
-                await imageRepo.remove(existingImages); // Remove old images
-            }
-
-            if (imageUrls.length > 0) {
-                const imageEntities = imageUrls.map((url) =>
+            if (newImageUrls.length > 0) {
+                const imageEntities = newImageUrls.map((url) =>
                     imageRepo.create({
                         product_id: Number(productId),
                         image_url: url,
@@ -101,10 +120,6 @@ export const PATCH = async (
                 );
                 await imageRepo.save(imageEntities);
             }
-        } else {
-            imageUrls = (await imageRepo.findBy({ product_id: Number(productId) })).map(
-                (img) => img.image_url
-            );
         }
 
         const updatedProductData = {
@@ -116,7 +131,7 @@ export const PATCH = async (
             regular_price: parseInt(regularPrice) || product.regular_price,
             sale_price: parseInt(salePrice) || product.sale_price,
             skin_type: skinType || product.skin_type,
-            is_infinity_card: formData.get("is_infinity_card") === "true" || product.is_infinity_card,
+            is_infinity_card: formData.get("is_infinity_card") === "true",
             register_by: register_by || product.register_by,
             rank: (formData.get("rank") as string) || product.rank,
             server: (formData.get("server") as string) || product.server,
@@ -125,7 +140,7 @@ export const PATCH = async (
                 product.number_diamond_available,
             status:
                 (formData.get("status") as "active" | "inactive") || product.status,
-            is_for_sale: formData.get("is_for_sale") === "true" || product.is_for_sale,
+            is_for_sale: formData.get("is_for_sale") === "true",
             category_id: parseInt(category_id) || product.category_id,
             quantity: Number(quantity) || product.quantity,
             account_id: (formData.get("account_id") as string) || product.account_id,
@@ -134,11 +149,18 @@ export const PATCH = async (
 
         const savedProduct = await productRepo.save(updatedProductData);
 
+        const updatedImages = await imageRepo.find({
+            where: { product_id: Number(productId) },
+        });
+
         return NextResponse.json(
             {
                 success: true,
                 product: savedProduct,
-                images: imageUrls,
+                images: updatedImages.map((img) => ({
+                    id: img.id,
+                    image_url: img.image_url,
+                })),
                 message: "Cập nhật sản phẩm thành công",
             },
             { status: 200 }
@@ -147,7 +169,7 @@ export const PATCH = async (
         console.error("Lỗi khi cập nhật sản phẩm:", error);
         return NextResponse.json(
             {
-                result: false,
+                success: false,
                 message: "Đã xảy ra lỗi khi cập nhật sản phẩm",
             },
             { status: 500 }

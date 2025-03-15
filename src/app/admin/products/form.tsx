@@ -22,6 +22,7 @@ export default function ProductForm({
   initialData = null
 }: ProductFormProps) {
   const router = useRouter();
+
   const [formData, setFormData] = useState<IProduct>({
     id: initialData?.id || 0,
     code: initialData?.code || "",
@@ -31,7 +32,7 @@ export default function ProductForm({
     regular_price: initialData?.regular_price || 0,
     sale_price: initialData?.sale_price || 0,
     skin_type: initialData?.skin_type || "",
-    is_infinity_card: initialData?.is_infinity_card || false,
+    is_infinity_card: initialData?.is_infinity_card ?? false,
     account_id: initialData?.account_id || "",
     account_name: initialData?.account_name || "",
     register_by: initialData?.register_by || "",
@@ -39,7 +40,7 @@ export default function ProductForm({
     server: initialData?.server || "",
     number_diamond_available: initialData?.number_diamond_available || 0,
     status: initialData?.status || "active",
-    is_for_sale: initialData?.is_for_sale || true,
+    is_for_sale: initialData?.is_for_sale ?? true,
     category_id: initialData?.category_id || 0,
     quantity: initialData?.quantity || 0,
     images: initialData?.images || [],
@@ -53,13 +54,22 @@ export default function ProductForm({
       ? initialData.thumbnail
       : null
   );
-  const [imagesReading, setImagesReading] = useState<string[]>(
+
+  const [imagesReading, setImagesReading] = useState<IProductImage[]>(
     initialData?.images && Array.isArray(initialData.images)
-      ? initialData.images.map((img) => (img as IProductImage).image_url || "")
+      ? initialData.images.map((img) => ({
+          id: (img as IProductImage).id || 0,
+          image_url: (img as IProductImage).image_url || "",
+          product_id: (img as IProductImage).product_id || 0
+        }))
       : []
   );
+
+  const [deletedImages, setDeletedImages] = useState<number[]>([]);
+
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [categories, setCategories] = useState<ICategory[] | []>([]);
+
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -122,21 +132,29 @@ export default function ProductForm({
     }
   };
 
-  const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImagesChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
     setFormData((prev) => ({
       ...prev,
       images: files
     }));
-    const imagesArray: string[] = [];
-    files.forEach((file) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        imagesArray.push(reader.result as string);
-        setImagesReading([...imagesArray]);
-      };
-      reader.readAsDataURL(file);
-    });
+
+    const readFile = (file: File): Promise<IProductImage> => {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          resolve({
+            id: 0,
+            image_url: reader.result as string,
+            product_id: formData.id || 0
+          });
+        };
+        reader.readAsDataURL(file);
+      });
+    };
+
+    const newImages = await Promise.all(files.map((file) => readFile(file)));
+    setImagesReading((prev) => [...prev, ...newImages]);
   };
 
   const autoGenerateCode = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -197,17 +215,27 @@ export default function ProductForm({
     data.append("account_id", formData.account_id || "");
     data.append("account_name", formData.account_name || "");
 
-    // if (formData.images && Array.isArray(formData.images)) {
-    //     formData.images.forEach((file) => {
-    //         data.append("images", file);
-    //     });
-    // }
+    if (formData.images && Array.isArray(formData.images)) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      formData.images.forEach((file: any) => {
+        if (file instanceof File) {
+          data.append("images", file);
+        }
+      });
+    }
+
+    // Gửi danh sách ID ảnh bị xóa (nếu đang chỉnh sửa)
+    if (isEditing && deletedImages.length > 0) {
+      data.append("deletedImageIds", JSON.stringify(deletedImages));
+    }
 
     try {
       let response;
       if (isEditing) {
         response = await api.patch(`products/${formData.id}`, data);
-        router.push("/admin/products");
+        if (response.status === 200) {
+          router.push("/admin/products");
+        }
       } else {
         response = await api.post(`products`, data);
       }
@@ -216,7 +244,6 @@ export default function ProductForm({
         toast.success(
           isEditing ? "Cập nhật thành công" : "Thêm mới thành công"
         );
-        router.push("/admin/products");
         setError(false);
         if (!isEditing) {
           setFormData({
@@ -246,6 +273,12 @@ export default function ProductForm({
           });
           setFileReading(null);
           setImagesReading([]);
+        } else {
+          // Cập nhật imagesReading từ phản hồi server hoặc lọc thủ công
+          setImagesReading((prev) =>
+            prev.filter((img) => !deletedImages.includes(img.id))
+          );
+          setDeletedImages([]);
         }
       } else {
         setError(true);
@@ -274,6 +307,7 @@ export default function ProductForm({
               onSubmit={handleSubmit}
               encType="multipart/form-data"
             >
+              {/* Thông tin sản phẩm */}
               <div className="card">
                 <div className="card-body">
                   <div className="card-header-2">
@@ -448,6 +482,7 @@ export default function ProductForm({
                 </div>
               </div>
 
+              {/* Mô tả sản phẩm */}
               <div className="card">
                 <div className="card-body">
                   <div className="card-header-2">
@@ -471,6 +506,7 @@ export default function ProductForm({
                 </div>
               </div>
 
+              {/* Hình ảnh sản phẩm */}
               <div className="card">
                 <div className="card-body">
                   <div className="card-header-2">
@@ -496,7 +532,7 @@ export default function ProductForm({
                             height={120}
                             width={180}
                             src={fileReading}
-                            alt="Danh mục"
+                            alt="Thumbnail"
                           />
                         </div>
                       )}
@@ -523,18 +559,67 @@ export default function ProductForm({
                       />
                       {imagesReading.length > 0 && (
                         <div className="d-flex flex-wrap gap-2 mt-2">
-                          {imagesReading.map((imageReading, index) => (
-                            <div key={index}>
+                          {imagesReading.map((image, index) => (
+                            <div
+                              key={index}
+                              style={{
+                                position: "relative",
+                                opacity: deletedImages.includes(image.id)
+                                  ? 0.5
+                                  : 1
+                              }}
+                            >
                               <Image
                                 height={100}
                                 width={100}
-                                src={imageReading}
-                                alt="Danh mục"
+                                src={image.image_url}
+                                alt="Ảnh bổ sung"
                                 style={{
                                   objectFit: "cover",
                                   borderRadius: "8px"
                                 }}
                               />
+                              {isEditing &&
+                                image.id !== 0 &&
+                                !deletedImages.includes(image.id) && (
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setDeletedImages((prev) => [
+                                        ...prev,
+                                        image.id
+                                      ]);
+                                    }}
+                                    style={{
+                                      position: "absolute",
+                                      top: "5px",
+                                      right: "5px",
+                                      background: "red",
+                                      color: "white",
+                                      border: "none",
+                                      borderRadius: "50%",
+                                      width: "20px",
+                                      height: "20px",
+                                      cursor: "pointer"
+                                    }}
+                                  >
+                                    X
+                                  </button>
+                                )}
+                              {deletedImages.includes(image.id) && (
+                                <span
+                                  style={{
+                                    position: "absolute",
+                                    top: "50%",
+                                    left: "50%",
+                                    transform: "translate(-50%, -50%)",
+                                    color: "red",
+                                    fontWeight: "bold"
+                                  }}
+                                >
+                                  Đã xóa
+                                </span>
+                              )}
                             </div>
                           ))}
                         </div>
@@ -544,6 +629,7 @@ export default function ProductForm({
                 </div>
               </div>
 
+              {/* Giá sản phẩm */}
               <div className="card">
                 <div className="card-body">
                   <div className="card-header-2">
@@ -597,6 +683,7 @@ export default function ProductForm({
                 </div>
               </div>
 
+              {/* Thông tin bổ sung */}
               <div className="card">
                 <div className="card-body">
                   <div className="card-header-2">
@@ -739,6 +826,7 @@ export default function ProductForm({
                     </div>
                   </div>
 
+                  {/* Nút submit và trở lại */}
                   <div className="mb-4 d-flex gap-2 col-sm-12 col-md-6 justify-content-center">
                     <button type="submit" className="btn btn-solid flex-grow-1">
                       {isEditing ? "Cập nhật" : "Lưu"}

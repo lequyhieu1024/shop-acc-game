@@ -77,10 +77,12 @@ export const GET = async (req: NextRequest) => {
 
     return NextResponse.json({
       transactions,
-      total,
-      page,
-      size,
-      totalPages: Math.ceil(total / size)
+      pagination: {
+        page,
+        size,
+        total,
+        totalPages: Math.ceil(total / size),
+      },
     });
   } catch (e) {
     return NextResponse.json(
