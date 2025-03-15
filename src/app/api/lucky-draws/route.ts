@@ -36,3 +36,18 @@ export const GET = async (req: NextRequest) => {
         );
     }
 }
+
+export const POST = async (req: NextRequest) => {
+    try {
+        const luckyDrawRepo = await initRepository(LuckyDraw);
+        const data = await req.json();
+        const luckyDraw = luckyDrawRepo.create(data);
+        await luckyDrawRepo.save(luckyDraw);
+        return NextResponse.json({luckyDraw});
+    } catch (e) {
+        return NextResponse.json(
+            { message: (e as Error).message },
+            { status: 500 }
+        );
+    }
+}
