@@ -233,9 +233,6 @@ export default function ProductForm({
       let response;
       if (isEditing) {
         response = await api.patch(`products/${formData.id}`, data);
-        if (response.status === 200) {
-          router.push("/admin/products");
-        }
       } else {
         response = await api.post(`products`, data);
       }
@@ -274,11 +271,11 @@ export default function ProductForm({
           setFileReading(null);
           setImagesReading([]);
         } else {
-          // Cập nhật imagesReading từ phản hồi server hoặc lọc thủ công
           setImagesReading((prev) =>
             prev.filter((img) => !deletedImages.includes(img.id))
           );
           setDeletedImages([]);
+          router.push("/admin/products");
         }
       } else {
         setError(true);
