@@ -158,7 +158,7 @@ const CartDrawerContent: React.FC = () => {
           </Text>
         </div>
         <div className="flex justify-end">
-          <Link href="/checkout">
+          <Link href="/thanh-toan">
             <Button type="primary" size="large">
               Thanh toán
             </Button>
