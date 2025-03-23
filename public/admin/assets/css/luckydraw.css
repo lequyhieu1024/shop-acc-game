@@ -1,0 +1,133 @@
+.wheel-container {
+    position: relative;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.wheel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    border: 10px solid #ffd700; /* Viền vàng */
+    background: #fff;
+}
+
+.wheel-segment {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    top: 0;
+    left: 50%;
+    transform-origin: 0 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff;
+    box-sizing: border-box;
+}
+
+.segment-content {
+    transform: rotate(45deg);
+    text-align: center;
+    font-size: 16px;
+    color: #fff;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 10px;
+    width: 100%;
+    max-width: 150px;
+}
+
+.wheel-pointer {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 30px solid #ffd700; /* Mũi tên màu vàng */
+    z-index: 20;
+    filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.3));
+}
+
+.spin-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    background: #00b7eb; /* Màu xanh lam giống hình ảnh */
+    border-radius: 50%;
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    z-index: 10;
+    transition: background 0.3s ease;
+}
+
+.spin-button:hover {
+    background: #0099cc;
+}
+
+.spin-button:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+}
+
+.spinning {
+    animation: spin 4s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(1440deg); /* Quay 4 vòng */
+    }
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.control-button {
+    background: #00b7eb;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s ease;
+}
+
+.control-button:hover {
+    background: #0099cc;
+}
+
+.control-button:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+}

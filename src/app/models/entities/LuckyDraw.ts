@@ -1,54 +1,41 @@
-import {
-    Column,
-    CreateDateColumn,
-    DeleteDateColumn,
-    Entity,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn
-} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { LuckyDrawItem } from "./LuckyDrawItem";
 
-export enum LuckyDrawType {
-    VOUCHER = "voucher",
-    DIAMOND = "diamond",
-    ACC_GAME = "acc_game",
-    COMBINE = "combine"
-}
-
-@Entity('lucky-draws')
+@Entity("lucky_draws")
 export class LuckyDraw {
     @PrimaryGeneratedColumn()
-    id!: number;
+    id?: number;
 
     @Column()
-    name!: string;
-
-    @Column({ type: "enum", enum: LuckyDrawType})
-    type!: LuckyDrawType
-
-    @Column("decimal")
-    amount_draw!: number;
+    name?: string;
 
     @Column()
-    quality!: string;
+    type?: string;
 
-    @Column({ type: "boolean"})
-    accept_draw!: boolean;
+    @Column()
+    amount_draw?: number;
 
-    @Column({ type: "datetime" })
-    issue_date!: Date;
+    @Column()
+    quality?: string;
 
-    @Column({ type: "datetime" })
-    expired_date!: Date;
+    @Column({type: "boolean", default: false})
+    accept_draw?: boolean;
 
-    @Column({ type: "boolean"})
-    is_no_expired!: boolean;
+    @Column({type: "datetime", nullable: true})
+    issue_date?: Date;
 
-    @CreateDateColumn({ type: "timestamp" })
-    created_at!: Date;
+    @Column({type: "datetime", nullable: true})
+    expired_date?: Date;
 
-    @UpdateDateColumn({ type: "timestamp" })
-    updated_at!: Date
+    @Column({type: "boolean", default: false})
+    is_no_expired?: boolean;
 
-    @DeleteDateColumn()
+    @Column({type: "datetime", default: () => "CURRENT_TIMESTAMP"})
+    created_at?: Date;
+
+    @Column({type: "datetime", default: () => "CURRENT_TIMESTAMP", onUpdate: "CURRENT_TIMESTAMP"})
+    updated_at?: Date;
+
+    @Column({type: "datetime", nullable: true})
     deleted_at?: Date;
 }
