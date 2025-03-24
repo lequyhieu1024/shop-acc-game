@@ -21,6 +21,12 @@ export class Auth {
   @Column({ type: "varchar", length: 50, nullable: true })
   full_name?: string;
 
+  @Column({ nullable: true }) // Make sure refreshToken is optional
+  refreshToken?: string;
+
+  @Column({ nullable: true }) // For role, if applicable
+  role?: string;
+  
   @Column({ type: "boolean", default: true })
   is_active!: boolean;
 

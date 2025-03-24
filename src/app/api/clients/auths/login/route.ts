@@ -13,37 +13,37 @@ const ACCESS_TOKEN_SECRET =
   process.env.ACCESS_TOKEN_SECRET || "your-access-secret";
 const REFRESH_TOKEN_SECRET =
   process.env.REFRESH_TOKEN_SECRET || "your-refresh-secret";
-
+interface LoginRequestBody {
+  email: string;
+  password: string;
+}
 export const POST = async (req: NextRequest) => {
   try {
-    // Khởi tạo repository
     const authRepository = await initRepository(Auth);
-
-    // Lấy dữ liệu từ request body
-    const { username, password } = await req.json();
+    const { email, password }: LoginRequestBody = await req.json();
 
     // Kiểm tra dữ liệu đầu vào
-    if (!username || !password) {
+    if (!email || !password) {
       return NextResponse.json(
-        { message: "Username and password are required" },
+        { message: "Email và mật khẩu là bắt buộc" },
         { status: 400 }
       );
     }
 
-    // Tìm user trong database
-    const user = await authRepository.findOne({ where: { username } });
+    // Tìm người dùng trong cơ sở dữ liệu
+    const user = await authRepository.findOne({ where: { email } });
     if (!user) {
       return NextResponse.json(
-        { message: "Invalid credentials" },
+        { message: "Thông tin đăng nhập không chính xác" },
         { status: 401 }
       );
     }
 
-    // Kiểm tra password
+    // Kiểm tra mật khẩu
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return NextResponse.json(
-        { message: "Invalid credentials" },
+        { message: "Thông tin đăng nhập không chính xác" },
         { status: 401 }
       );
     }
@@ -51,45 +51,52 @@ export const POST = async (req: NextRequest) => {
     // Tạo payload cho token
     const payload = {
       id: user.id,
-      username: user.username,
-      role: user.role || "user"
+      email: user.email,
+      role: user.role || "user",
     };
 
     // Tạo access token
     const accessToken = jwt.sign(payload, ACCESS_TOKEN_SECRET, {
-      expiresIn: ACCESS_TOKEN_EXPIRY
+      expiresIn: ACCESS_TOKEN_EXPIRY,
     });
 
     // Tạo refresh token
     const refreshToken = jwt.sign(payload, REFRESH_TOKEN_SECRET, {
-      expiresIn: REFRESH_TOKEN_EXPIRY
+      expiresIn: REFRESH_TOKEN_EXPIRY,
     });
 
-    // Lưu refresh token vào database (tùy chọn)
+    // Lưu refresh token vào cơ sở dữ liệu
     await authRepository.update({ id: user.id }, { refreshToken });
 
-    // Trả về response
+    // Trả về phản hồi thành công
     return NextResponse.json(
       {
-        message: "Login successful",
+        message: "Đăng nhập thành công",
         tokens: {
           access_token: accessToken,
           refresh_token: refreshToken,
           access_token_expires_in: ACCESS_TOKEN_EXPIRY,
-          refresh_token_expires_in: REFRESH_TOKEN_EXPIRY
+          refresh_token_expires_in: REFRESH_TOKEN_EXPIRY,
         },
         user: {
           id: user.id,
-          username: user.username,
-          role: user.role
-        }
+          email: user.email,
+          role: user.role,
+        },
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Login error:", error);
+    console.error("Lỗi đăng nhập:", error);
+
+    let errorMessage = "Lỗi máy chủ nội bộ"; // Thông báo lỗi mặc định
+
+    if (error instanceof Error) {
+      errorMessage = error.message; // Lấy thông báo lỗi nếu là Error
+    }
+
     return NextResponse.json(
-      { message: "Internal server error" },
+      { message: errorMessage },
       { status: 500 }
     );
   }
@@ -131,7 +138,7 @@ export const refreshTokenHandler = async (req: NextRequest) => {
     // Tạo access token mới
     const payload = {
       id: user.id,
-      username: user.username,
+      email: user.email,
       role: user.role || "user"
     };
 

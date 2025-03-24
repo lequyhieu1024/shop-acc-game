@@ -12,7 +12,7 @@ const validationSchema = yup.object().shape({
     .string()
     .email("Email không hợp lệ")
     .required("Vui lòng không để trống!"),
-  fullName: yup.string().when("$isRegister", {
+  full_name: yup.string().when("$isRegister", {
     is: true,
     then: (schema) => schema.required("Vui lòng nhập họ tên!")
   }),
@@ -40,7 +40,7 @@ const AuthForm: React.FC = () => {
   const [error, setError] = useState("");
   const handleSubmit = async (values: {
     email: string;
-    fullName?: string;
+    full_name?: string;
     password: string;
   }) => {
     setLoading(true);
@@ -52,15 +52,15 @@ const AuthForm: React.FC = () => {
 
       if (activeTab === "login") {
         // Gửi request đăng nhập
-        response = await api.post("/api/auth/login", {
+        response = await api.post("/clients/auths/login", {
           email: values.email,
           password: values.password
         });
       } else {
         // Gửi request đăng ký
-        response = await api.post("/api/auth/register", {
+        response = await api.post("/clients/auths/register", {
           email: values.email,
-          fullName: values.fullName,
+          full_name: values.full_name,
           password: values.password,
           is_active: true
         });
@@ -69,6 +69,8 @@ const AuthForm: React.FC = () => {
       console.log("Success:", response.data);
 
       if (activeTab === "login") {
+        console.log(response);
+        
         localStorage.setItem("access_token", response.data.tokens.access_token);
         localStorage.setItem(
           "refresh_token",
@@ -104,7 +106,7 @@ const AuthForm: React.FC = () => {
         <Formik
           initialValues={{
             email: "",
-            fullName: "",
+            full_name: "",
             password: "",
             confirmPassword: ""
           }}
@@ -145,13 +147,13 @@ const AuthForm: React.FC = () => {
                   <label className="font-medium">Nhập họ tên</label>
                   <Field
                     as={Input}
-                    name="fullName"
+                    name="full_name"
                     size="large"
                     placeholder="Nhập họ tên"
                     prefix={<FaRegCircleUser />}
                   />
                   <ErrorMessage
-                    name="fullName"
+                    name="full_name"
                     component="div"
                     className="text-red-500 text-xs mt-1"
                   />
