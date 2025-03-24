@@ -12,6 +12,7 @@ import { UserView } from "@/app/models/entities/UserView";
 import { ProductImage } from "@/app/models/entities/Image";
 import { Banner } from "@/app/models/entities/Banner";
 import { CardTransaction } from "@/app/models/entities/CardTransaction";
+import { Auth } from "./entities/client/Auth";
 
 export const AppDataSource = new DataSource({
   type: "mysql",
@@ -32,7 +33,8 @@ export const AppDataSource = new DataSource({
     User,
     ProductImage,
     Banner,
-    CardTransaction
+    CardTransaction,
+    Auth
   ],
   synchronize: false,
   logging: false
