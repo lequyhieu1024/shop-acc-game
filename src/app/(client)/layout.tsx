@@ -1,12 +1,14 @@
 "use client";
 
 import Header from "@/components/(client)/(header)/page";
-import React, { ReactNode } from "react";
+import React, {ReactNode} from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../index.css";
 import AppFooter from "@/components/(admin)/(footer)/page";
 import { CartProvider } from "../contexts/CartContext";
+import FloatingSocialIcons from "@/components/SocialButton";
+
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
@@ -23,7 +25,8 @@ export default function Layout({ children }: { children: ReactNode }) {
               <div style={{ paddingTop: "10px" }}>
                   {children}
               </div>
-              <ToastContainer />
+                <FloatingSocialIcons />
+                <ToastContainer />
             </div>
             <AppFooter />
           </div>

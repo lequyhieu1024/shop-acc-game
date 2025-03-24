@@ -84,12 +84,12 @@ export default function ProductForm({
       newErrors.thumbnail = "Vui lòng chọn ảnh thumbnail";
     if (!formData.skin_type.trim())
       newErrors.skin_type = "Loại súng không được để trống";
-    if (formData.sale_price >= formData.regular_price)
-      newErrors.sale_price = "Nên để giá bán thấp hơn giá gốc";
     if (formData.regular_price <= 0)
       newErrors.regular_price = "Vui lòng nhập giá gốc";
     if (formData.sale_price <= 0)
       newErrors.sale_price = "Vui lòng nhập giá bán";
+    if (Number(formData.sale_price) >= Number(formData.regular_price))
+      newErrors.sale_price = "Nên để giá bán thấp hơn giá gốc";
     if (formData.number_diamond_available! < 0)
       newErrors.number_diamond_available = "Số kim cương không được nhỏ hơn 0";
     if (formData.quantity <= 0) newErrors.quantity = "Số lượng phải lớn hơn 0";
@@ -184,11 +184,11 @@ export default function ProductForm({
     e.preventDefault();
     setLoading(true);
 
-    if (!validateForm()) {
-      toast.error("Vui lòng kiểm tra lại các trường thông tin");
-      setLoading(false);
-      return;
-    }
+    // if (!validateForm()) {
+    //   toast.error("Vui lòng kiểm tra lại các trường thông tin");
+    //   setLoading(false);
+    //   return;
+    // }
 
     const data = new FormData();
     data.append("code", formData.code);
@@ -214,6 +214,12 @@ export default function ProductForm({
     data.append("quantity", formData.quantity.toString());
     data.append("account_id", formData.account_id || "");
     data.append("account_name", formData.account_name || "");
+    if (!validateForm()) {
+      toast.error("Vui lòng kiểm tra lại các trường thông tin");
+      setLoading(false);
+      return;
+    }
+
 
     if (formData.images && Array.isArray(formData.images)) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
