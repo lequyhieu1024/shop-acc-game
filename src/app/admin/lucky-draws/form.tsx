@@ -218,7 +218,7 @@ export default function LuckyDrawForm({ isEditing = false, initialData = null }:
     const handleAddItem = () => {
         setSelectedItems([...selectedItems, { item_type: formData.type, item_id: null, probability: 0 }]);
     };
-
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleItemChange = (index: number, field: string, value: any) => {
         const updatedItems = [...selectedItems];
         updatedItems[index] = {
@@ -239,7 +239,7 @@ export default function LuckyDrawForm({ isEditing = false, initialData = null }:
             { item_type: "no_luck", item_id: null, item_text: "Chúc bạn may mắn lần sau", probability: 0 },
         ]);
     };
-
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleNoLuckItemChange = (index: number, field: string, value: any) => {
         const updatedItems = [...noLuckItems];
         updatedItems[index] = {
@@ -558,7 +558,7 @@ export default function LuckyDrawForm({ isEditing = false, initialData = null }:
                                                         className="btn btn-primary mt-2"
                                                         onClick={handleAddNoLuckItem}
                                                     >
-                                                        Thêm "Chúc bạn may mắn lần sau"
+                                                        { `Thêm "Chúc bạn may mắn lần sau" ` }
                                                     </button>
                                                 </div>
                                             </div>

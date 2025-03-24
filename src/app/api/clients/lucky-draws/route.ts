@@ -2,7 +2,7 @@ import { initRepository } from "@/app/models/connect";
 import { LuckyDraw } from "@/app/models/entities/LuckyDraw";
 import {NextResponse} from "next/server";
 import {IsNull, MoreThanOrEqual, Not} from "typeorm";
-import {LuckyDrawItem} from "@/app/models/entities/LuckyDrawItem";
+// import {LuckyDrawItem} from "@/app/models/entities/LuckyDrawItem";
 
 export const GET = async () => {
     try {

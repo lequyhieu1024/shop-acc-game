@@ -3,12 +3,12 @@ import {NextRequest, NextResponse} from "next/server";
 import {LuckyDraw} from "@/app/models/entities/LuckyDraw";
 import {LuckyDrawItem} from "@/app/models/entities/LuckyDrawItem";
 
-export const GET = async (req: NextRequest, { params }: { params: { id: string } }) => {
+export const GET = async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
     try {
         const luckyDrawRepo = await initRepository(LuckyDraw);
         const luckyDrawItemRepo = await initRepository(LuckyDrawItem);
 
-        const luckyDrawId = params.id;
+        const luckyDrawId: string = (await params).id;
 
         // Tìm LuckyDraw
         const luckyDraw = await luckyDrawRepo.findOne({ where: { id: Number(luckyDrawId) } });

@@ -72,7 +72,8 @@ export const POST = async (req: NextRequest) => {
         });
 
         const savedLuckyDraw = await luckyDrawRepo.save(luckyDraw);
-        
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const items = data.items.map((item: any) => {
             return luckyDrawItemRepo.create({
                 lucky_draw_id: savedLuckyDraw.id,

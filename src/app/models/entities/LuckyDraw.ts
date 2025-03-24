@@ -1,5 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
-import { LuckyDrawItem } from "./LuckyDrawItem";
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 @Entity("lucky_draws")
 export class LuckyDraw {
