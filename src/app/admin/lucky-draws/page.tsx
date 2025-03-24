@@ -103,7 +103,7 @@ export default function LuckyDraws() {
             key: "accept_draw",
             render: (record: ILuckyDraw) => (
                 <div className="d-flex flex-column">
-                    <span>{record.accept_draw ? "Có" : "Không"} đ</span>
+                    <span>{record.accept_draw ? "Có" : "Không"}</span>
                 </div>
             ),
         },

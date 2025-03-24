@@ -1,32 +1,20 @@
 "use client";
-import { FaCaretDown } from "react-icons/fa";
 import { IoHome } from "react-icons/io5";
 import { BsBellFill } from "react-icons/bs";
-import { FaShoppingCart } from "react-icons/fa";
+import { FaShoppingCart, FaCaretDown } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
 import Link from "next/link";
-import { menu } from "./menu";
-import ChildMenuItem from "./ChildMenuItem";
-import { useEffect, useRef, useState } from "react";
+import { menu } from "@/components/(client)/(header)/menu";
+import DrawerCommon from "@/components/(client)/(common)/DrawerCommon";
+import CartDrawerContent from "@/components/(client)/(common)/CartDrawerContent";
 import { useCart } from "@/app/contexts/CartContext";
-
-import "./header.css";
-import DrawerCommon from "../(common)/DrawerCommon";
-import CartDrawerContent from "../(common)/CartDrawerContent";
 import { useViewport } from "@/app/hook/useViewport";
+import { useState } from "react";
 
 const NavBar = () => {
-  const parentRef = useRef<HTMLLIElement>(null);
-  const firstChildRef = useRef<HTMLUListElement>(null);
-  const secondChild = useRef<HTMLUListElement>(null);
-  const thirdChild = useRef<HTMLUListElement>(null);
   const { totalItems } = useCart();
-  const [cartDrawerVisible, setCartDrawerVisible] = useState(false);
   const { screenSize = "md" } = useViewport();
-  useEffect(() => {
-    const res = document.body.clientWidth;
-    console.log("🦎 ~ NavBar ~ res:", res);
-  }, []);
+  const [cartDrawerVisible, setCartDrawerVisible] = useState(false);
 
   const showCartDrawer = () => {
     setCartDrawerVisible(true);
@@ -43,130 +31,138 @@ const NavBar = () => {
     }
     closeCartDrawer();
   };
+
   return (
-    <>
-      <nav className="flex h-[50px] select-none items-center bg-blue-500 fixed z-20 w-full">
-        <ul className="container flex h-full items-center justify-between">
-          <div className="flex items-center gap-[30px]">
-            {/* Home Link */}
-            <li>
-              <Link href="/" className="text-2xl text-white">
-                <IoHome />
-              </Link>
-            </li>
-            {menu.map((menuData, index) => (
-              <li
-                ref={parentRef}
-                key={index}
-                className="group/root relative flex h-full cursor-pointer items-center px-2 transition-colors hover:bg-blue-600"
-              >
-                {/* Nếu có đường dẫn, bọc trong Link, nếu không thì chỉ là span */}
-                <div className="flex items-center gap-2 text-white">
-                  {menuData.path ? (
-                    <Link href={menuData.path} className="uppercase">
-                      {menuData.label}
-                    </Link>
-                  ) : (
-                    <span className="uppercase">{menuData.label}</span>
-                  )}
-                  {menuData.items && <FaCaretDown />}
-                </div>
-
-                {/* Hiển thị menu con nếu có */}
-                {menuData.items && (
-                  <ul
-                    ref={firstChildRef}
-                    className="absolute left-0 top-full invisible w-[300px] bg-white shadow group-hover/root:visible"
-                  >
-                    {menuData.items.map((childMenuData, childIndex) => (
-                      <ChildMenuItem
-                        key={childIndex}
-                        {...childMenuData}
-                        group="group/1"
-                      >
-                        {childMenuData.items && (
-                          <ul
-                            ref={secondChild}
-                            className="invisible absolute left-full top-0 w-[300px] bg-white shadow group-hover/1:visible"
-                          >
-                            {childMenuData.items.map(
-                              (subMenuData, subIndex) => (
-                                <ChildMenuItem
-                                  key={subIndex}
-                                  {...subMenuData}
-                                  group="group/2"
-                                >
-                                  {subMenuData.items && (
-                                    <ul
-                                      ref={thirdChild}
-                                      className="invisible absolute left-full top-0 w-[300px] bg-white shadow group-hover/2:visible"
-                                    >
-                                      {subMenuData.items.map(
-                                        (nestedMenuData, nestedIndex) => (
-                                          <ChildMenuItem
-                                            key={nestedIndex}
-                                            {...nestedMenuData}
-                                            group="group/3"
-                                          />
-                                        )
-                                      )}
-                                    </ul>
-                                  )}
-                                </ChildMenuItem>
-                              )
-                            )}
-                          </ul>
-                        )}
-                      </ChildMenuItem>
-                    ))}
-                  </ul>
-                )}
+      <>
+        <nav className="flex h-[70px] select-none items-center bg-blue-500 fixed z-20 w-full shadow-md">
+          <ul className="container mx-auto flex h-full items-center justify-between px-4">
+            <div className="flex items-center gap-5 md:gap-16">
+              <li>
+                <Link href="/" className="text-white hover:text-blue-200 transition-colors">
+                  <IoHome className="w-6 h-6" />
+                </Link>
               </li>
-            ))}
-          </div>
+              {menu.map((menuData, index) => (
+                  <li
+                      key={index}
+                      className="group/root relative flex h-full cursor-pointer items-center transition-colors hover:bg-blue-600 rounded-md"
+                  >
+                    <div className="flex items-center gap-1 text-white">
+                      <span className="md:hidden">{menuData.icon}</span>
+                      {menuData.path ? (
+                          <Link
+                              href={menuData.path}
+                              className="hidden md:block uppercase text-sm font-medium tracking-wide hover:text-blue-200 transition-colors"
+                          >
+                            {menuData.label}
+                          </Link>
+                      ) : (
+                          <span className="hidden md:block uppercase text-sm font-medium tracking-wide">
+                      {menuData.label}
+                    </span>
+                      )}
+                      {menuData.items && <FaCaretDown className="w-4 h-4" />}
+                    </div>
 
-          {/* Right side icons */}
-          <div className="flex items-center gap-4">
-            <button className="text-white text-xl">
-              <BsBellFill />
-            </button>
-            <div
-              className="relative leading-[12px] cart-icon"
-              data-totalitems={totalItems}
-            >
-              <button
-                className="text-white text-xl cursor-pointer"
-                onClick={showCartDrawer}
-              >
-                <FaShoppingCart />
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                    {menuData.items && (
+                        <ul className="absolute left-0 top-full invisible w-[300px] bg-white shadow-lg group-hover/root:visible rounded-md">
+                          {menuData.items.map((childMenuData, childIndex) => (
+                              <li
+                                  key={childIndex}
+                                  className="group/1 relative px-4 py-2 hover:bg-gray-100 transition-colors"
+                              >
+                                {childMenuData.path ? (
+                                    <Link href={childMenuData.path} className="text-gray-800">
+                                      {childMenuData.label}
+                                    </Link>
+                                ) : (
+                                    <span className="text-gray-800">{childMenuData.label}</span>
+                                )}
+                                {childMenuData.items && (
+                                    <ul className="invisible absolute left-full top-0 w-[300px] bg-white shadow-lg group-hover/1:visible rounded-md">
+                                      {childMenuData.items.map((subMenuData, subIndex) => (
+                                          <li
+                                              key={subIndex}
+                                              className="group/2 relative px-4 py-2 hover:bg-gray-100 transition-colors"
+                                          >
+                                            {subMenuData.path ? (
+                                                <Link href={subMenuData.path} className="text-gray-800">
+                                                  {subMenuData.label}
+                                                </Link>
+                                            ) : (
+                                                <span className="text-gray-800">{subMenuData.label}</span>
+                                            )}
+                                            {subMenuData.items && (
+                                                <ul className="invisible absolute left-full top-0 w-[300px] bg-white shadow-lg group-hover/2:visible rounded-md">
+                                                  {subMenuData.items.map((nestedMenuData, nestedIndex) => (
+                                                      <li
+                                                          key={nestedIndex}
+                                                          className="px-4 py-2 hover:bg-gray-100 transition-colors"
+                                                      >
+                                                        {nestedMenuData.path ? (
+                                                            <Link href={nestedMenuData.path} className="text-gray-800">
+                                                              {nestedMenuData.label}
+                                                            </Link>
+                                                        ) : (
+                                                            <span className="text-gray-800">{nestedMenuData.label}</span>
+                                                        )}
+                                                      </li>
+                                                  ))}
+                                                </ul>
+                                            )}
+                                          </li>
+                                      ))}
+                                    </ul>
+                                )}
+                              </li>
+                          ))}
+                        </ul>
+                    )}
+                  </li>
+              ))}
+            </div>
+
+            <div className="flex items-center gap-5">
+              <button className="text-white hover:text-blue-200 transition-colors relative">
+                <BsBellFill/>
+                {totalItems > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                   {totalItems}
                 </span>
+                )}
+              </button>
+              <div className="relative leading-[12px] cart-icon" data-totalitems={totalItems}>
+                <button
+                    className="text-white hover:text-blue-200 transition-colors relative"
+                    onClick={showCartDrawer}
+                >
+                  <FaShoppingCart/>
+                  {totalItems > 0 && (
+                      <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {totalItems}
+                  </span>
+                  )}
+                </button>
+              </div>
+              <button className="text-white hover:text-blue-200 transition-colors">
+                <CgProfile/>
               </button>
             </div>
-            <button className="text-white text-2xl">
-              <CgProfile />
-            </button>
-            <button className="bg-white text-blue-500 px-3 py-1 rounded-md font-semibold">
-              Nạp Tiền
-            </button>
-          </div>
-        </ul>
-      </nav>
+          </ul>
+        </nav>
 
-      {/* Cart Drawer */}
-      <DrawerCommon
-        screenSize={screenSize}
-        open={cartDrawerVisible}
-        onClose={closeCartDrawer}
-        title="Giỏ hàng của bạn"
-        placement="right"
-        titleButton="Thanh toán"
-        onTitleButtonClick={handleCheckout}
-      >
-        <CartDrawerContent />
-      </DrawerCommon>
-    </>
+        <DrawerCommon
+            screenSize={screenSize}
+            open={cartDrawerVisible}
+            onClose={closeCartDrawer}
+            title="Giỏ hàng của bạn"
+            placement="right"
+            titleButton="Thanh toán"
+            onTitleButtonClick={handleCheckout}
+        >
+          <CartDrawerContent />
+        </DrawerCommon>
+      </>
   );
 };
 

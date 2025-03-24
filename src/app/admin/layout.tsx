@@ -18,6 +18,7 @@ import "/public/admin/assets/css/vendors/bootstrap.css";
 import "/public/admin/assets/css/vector-map.css";
 import "/public/admin/assets/css/vendors/slick.css";
 import "/public/admin/assets/css/style.css";
+import "/public/admin/assets/css/luckydraw.css";
 
 const metadata = {
     title: "Shop Cu Tý Gaming - Dashboard"

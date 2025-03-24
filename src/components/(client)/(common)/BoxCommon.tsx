@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Card, Badge, Modal } from "antd";
 import {
-  ShoppingCartOutlined,
   RightOutlined,
   CheckCircleFilled
 } from "@ant-design/icons";
@@ -12,6 +11,7 @@ import { FaShoppingCart } from "react-icons/fa";
 import { useCart } from "@/app/contexts/CartContext";
 import {IProduct} from "@/app/interfaces/IProduct";
 import { useRouter } from "next/navigation";
+import {BsCartPlus} from "react-icons/bs";
 
 interface BoxCommonProps {
   title: string;
@@ -249,14 +249,14 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
               </div>
             }
           >
-            <div className="mt-2">
+            <div>
               {item.name && (
-                <h3 className="text-sm font-medium line-clamp-2 h-10">
+                <h3 className="text-sm font-medium line-clamp-2">
                   {item.name}
                 </h3>
               )}
               {showPrice && (
-                <div className="flex items-center mt-2">
+                <div className="flex items-center">
                   <span className="text-blue-600 font-bold">{item.sale_price}</span>
                   {item.regular_price && (
                     <span className="ml-2 text-gray-400 line-through text-xs">
@@ -279,7 +279,7 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
 
               <div className="flex items-center gap-2 flex-col">
                 <button
-                  className={`mt-3 w-full bg-blue-500 text-white py-2 px-4 rounded-md flex items-center justify-center text-sm hover:bg-blue-600 transition cart-button ${
+                  className={`mt-3 w-full bg-blue-500 text-white py-2 px-2 rounded-md flex items-center justify-center text-sm hover:bg-blue-600 transition cart-button ${
                     clickedButtons[item.id] ? "clicked" : ""
                   }`}
                   disabled={isAdding}
@@ -300,8 +300,8 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
                       style={{ fontSize: "16px", color: "white" }}
                     />
                   </div>
-                  <span className="add-to-cart relative z-10 flex items-center">
-                    <ShoppingCartOutlined className="mr-1" /> Thêm vào giỏ hàng
+                  <span className="add-to-cart relative z-10 !flex !items-center gap-1">
+                    <BsCartPlus /> giỏ hàng
                   </span>
                   <span className="added">Đã thêm</span>
                 </button>
@@ -314,7 +314,6 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
         ))}
       </div>
 
-      {/* Modal thông báo thêm sản phẩm thành công */}
       <Modal
         open={isModalVisible}
         footer={null}
