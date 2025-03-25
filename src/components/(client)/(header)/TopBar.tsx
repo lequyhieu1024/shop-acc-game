@@ -10,6 +10,8 @@ import CartDrawerContent from "@/components/(client)/(common)/CartDrawerContent"
 import { useCart } from "@/app/contexts/CartContext";
 import { useViewport } from "@/app/hook/useViewport";
 import { useState } from "react";
+import { Dropdown } from "antd";
+import ProfileMenu from "./ProfileMenu";
 
 const NavBar = () => {
   const { totalItems } = useCart();
@@ -34,7 +36,7 @@ const NavBar = () => {
 
   return (
       <>
-        <nav className="flex h-[70px] select-none items-center bg-blue-500 fixed z-20 w-full shadow-md">
+       <nav className="flex items-center bg-blue-500 fixed z-20 w-full shadow-md py-4  select-none">
           <ul className="container mx-auto flex h-full items-center justify-between px-4">
             <div className="flex items-center gap-5 md:gap-16">
               <li>
@@ -144,9 +146,7 @@ const NavBar = () => {
                   )}
                 </button>
               </div>
-              <button className="text-white hover:text-blue-200 transition-colors">
-                <CgProfile/>
-              </button>
+             <ProfileMenu name={""} avatar={""} />
             </div>
           </ul>
         </nav>

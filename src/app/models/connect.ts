@@ -36,7 +36,7 @@ export const AppDataSource = new DataSource({
     CardTransaction,
     Auth
   ],
-  synchronize: false,
+  synchronize: true,
   logging: false
 });
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -6,7 +6,8 @@ import { FaRegCircleUser } from "react-icons/fa6";
 import { Formik, Field, Form as FormikForm, ErrorMessage } from "formik";
 import * as yup from "yup";
 import api from "@/app/services/axiosService";
-
+import LOGO from '../../../public/client/assets/images/LOGO.png'
+import { useRouter } from "next/navigation";
 const validationSchema = yup.object().shape({
   email: yup
     .string()
@@ -38,6 +39,9 @@ const AuthForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+
+  const router = useRouter();
+
   const handleSubmit = async (values: {
     email: string;
     full_name?: string;
@@ -56,6 +60,15 @@ const AuthForm: React.FC = () => {
           email: values.email,
           password: values.password
         });
+        if (response.status === 200) {
+          localStorage.setItem("access_token", response.data.tokens.access_token);
+          localStorage.setItem(
+            "refresh_token",
+            response.data.tokens.refresh_token
+          );
+          const previousPage = localStorage.getItem("previousPage") || "/";
+          router.push(previousPage);
+        }
       } else {
         // Gửi request đăng ký
         response = await api.post("/clients/auths/register", {
@@ -64,19 +77,19 @@ const AuthForm: React.FC = () => {
           password: values.password,
           is_active: true
         });
+        setActiveTab("login");
       }
 
-      console.log("Success:", response.data);
 
-      if (activeTab === "login") {
-        console.log(response);
-        
-        localStorage.setItem("access_token", response.data.tokens.access_token);
-        localStorage.setItem(
-          "refresh_token",
-          response.data.tokens.refresh_token
-        );
-      }
+      // if (activeTab === "login") {
+      //   console.log(response);
+
+      //   localStorage.setItem("access_token", response.data.tokens.access_token);
+      //   localStorage.setItem(
+      //     "refresh_token",
+      //     response.data.tokens.refresh_token
+      //   );
+      // }
 
       setSuccess(true);
     } catch (error: any) {
@@ -87,7 +100,8 @@ const AuthForm: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-50">
+    <div className="flex justify-center items-center min-h-screen bg-gray-50 flex-col gap-4">
+      <img src={LOGO.src} alt="logo" />
       <div className="relative w-96 bg-white ring-8 ring-gray-100 border border-gray-200 rounded-xl overflow-hidden p-6">
         <h2 className="font-bold text-2xl text-[#002D74] text-center">
           {activeTab === "login" ? "Đăng nhập" : "Đăng ký"}
