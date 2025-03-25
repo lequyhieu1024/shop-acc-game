@@ -1,23 +1,36 @@
 "use client";
 
 import { useState } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Card, Avatar, Tooltip, Input, Button, Form as AntForm, Upload, Col } from "antd";
-import { EditOutlined, CameraOutlined, UploadOutlined } from "@ant-design/icons";
-import FormUploadFile from "@/app/share/form/FormUploadFile";
+import { Card, Button, Form as AntForm, Col, Input, Tooltip } from "antd";
+import { EditOutlined } from "@ant-design/icons";
 import FormSingleFile from "@/app/share/form/FormSingleFile";
+
+// Interface định nghĩa kiểu dữ liệu của user
+interface UserProfile {
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  avatar: string;
+  gender: string;
+  dob: string;
+}
 
 const Profile = () => {
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState({
-    name: "Duy Tran",
-    email: "duytran@example.com",
-    phone: "0987654321",
-    address: "Ho Chi Minh, Vietnam",
-    avatar: "/avatar.jpg",
+  const [user, setUser] = useState<UserProfile>({
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+    avatar: "",
+    gender: "male",
+    dob: "",
   });
 
+  // Validation Schema với Yup
   const validationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
     email: Yup.string().email("Invalid email").required("Email is required"),
@@ -25,9 +38,11 @@ const Profile = () => {
       .matches(/^[0-9]{10}$/, "Phone must be 10 digits")
       .required("Phone is required"),
     address: Yup.string().required("Address is required"),
+    gender: Yup.string().oneOf(["male", "female", "other"], "Invalid gender"),
+    dob: Yup.date().required("Date of Birth is required"),
   });
 
-  const handleSubmit = (values: any) => {
+  const handleSubmit = (values: UserProfile) => {
     setUser(values);
   };
 
@@ -42,17 +57,16 @@ const Profile = () => {
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
-            {({ values,isSubmitting, setFieldValue }) => (
+            {({ values, isSubmitting, setFieldValue, errors }) => (
               <AntForm layout="vertical" onFinish={handleSubmit} className="flex flex-col items-center">
-                {/* Avatar với tooltip edit */}
-                <Col xs={24} sm={24} md={8} xl={8}>
+                {/* Avatar Upload */}
+                <Col xs={24} sm={24} md={12} xl={12}>
                   <FormSingleFile
-                   
-                    isMultiple={false}
+                    error={errors.avatar}
                     value={values.avatar}
                     onChange={(e: any) => setFieldValue("avatar", e)}
                   />
-              </Col>
+                </Col>
 
                 {/* Thông tin cá nhân */}
                 <div className="w-full mt-5 space-y-4">
@@ -73,13 +87,27 @@ const Profile = () => {
                   ))}
                 </div>
 
+                {/* Giới tính */}
+                <AntForm.Item label="Giới tính">
+                  <div className="flex gap-4">
+                    {["male", "female", "other"].map((option) => (
+                      <label key={option}>
+                        <Field type="radio" name="gender" value={option} />
+                        {option.charAt(0).toUpperCase() + option.slice(1)}
+                      </label>
+                    ))}
+                  </div>
+                  <ErrorMessage name="gender" component="div" className="text-red-500 text-xs mt-1" />
+                </AntForm.Item>
+
+                {/* Ngày sinh */}
+                <AntForm.Item label="Ngày sinh">
+                  <Field type="date" name="dob" className="w-full p-2 border rounded" />
+                  <ErrorMessage name="dob" component="div" className="text-red-500 text-xs mt-1" />
+                </AntForm.Item>
+
                 {/* Button Save */}
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  loading={isSubmitting}
-                  className="w-full mt-5"
-                >
+                <Button type="primary" htmlType="submit" loading={isSubmitting} className="w-full mt-5">
                   Save Changes
                 </Button>
               </AntForm>
