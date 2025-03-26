@@ -1,5 +1,4 @@
 import { FaList, FaCreditCard, FaNewspaper } from "react-icons/fa";
-import {SlEnvolopeLetter} from "react-icons/sl";
 import {FaPeopleRoof} from "react-icons/fa6";
 
 type BaseMenuItem = {
@@ -40,10 +39,5 @@ export const menu: IMenuItem[] = [
     label: "Giới thiệu",
     path: "/gioi-thieu",
     icon:<FaPeopleRoof className="h6 w-6" />,
-  },
-  {
-    label: "Liên hệ",
-    path: "/lien-he",
-    icon: <SlEnvolopeLetter className="h6 w-6" />,
-  },
+  }
 ];
