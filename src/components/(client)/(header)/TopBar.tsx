@@ -169,13 +169,13 @@ const NavBar = () => {
                 <ul className="absolute right-0 top-full invisible w-[150px] bg-white shadow-lg group-hover/profile:visible rounded-md">
                   {session ? (
                       <>
-                        <li className="px-4 py-2 hover:bg-gray-100 transition-colors">
+                        <li className="px-5 py-3 hover:bg-gray-100 transition-colors rounded-md">
                           <button onClick={handleLogout} className="text-gray-800">
                             Đăng xuất
                           </button>
                         </li>
                         {session.user.role === "admin" && (
-                            <li className="px-4 py-2 hover:bg-gray-100 transition-colors">
+                            <li className="px-5 py-3 hover:bg-gray-100 transition-colors rounded-md">
                               <Link href="/admin/dashboard" className="text-gray-800">
                                 Quản trị
                               </Link>
@@ -184,12 +184,12 @@ const NavBar = () => {
                       </>
                   ) : (
                       <>
-                        <li className="px-4 py-2 hover:bg-gray-100 transition-colors">
+                        <li className="px-5 py-3 hover:bg-gray-100 transition-colors rounded-md">
                           <Link href="/dang-ky" className="text-gray-800">
                             Đăng ký
                           </Link>
                         </li>
-                        <li className="px-4 py-2 hover:bg-gray-100 transition-colors">
+                        <li className="px-5 py-3 hover:bg-gray-100 transition-colors rounded-md">
                           <Link href="/dang-nhap" className="text-gray-800">
                             Đăng nhập
                           </Link>
