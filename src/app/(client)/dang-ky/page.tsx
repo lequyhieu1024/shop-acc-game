@@ -7,5 +7,5 @@ const AuthForm = dynamic(() => import("@/components/(client)/AuthForm"), {
 });
 
 export default function Home() {
-  return <AuthForm tab={'login'}/>;
+  return <AuthForm tab={'register'}/>;
 }

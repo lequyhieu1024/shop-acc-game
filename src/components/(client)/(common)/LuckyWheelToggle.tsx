@@ -41,7 +41,6 @@ const LuckyWheelToggle: React.FC = () => {
         const fetchLuckyDraws = async () => {
             try {
                 const response = await api.get('/lucky-draws');
-                console.log("API Response:", response.data);
 
                 const draws = response.data.luckyDraws || [];
 
