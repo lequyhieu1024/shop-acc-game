@@ -37,8 +37,6 @@ const NavBar = () => {
     closeCartDrawer();
   };
 
-  console.log(session)
-
   const handleLogout = async () => {
     await signOut({ redirect: false });
     router.push("/dang-nhap");
@@ -47,7 +45,7 @@ const NavBar = () => {
 
   return (
       <>
-        <nav className="flex h-[70px] select-none items-center bg-blue-500 fixed z-20 w-full shadow-md">
+        <nav className="flex h-[70px] select-none items-center bg-blue-600 fixed z-20 w-full shadow-md">
           <ul className="container mx-auto flex h-full items-center justify-between px-4">
             <div className="flex items-center gap-5 md:gap-16">
               <li>

@@ -53,6 +53,13 @@ export const Navbar = () => {
                     </li>
 
                     <li className="sidebar-list">
+                        <a className="sidebar-link sidebar-title link-nav" href="/admin/users">
+                            <i className="ri-user-line"></i>
+                            <span>Người dùng</span>
+                        </a>
+                    </li>
+
+                    <li className="sidebar-list">
                         <a className="linear-icon-link sidebar-link sidebar-title" href="#">
                             <i className="ri-store-3-line"></i>
                             <span>Tài khoản game</span>
@@ -80,24 +87,6 @@ export const Navbar = () => {
 
                             <li>
                                 <Link href="/admin/categories/create">Thêm mới</Link>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <li className="sidebar-list">
-                        <a className="sidebar-link sidebar-title" href="#">
-                            <i className="ri-user-3-line"></i>
-                            <span>Người dùng</span>
-                        </a>
-                        <ul className="sidebar-submenu">
-                            <li>
-                                <Link href="all-users.html">Danh sách khách hàng</Link>
-                            </li>
-                            <li>
-                                <Link href="all-users.html">Danh sách quản trị viên</Link>
-                            </li>
-                            <li>
-                                <Link href="add-new-user.html">Thêm mới quản trị viên</Link>
                             </li>
                         </ul>
                     </li>

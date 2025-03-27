@@ -31,8 +31,8 @@ export const menu: IMenuItem[] = [
     icon: <FaCreditCard className="h6 w-6" />,
   },
   {
-    label: "Tin tức",
-    path: "/tin-tuc",
+    label: "Bài viết",
+    path: "/bai-viet",
     icon: <FaNewspaper className="h6 w-6" />,
   },
   {

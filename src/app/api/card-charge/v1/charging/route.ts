@@ -2,8 +2,8 @@ import {NextRequest, NextResponse} from "next/server";
 import {initRepository} from "@/app/models/connect";
 import {CardTransaction} from "@/app/models/entities/CardTransaction";
 import {cardService} from "@/app/services/cardChargeService";
-
-// Hàm kiểm tra số nguyên (đã được import từ commonService, không cần định nghĩa lại)
+import {getServerSession} from "next-auth";
+import {authOptions} from "@/app/auth/auth";
 const isInteger = (value: string): boolean => /^\d+$/.test(value);
 
 const cardRules: Record<string, { code: number; serial?: number }> = {
@@ -17,6 +17,7 @@ const cardRules: Record<string, { code: number; serial?: number }> = {
 
 export const POST = async (req: NextRequest) => {
     try {
+        const session = await getServerSession(authOptions);
         const typeFromQuery = req.nextUrl.searchParams.get("type");
         const cardTransRepo = await initRepository(CardTransaction);
         const data = await req.json();
@@ -78,13 +79,13 @@ export const POST = async (req: NextRequest) => {
             const cardData = await cardService.chargeCard({telco, code, serial, amount});
             if (cardData.status === 3) {
                 cardData.amount = 0;
-                // return NextResponse.json(
-                //     { result: false, message: "Thẻ không hợp lệ!" },
-                //     { status: 400 }
-                // );
+                return NextResponse.json(
+                    { result: false, message: "Thẻ không hợp lệ!" },
+                    { status: 400 }
+                );
             }
 
-            cardData.user_id = 1;
+            cardData.user_id = session!.user.id;
             cardData.command = "charge";
             const newTransLog = cardTransRepo.create(cardData);
             await cardTransRepo.save(newTransLog);
@@ -146,14 +147,14 @@ export const POST = async (req: NextRequest) => {
                         code,
                         serial,
                         amount: price,
-                        user_id: 5,
+                        user_id: session!.user.id,
                         command: "charge",
                         status: 3,
                         message: errorMessage,
                     }
                     : {
                         ...cardData,
-                        user_id: 5,
+                        user_id: session!.user.id,
                         command: "charge",
                         status: cardData.status,
                     };

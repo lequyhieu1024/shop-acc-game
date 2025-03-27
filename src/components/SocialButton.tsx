@@ -143,7 +143,7 @@ const FloatingSocialIcons: React.FC<FloatingSocialIconsProps> = ({
             className={`
                 fixed
                 ${position === 'left' ? 'left-4' : 'right-4'}
-                top-2/3
+                top-3/4
                 -translate-y-1/2
                 z-20
                 flex
