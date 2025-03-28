@@ -1,5 +1,10 @@
 import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn} from "typeorm";
 
+enum UserRole {
+    USER = "user",
+    ADMIN = "admin",
+}
+
 @Entity({name: "users"})
 export class User {
     @PrimaryGeneratedColumn()
@@ -11,7 +16,7 @@ export class User {
     @Column({type: "bigint", default: 0})
     balance!: number;
 
-    @Column({type: "varchar", length: 15, unique: true})
+    @Column({type: "varchar", length: 15, nullable: true})
     phone!: string;
 
     @Column({type: "varchar", length: 100, unique: true})
@@ -25,6 +30,13 @@ export class User {
 
     @Column({type: "varchar", length: 50, nullable: true})
     referral_code?: string;
+
+    @Column({
+        type: "enum",
+        enum: UserRole,
+        default: UserRole.USER,
+    })
+    role!: UserRole;
 
     @CreateDateColumn({type: "timestamp"})
     created_at!: Date;

@@ -5,240 +5,196 @@ import { MailOutlined, LockOutlined, GoogleOutlined } from "@ant-design/icons";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { Formik, Field, Form as FormikForm, ErrorMessage } from "formik";
 import * as yup from "yup";
-import api from "@/app/services/axiosService";
-import LOGO from '../../../public/client/assets/images/LOGO.png'
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import {toast} from "react-toastify";
+
+interface AuthProps {
+  tab: string;
+}
+
 const validationSchema = yup.object().shape({
-  email: yup
-    .string()
-    .email("Email không hợp lệ")
-    .required("Vui lòng không để trống!"),
-  full_name: yup.string().when("$isRegister", {
-    is: true,
-    then: (schema) => schema.required("Vui lòng nhập họ tên!")
-  }),
+  username: yup.string().required("Vui lòng nhập tên đăng nhập!"),
   password: yup
-    .string()
-    .min(6, "Mật khẩu ít nhất 6 ký tự")
-    .matches(/[A-Z]/, "Mật khẩu phải có ít nhất 1 chữ in hoa")
-    .matches(/[a-z]/, "Mật khẩu phải có ít nhất 1 chữ thường")
-    .matches(/\d/, "Mật khẩu phải có ít nhất 1 số")
-    .matches(/[@$!%*?&]/, "Mật khẩu phải có ít nhất 1 ký tự đặc biệt")
-    .required("Vui lòng nhập mật khẩu!"),
-  confirmPassword: yup.string().when("$isRegister", {
+      .string()
+      .min(6, "Mật khẩu ít nhất 6 ký tự")
+      .matches(/[A-Z]/, "Mật khẩu phải có ít nhất 1 chữ in hoa")
+      .matches(/[a-z]/, "Mật khẩu phải có ít nhất 1 chữ thường")
+      .matches(/\d/, "Mật khẩu phải có ít nhất 1 số")
+      .required("Vui lòng nhập mật khẩu!"),
+  referral_code: yup.string().when("$isRegister", {
     is: true,
-    then: (schema) =>
-      schema
-        .oneOf([yup.ref("password")], "Mật khẩu nhập lại không khớp")
-        .required("Vui lòng nhập lại mật khẩu!")
-  })
+    then: (schema) => schema.optional(),
+  }),
 });
 
-const AuthForm: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("login");
+const AuthForm: React.FC<AuthProps> = ({tab}) => {
+  const [activeTab, setActiveTab] = useState(tab);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
-
   const router = useRouter();
 
   const handleSubmit = async (values: {
-    email: string;
-    full_name?: string;
+    username: string;
     password: string;
+    referral_code?: string;
   }) => {
     setLoading(true);
     setError("");
     setSuccess(false);
 
     try {
-      let response;
+      const result = await signIn("credentials", {
+        redirect: false,
+        username: values.username,
+        password: values.password,
+        referral_code: activeTab === "register" ? values.referral_code || undefined : undefined,
+      });
 
-      if (activeTab === "login") {
-        // Gửi request đăng nhập
-        response = await api.post("/clients/auths/login", {
-          email: values.email,
-          password: values.password
-        });
-        if (response.status === 200) {
-          localStorage.setItem("access_token", response.data.tokens.access_token);
-          localStorage.setItem(
-            "refresh_token",
-            response.data.tokens.refresh_token
-          );
-          const previousPage = localStorage.getItem("previousPage") || "/";
-          router.push(previousPage);
-        }
+      if (result?.error) {
+        setError(result.error);
       } else {
-        // Gửi request đăng ký
-        response = await api.post("/clients/auths/register", {
-          email: values.email,
-          full_name: values.full_name,
-          password: values.password,
-          is_active: true
-        });
-        setActiveTab("login");
+        setSuccess(true);
+        router.push("/");
+        if (activeTab == "register") {
+          toast.success('Đăng ký thành công, đã đăng nhập')
+        } else {
+          toast.success('Đăng nhập thành công')
+        }
       }
-
-
-      // if (activeTab === "login") {
-      //   console.log(response);
-
-      //   localStorage.setItem("access_token", response.data.tokens.access_token);
-      //   localStorage.setItem(
-      //     "refresh_token",
-      //     response.data.tokens.refresh_token
-      //   );
-      // }
-
-      setSuccess(true);
-    } catch (error: any) {
-      setError(error.response?.data?.message || "Lỗi xảy ra");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      setError(err.message || "Lỗi xảy ra");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-50 flex-col gap-4">
-      <img src={LOGO.src} alt="logo" />
-      <div className="relative w-96 bg-white ring-8 ring-gray-100 border border-gray-200 rounded-xl overflow-hidden p-6">
-        <h2 className="font-bold text-2xl text-[#002D74] text-center">
-          {activeTab === "login" ? "Đăng nhập" : "Đăng ký"}
-        </h2>
-        <Tabs
-          activeKey={activeTab}
-          onChange={setActiveTab}
-          centered
-          className="border-b"
-          items={[
-            { key: "login", label: "Đăng nhập" },
-            { key: "register", label: "Đăng ký" }
-          ]}
-        />
+      <div className="flex justify-center items-center min-h-screen bg-gray-50">
+        <div className="relative w-96 bg-white ring-8 ring-gray-100 border border-gray-200 rounded-xl overflow-hidden p-6">
+          <h2 className="font-bold text-2xl text-[#002D74] text-center">
+            {activeTab === "login" ? "Đăng nhập" : "Đăng ký"}
+          </h2>
+          <Tabs
+              activeKey={activeTab}
+              onChange={setActiveTab}
+              centered
+              className="border-b"
+              items={[
+                { key: "login", label: "Đăng nhập" },
+                { key: "register", label: "Đăng ký" },
+              ]}
+          />
 
-        <Formik
-          initialValues={{
-            email: "",
-            full_name: "",
-            password: "",
-            confirmPassword: ""
-          }}
-          validationSchema={validationSchema}
-          validateOnChange={false}
-          validateOnBlur={false}
-          context={{ isRegister: activeTab === "register" }}
-          onSubmit={(values, { setSubmitting }) => {
-            setLoading(true);
-            setTimeout(() => {
-              handleSubmit(values);
-            }, 2000);
-          }}
-        >
-          {({ handleSubmit }) => (
-            <FormikForm
-              onSubmit={handleSubmit}
-              className="flex flex-col gap-4 mt-6"
-            >
-              {/* Email Field */}
-              <label className="font-medium">Email/Sđt</label>
-              <Field
-                as={Input}
-                name="email"
-                size="large"
-                placeholder="Email"
-                prefix={<MailOutlined />}
-              />
-              <ErrorMessage
-                name="email"
-                component="div"
-                className="text-red-500 text-xs mt-1"
-              />
-
-              {/* Full Name Field (only in Register) */}
-              {activeTab === "register" && (
-                <>
-                  <label className="font-medium">Nhập họ tên</label>
+          <Formik
+              initialValues={{
+                username: "",
+                password: "",
+                referral_code: "",
+              }}
+              validationSchema={validationSchema}
+              validateOnChange={false}
+              validateOnBlur={false}
+              context={{ isRegister: activeTab === "register" }}
+              onSubmit={(values) => {
+                handleSubmit(values);
+              }}
+          >
+            {({ handleSubmit }) => (
+                <FormikForm
+                    onSubmit={handleSubmit}
+                    className="flex flex-col gap-4 mt-6"
+                >
+                  {/* Username Field */}
+                  <label className="font-medium">Tên đăng nhập</label>
                   <Field
-                    as={Input}
-                    name="full_name"
-                    size="large"
-                    placeholder="Nhập họ tên"
-                    prefix={<FaRegCircleUser />}
+                      as={Input}
+                      name="username"
+                      size="large"
+                      placeholder="Tên đăng nhập"
+                      prefix={<FaRegCircleUser />}
                   />
                   <ErrorMessage
-                    name="full_name"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
+                      name="username"
+                      component="div"
+                      className="text-red-500 text-xs mt-1"
                   />
-                </>
-              )}
 
-              {/* Password Field */}
-              <label className="font-medium">Mật khẩu</label>
-              <Field
-                as={Input.Password}
-                name="password"
-                size="large"
-                placeholder="Mật khẩu"
-                prefix={<LockOutlined />}
-              />
-              <ErrorMessage
-                name="password"
-                component="div"
-                className="text-red-500 text-xs mt-1"
-              />
-
-              {/* Confirm Password Field (only in Register) */}
-              {activeTab === "register" && (
-                <>
-                  <label className="font-medium">Nhập lại mật khẩu</label>
+                  {/* Password Field */}
+                  <label className="font-medium">Mật khẩu</label>
                   <Field
-                    as={Input.Password}
-                    name="confirmPassword"
-                    size="large"
-                    placeholder="Nhập lại mật khẩu"
-                    prefix={<LockOutlined />}
+                      as={Input.Password}
+                      name="password"
+                      size="large"
+                      placeholder="Mật khẩu"
+                      prefix={<LockOutlined />}
                   />
                   <ErrorMessage
-                    name="confirmPassword"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
+                      name="password"
+                      component="div"
+                      className="text-red-500 text-xs mt-1"
                   />
-                </>
-              )}
 
-              {/* Submit Button */}
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={loading}
-                className="bg-[#002D74] hover:scale-105 duration-300 w-full text-white"
-                size="large"
-              >
-                {activeTab === "login" ? "Đăng nhập" : "Đăng ký"}
-              </Button>
-            </FormikForm>
-          )}
-        </Formik>
+                  {/* Referral Code Field (only in Register) */}
+                  {activeTab === "register" && (
+                      <>
+                        <label className="font-medium">Mã giới thiệu (tùy chọn)</label>
+                        <Field
+                            as={Input}
+                            name="referral_code"
+                            size="large"
+                            placeholder="Mã giới thiệu"
+                            prefix={<MailOutlined />}
+                        />
+                        <ErrorMessage
+                            name="referral_code"
+                            component="div"
+                            className="text-red-500 text-xs mt-1"
+                        />
+                      </>
+                  )}
 
-        <div className="mt-6 grid grid-cols-3 items-center text-gray-400">
-          <hr className="border-gray-400" />
-          <p className="text-center text-sm">Hoặc</p>
-          <hr className="border-gray-400" />
-        </div>
-        <Button
-          icon={<GoogleOutlined />}
-          className="border w-full rounded-xl mt-5 flex justify-center items-center text-[#002D74] hover:scale-105 duration-300"
-          size="large"
-        >
-          Đăng nhập với Google
-        </Button>
-        <div className="mt-5 text-xs border-b border-[#002D74] py-4 text-center text-[#002D74]">
-          <a href="#">Quên mật khẩu?</a>
+                  {/* Submit Button */}
+                  <Button
+                      type="primary"
+                      htmlType="submit"
+                      loading={loading}
+                      className="bg-[#002D74] hover:scale-105 duration-300 w-full text-white"
+                      size="large"
+                  >
+                    {activeTab === "login" ? "Đăng nhập" : "Đăng ký"}
+                  </Button>
+
+                  {/* Error/Success Message */}
+                  {error && <div className="text-red-500 text-xs mt-1">{error}</div>}
+                  {success && (
+                      <div className="text-green-500 text-xs mt-1">
+                        {activeTab === "login" ? "Đăng nhập thành công!" : "Đăng ký thành công!"}
+                      </div>
+                  )}
+                </FormikForm>
+            )}
+          </Formik>
+
+          <div className="mt-6 grid grid-cols-3 items-center text-gray-400">
+            <hr className="border-gray-400" />
+            <p className="text-center text-sm">Hoặc</p>
+            <hr className="border-gray-400" />
+          </div>
+          <Button
+              icon={<GoogleOutlined />}
+              className="border w-full rounded-xl mt-5 flex justify-center items-center text-[#002D74] hover:scale-105 duration-300"
+              size="large"
+          >
+            Đăng nhập với Google
+          </Button>
+          <div className="mt-5 text-xs border-b border-[#002D74] py-4 text-center text-[#002D74]">
+            <a href="#">Quên mật khẩu?</a>
+          </div>
         </div>
       </div>
-    </div>
   );
 };
 
