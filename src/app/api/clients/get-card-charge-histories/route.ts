@@ -1,15 +1,17 @@
 import {NextResponse} from "next/server";
 import {initRepository} from "@/app/models/connect";
 import {CardTransaction} from "@/app/models/entities/CardTransaction";
+import {getServerSession} from "next-auth";
+import {authOptions} from "@/app/auth/auth";
 
 export const GET = async () => {
     try {
+        const session = await getServerSession(authOptions);
         const transRepo = await initRepository(CardTransaction);
         const histories = await transRepo.find({
-            where: { user_id: 1 },
+            where: { user_id: session!.user.id },
             order: { created_at: "DESC" }
         });
-        //default 5, producttion use uid logged in
         return NextResponse.json({histories});
     } catch (e) {
         return NextResponse.json({

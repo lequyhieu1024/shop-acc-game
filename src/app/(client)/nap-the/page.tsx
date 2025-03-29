@@ -7,6 +7,8 @@ import MultipleCardFormComponent from "@/app/(client)/nap-the/MultipleCardFormCo
 import api from "@/app/services/axiosService";
 import { toast } from "react-toastify";
 import CardChargeHistory from "@/app/(client)/nap-the/CardChargeHistory";
+import { useSession } from "next-auth/react";
+import {useRouter} from "next/navigation";
 
 interface SingleFormData {
     telco: string;
@@ -23,13 +25,18 @@ interface MultipleFormData {
 
 export default function ChargeCard() {
     const [activeTab, setActiveTab] = useState<string>("theoform");
-
+    const { data: session } = useSession();
+    const router = useRouter();
     const handleTabChange = (tabId: string): void => {
         setActiveTab(tabId);
     };
 
     const handleSubmit = async (formData: SingleFormData | MultipleFormData, formType: "single" | "multiple") => {
-
+        if (!session) {
+            toast.error("Vui lòng đăng nhập tài khoản trước !");
+            router.push("/dang-nhap");
+            return;
+        }
         try {
             const response = await api.post(`card-charge/v1/charging?type=${formType}`, formData);
             if (response.status === 200) {
