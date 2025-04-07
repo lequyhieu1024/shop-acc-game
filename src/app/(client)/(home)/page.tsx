@@ -6,8 +6,8 @@ import LuckyWheelToggle from "@/components/(client)/(common)/LuckyWheelToggle";
 
 export default function Home() {
   return (
-    <>
-      <Banner />
+    <div style={{paddingTop: 20}}>
+        <Banner />
         <ExclusiveOffers />
         <LatestProducts />
         <ExclusiveOffers />
@@ -16,6 +16,6 @@ export default function Home() {
       {/*<NickChip />*/}
       <InfoCards />
       <LuckyWheelToggle />
-    </>
+    </div>
   );
 }
