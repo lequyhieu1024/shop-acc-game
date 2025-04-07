@@ -6,6 +6,7 @@ export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
     const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+console.log(token);
 
     if (pathname.startsWith("/admin")) {
         if (!token || token.role !== "admin") {

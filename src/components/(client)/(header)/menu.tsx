@@ -1,5 +1,6 @@
 import { FaList, FaCreditCard, FaNewspaper } from "react-icons/fa";
 import {FaPeopleRoof} from "react-icons/fa6";
+import { MdOutlineContactPhone } from "react-icons/md";
 
 type BaseMenuItem = {
   label: string;
@@ -39,5 +40,10 @@ export const menu: IMenuItem[] = [
     label: "Giới thiệu",
     path: "/gioi-thieu",
     icon:<FaPeopleRoof className="h6 w-6" />,
+  },
+  {
+    label: "Liên hệ",
+    path: "/lien-he",
+    icon:<MdOutlineContactPhone  className="h6 w-6" />,
   }
 ];
