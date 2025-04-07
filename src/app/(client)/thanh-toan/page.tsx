@@ -20,11 +20,17 @@ const { Title, Text } = Typography;
 export default function CheckoutPage() {
     const [form] = Form.useForm<CheckoutFormValues>();
 
-    const cartItems: CartItem[] = [
-        { id: 1, name: 'Sản phẩm 1', price: 200000, quantity: 2 },
-        { id: 2, name: 'Sản phẩm 2', price: 150000, quantity: 1 },
-    ];
-
+    // const cartItems: CartItem[] = [
+    //     { id: 1, name: 'Sản phẩm 1', price: 200000, quantity: 2 },
+    //     { id: 2, name: 'Sản phẩm 2', price: 150000, quantity: 1 },
+    // ];
+    const getCartItems = (): CartItem[] => {
+        const storedItems = localStorage.getItem('cartItems');
+        return storedItems ? JSON.parse(storedItems) : [];
+    };
+    
+    const cartItems: CartItem[] = getCartItems();
+    console.log(cartItems);
     const totalAmount: number = cartItems.reduce(
         (sum: number, item: CartItem) => sum + item.price * item.quantity,
         0
@@ -119,17 +125,17 @@ export default function CheckoutPage() {
                         <div className="space-y-4">
                             {cartItems.map((item: CartItem) => (
                                 <div key={item.id} className="flex justify-between">
-                                    <Text>
+                                    <Text className='font-medium'>
                                         {item.name} x {item.quantity}
                                     </Text>
-                                    <Text>
+                                    <Text className='font-medium text-red-500'>
                                         {(item.price * item.quantity).toLocaleString('vi-VN')} đ
                                     </Text>
                                 </div>
                             ))}
 
                             <div className="border-t pt-4">
-                                <div className="flex justify-between font-bold">
+                                <div className="flex justify-between font-bold text-red-500">
                                     <Text>Tổng cộng:</Text>
                                     <Text>{totalAmount.toLocaleString('vi-VN')} đ</Text>
                                 </div>

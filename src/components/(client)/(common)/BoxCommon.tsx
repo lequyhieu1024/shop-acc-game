@@ -301,7 +301,7 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
                     />
                   </div>
                   <span className="add-to-cart relative z-10 !flex !items-center gap-1">
-                    <BsCartPlus /> giỏ hàng
+                    <BsCartPlus /> Giỏ hàng
                   </span>
                   <span className="added">Đã thêm</span>
                 </button>

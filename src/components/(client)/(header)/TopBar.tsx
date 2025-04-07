@@ -19,6 +19,7 @@ const NavBar = () => {
   const { screenSize = "md" } = useViewport();
   const [cartDrawerVisible, setCartDrawerVisible] = useState(false);
   const { data: session } = useSession();
+  
   const router = useRouter();
 
   const showCartDrawer = () => {
