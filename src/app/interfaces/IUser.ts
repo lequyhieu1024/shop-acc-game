@@ -12,4 +12,5 @@ export interface IUser {
     updated_at: Timestamp;
     deleted_at?: Timestamp | null;
     balance: bigint;
+    role: string;
 }

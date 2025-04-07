@@ -41,7 +41,7 @@ const CartDrawerContent: React.FC = () => {
           description="Giỏ hàng của bạn đang trống"
           image={Empty.PRESENTED_IMAGE_SIMPLE}
         />
-        <Link href="/products">
+        <Link href="/danh-muc">
           <Button type="primary" className="mt-4">
             Tiếp tục mua sắm
           </Button>

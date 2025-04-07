@@ -5,9 +5,11 @@ import {ITransaction} from "@/app/interfaces/ITransaction";
 import {useEffect, useState} from "react";
 import api from "@/app/services/axiosService";
 import {DateTimeISO8601ToUFFAndUTCP7} from "@/app/services/commonService";
+import { useSession } from "next-auth/react";
 
 export default function CardChargeHistory({ mt = 'mt-0' }: {mt: string}) {
 
+    const { data: session } = useSession();
     const [histories, setHistories] = useState<ITransaction[]>([])
     const fetchCardChargeHistory = async () => {
         try {
@@ -18,7 +20,9 @@ export default function CardChargeHistory({ mt = 'mt-0' }: {mt: string}) {
         }
     }
     useEffect(() => {
-        fetchCardChargeHistory();
+        if (session) {
+            fetchCardChargeHistory();
+        }
     }, [])
 
 
