@@ -23,6 +23,7 @@ export default function CardChargeHistory({ mt = 'mt-0' }: {mt: string}) {
         if (session) {
             fetchCardChargeHistory();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
 

@@ -130,6 +130,7 @@ const DetailProduct: React.FC<DetailProductProps> = ({ product }) => {
                 <div className="space-y-4">
                     <div className="rounded-lg overflow-hidden shadow-md">
                         <img
+                            /* eslint-disable @next/next/no-img-element */
                             src={String(product.thumbnail) || "/client/assets/images/placeholder.png"}
                             alt={product.name}
                             className="w-full h-96 object-cover"
@@ -149,6 +150,7 @@ const DetailProduct: React.FC<DetailProductProps> = ({ product }) => {
                                 (product.images as IProductImage[]).map((img, index) => (
                                     <div key={index} className="snap-start flex-shrink-0">
                                         <img
+                                            /* eslint-disable @next/next/no-img-element */
                                             src={img.image_url || "/client/assets/images/placeholder.png"}
                                             alt={`Thumbnail ${index}`}
                                             className="w-20 h-20 object-cover rounded-md cursor-pointer hover:opacity-75 transition"
@@ -216,9 +218,8 @@ const DetailProduct: React.FC<DetailProductProps> = ({ product }) => {
                         <Button
                             type="primary"
                             size="large"
-                            className={`w-full flex items-center justify-center cart-button ${
-                                clickedButtons[product.id] ? "clicked" : ""
-                            }`}
+                            className={`w-full flex items-center justify-center cart-button ${clickedButtons[product.id] ? "clicked" : ""
+                                }`}
                             disabled={isAdding}
                             onClick={(e) => handleAddToCart(e, product as IProduct)}
                         >
@@ -235,8 +236,8 @@ const DetailProduct: React.FC<DetailProductProps> = ({ product }) => {
                                 <FaShoppingCart style={{ fontSize: "16px", color: "white" }} />
                             </div>
                             <span className="add-to-cart relative z-10 flex items-center">
-                <ShoppingCartOutlined className="mr-2" /> Thêm vào giỏ hàng
-              </span>
+                                <ShoppingCartOutlined className="mr-2" /> Thêm vào giỏ hàng
+                            </span>
                             <span className="added">Đã thêm</span>
                         </Button>
                         <Button
@@ -285,6 +286,7 @@ const DetailProduct: React.FC<DetailProductProps> = ({ product }) => {
                 styles={{ body: { padding: 0 } }}
             >
                 <img
+                    /* eslint-disable @next/next/no-img-element */
                     src={previewImage || ""}
                     alt="Preview"
                     className="w-full h-auto max-h-[80vh] object-contain"

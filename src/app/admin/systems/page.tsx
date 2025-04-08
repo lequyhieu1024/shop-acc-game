@@ -85,6 +85,8 @@ export default function System() {
   const fetchData = async () => {
     try {
       const response = await api.get("/systems");
+      console.log(response);
+      
       if (response.status === 200) {
         const systemData = response.data.system;
         setValue("name", systemData.name);

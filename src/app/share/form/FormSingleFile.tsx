@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { message, Upload } from "antd";
+import { message } from "antd";
 import { IoIosCloseCircle } from "react-icons/io";
 import clsx from "clsx";
 import imageError from "../../../../public/client/assets/images/avatar.png";
@@ -21,6 +21,7 @@ const FormSingleFile: React.FC<IProps> = ({ value, onChange, id, disabled }) => 
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         setFile(value as any || null);
     }, [value]);
 

@@ -209,7 +209,7 @@ const NavBar = () => {
             titleButton="Thanh toán"
             onTitleButtonClick={handleCheckout}
         >
-          <CartDrawerContent />
+          <CartDrawerContent setCartDrawerVisible={setCartDrawerVisible}/>
         </DrawerCommon>
       </>
   );

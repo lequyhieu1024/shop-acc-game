@@ -19,7 +19,6 @@ interface UserProfile {
 }
 
 const Profile = () => {
-  const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<UserProfile>({
     name: "",
     email: "",
@@ -43,15 +42,14 @@ const Profile = () => {
   });
 
   const handleSubmit = (values: UserProfile) => {
+   
     setUser(values);
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <Card className="w-full max-w-lg p-6 shadow-md rounded-lg bg-white">
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
+        {
           <Formik
             initialValues={user}
             validationSchema={validationSchema}
@@ -64,6 +62,7 @@ const Profile = () => {
                   <FormSingleFile
                     error={errors.avatar}
                     value={values.avatar}
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     onChange={(e: any) => setFieldValue("avatar", e)}
                   />
                 </Col>
@@ -113,7 +112,7 @@ const Profile = () => {
               </AntForm>
             )}
           </Formik>
-        )}
+        }
       </Card>
     </div>
   );

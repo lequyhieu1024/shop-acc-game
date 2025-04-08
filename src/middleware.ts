@@ -7,11 +7,11 @@ export const middleware = async (request: NextRequest) => {
 
     const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
 
-    if (pathname.startsWith("/admin")) {
-        if (!token || token.role !== "admin") {
-            return NextResponse.redirect(new URL("/dang-nhap", request.url));
-        }
-    }
+    // if (pathname.startsWith("/admin")) {
+    //     if (!token || token.role !== "admin") {
+    //         return NextResponse.redirect(new URL("/dang-nhap", request.url));
+    //     }
+    // }
 
     if (pathname === "/api/card-charge") {
         if (!token) {

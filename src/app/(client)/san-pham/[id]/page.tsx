@@ -29,6 +29,7 @@ const DetailAcc = () => {
 
   useEffect(() => {
     fetchProduct()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id])
   if (error) return <Error statusCode={404} title={'Sản phẩm không tồn tại hoặc có lỗi từ server'} withDarkMode={true}/>
   return <DetailProduct product={productData} />;

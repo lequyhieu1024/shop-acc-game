@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from "@/app/services/axiosService";
 
 // Định nghĩa interface cho SocialLink
-interface SocialLink {
+export interface SocialLink {
     name: string;
     url: string;
     icon: React.ReactNode; // Sử dụng React node để render SVG
