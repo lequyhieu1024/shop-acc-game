@@ -105,6 +105,7 @@ export default function Transaction() {
 
   useEffect(() => {
     fetchTransactions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const columns: TableProps<ITransaction>["columns"] = [

@@ -28,6 +28,7 @@ export default function EditLuckyDraw() {
 
     useEffect(() => {
         fetchDraw();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [params.id]);
 
     if (loading) {

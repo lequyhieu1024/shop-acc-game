@@ -82,6 +82,7 @@ export default function Product() {
 
     useEffect(() => {
         fetchProducts();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleFilterChange = (field: keyof typeof filters, value: string) => {

@@ -243,7 +243,7 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
                     height={120}
                     alt={item?.name || "Product image"}
                     src={String(item.thumbnail) || "/client/assets/images/placeholder.png"}
-                    className="h-full object-contain transition-transform duration-500 ease-in-out group-hover:scale-110"
+                    className="h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
                   />
                 </div>
               </div>
@@ -301,7 +301,7 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
                     />
                   </div>
                   <span className="add-to-cart relative z-10 !flex !items-center gap-1">
-                    <BsCartPlus /> giỏ hàng
+                    <BsCartPlus /> Giỏ hàng
                   </span>
                   <span className="added">Đã thêm</span>
                 </button>

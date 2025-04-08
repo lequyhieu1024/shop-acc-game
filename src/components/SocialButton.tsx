@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from "@/app/services/axiosService";
 
 // Định nghĩa interface cho SocialLink
-interface SocialLink {
+export interface SocialLink {
     name: string;
     url: string;
     icon: React.ReactNode; // Sử dụng React node để render SVG
@@ -79,7 +79,7 @@ const FloatingSocialIcons: React.FC<FloatingSocialIconsProps> = ({
 
                 const links: SocialLink[] = [];
 
-                if (data.tiktok) {
+                if (data?.tiktok) {
                     links.push({
                         name: 'TikTok',
                         url: data.tiktok,
@@ -89,7 +89,7 @@ const FloatingSocialIcons: React.FC<FloatingSocialIconsProps> = ({
                     });
                 }
 
-                if (data.facebook) {
+                if (data?.facebook) {
                     links.push({
                         name: 'Facebook',
                         url: data.facebook,
@@ -99,7 +99,7 @@ const FloatingSocialIcons: React.FC<FloatingSocialIconsProps> = ({
                     });
                 }
 
-                if (data.youtube) {
+                if (data?.youtube) {
                     links.push({
                         name: 'YouTube',
                         url: data.youtube,
@@ -109,7 +109,7 @@ const FloatingSocialIcons: React.FC<FloatingSocialIconsProps> = ({
                     });
                 }
 
-                if (data.zalo) {
+                if (data?.zalo) {
                     links.push({
                         name: 'Zalo',
                         url: `https://zalo.me/${data.zalo}`,
@@ -119,7 +119,7 @@ const FloatingSocialIcons: React.FC<FloatingSocialIconsProps> = ({
                     });
                 }
 
-                if (data.phone) {
+                if (data?.phone) {
                     links.push({
                         name: 'Phone',
                         url: `tel:${data.phone}`,

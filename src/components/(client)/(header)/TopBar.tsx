@@ -19,6 +19,7 @@ const NavBar = () => {
   const { screenSize = "md" } = useViewport();
   const [cartDrawerVisible, setCartDrawerVisible] = useState(false);
   const { data: session } = useSession();
+  
   const router = useRouter();
 
   const showCartDrawer = () => {
@@ -31,7 +32,6 @@ const NavBar = () => {
 
   const handleCheckout = () => {
     if (typeof window !== "undefined") {
-      console.log("Proceeding to checkout");
       window.location.href = "/thanh-toan";
     }
     closeCartDrawer();
@@ -45,7 +45,7 @@ const NavBar = () => {
 
   return (
       <>
-        <nav className="flex h-[70px] select-none items-center bg-blue-600 fixed z-20 w-full shadow-md">
+       <nav className="flex items-center bg-blue-500 fixed z-20 w-full shadow-md py-0  select-none">
           <ul className="container mx-auto flex h-full items-center justify-between px-4">
             <div className="flex items-center gap-5 md:gap-16">
               <li>
@@ -56,7 +56,7 @@ const NavBar = () => {
               {menu.map((menuData, index) => (
                   <li
                       key={index}
-                      className="group/root relative flex h-full cursor-pointer items-center transition-colors hover:bg-blue-600 rounded-md"
+                      className="group/root relative flex h-full cursor-pointer items-center transition-colors hover:bg-blue-600 py-3 px-2 rounded-md"
                   >
                     {menuData.path ? (
                         <Link href={menuData.path} className="flex items-center gap-1 text-white">
@@ -209,7 +209,7 @@ const NavBar = () => {
             titleButton="Thanh toán"
             onTitleButtonClick={handleCheckout}
         >
-          <CartDrawerContent />
+          <CartDrawerContent setCartDrawerVisible={setCartDrawerVisible}/>
         </DrawerCommon>
       </>
   );

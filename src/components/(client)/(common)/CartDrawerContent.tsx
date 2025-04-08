@@ -22,8 +22,10 @@ interface CartContextType {
   updateItem: (id: string, quantity: number) => void;
   removeItem: (id: string) => void;
 }
-
-const CartDrawerContent: React.FC = () => {
+interface CartDrawerContentProps {
+  setCartDrawerVisible: React.Dispatch<React.SetStateAction<boolean>>;
+}
+const CartDrawerContent: React.FC<CartDrawerContentProps> = ({ setCartDrawerVisible })=> {
   const { items, totalItems, updateItem, removeItem } =
     useCart() as CartContextType;
 
@@ -136,7 +138,12 @@ const CartDrawerContent: React.FC = () => {
       )
     }
   ];
-
+  const handleCheckoutClick = () => {
+    if (typeof window !== "undefined") {
+      window.location.href = "/thanh-toan";
+    }
+    setCartDrawerVisible(false);
+  };
   return (
     <div className="flex flex-col h-full">
       <Table
@@ -158,11 +165,9 @@ const CartDrawerContent: React.FC = () => {
           </Text>
         </div>
         <div className="flex justify-end">
-          <Link href="/thanh-toan">
-            <Button type="primary" size="large">
+            <Button type="primary" size="large" onClick={handleCheckoutClick}>
               Thanh toán
             </Button>
-          </Link>
         </div>
       </div>
     </div>
