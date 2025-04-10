@@ -4,7 +4,6 @@ import { INotificationBanner } from "@/app/interfaces/INotificationBanner";
 import api from "@/app/services/axiosService";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Card } from "antd";
 
 const NotiBannerPage = () => {
     const [banner, setBanner] = useState<INotificationBanner | null>(null);

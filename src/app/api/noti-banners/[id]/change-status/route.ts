@@ -1,10 +1,10 @@
 import { initRepository } from "@/app/models/connect";
 import { NotificationBanner } from "@/app/models/entities/NotificationBanner";
-import { NextRequest, NextResponse } from "next/server";
+import {  NextResponse } from "next/server";
 
-export const PATCH = async (req: NextRequest, { params }: { params: { id: string } }) => {
+export const PATCH = async (req:Request, { params }: { params: Promise<{ id: string }> }) => {
     try {
-        const id = parseInt(params.id);
+        const id = parseInt((await params).id);
         if (isNaN(id)) {
             return NextResponse.json({ result: false, message: "ID không hợp lệ." }, { status: 400 });
         }

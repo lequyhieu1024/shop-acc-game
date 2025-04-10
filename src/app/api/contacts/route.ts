@@ -9,7 +9,7 @@ export const GET = async (req: NextRequest) => {
         const searchParams: URLSearchParams = req.nextUrl.searchParams;
 
         const size = parseInt(searchParams.get("size") || "10");
-
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const filter: any = {};
         const fullName = searchParams.get("fullName");
 

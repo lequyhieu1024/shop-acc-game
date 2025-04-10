@@ -5,12 +5,10 @@ import { DateTimeISO8601ToUFFAndUTCP7 } from "@/app/services/commonService";
 import { FormSearch } from "@/components/(admin)/(form)/FormSeach";
 import DeleteConfirm from "@/components/DeleteConfirm";
 import Loading from "@/components/Loading";
-import { Modal, Switch } from "antd";
+import {  Switch } from "antd";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { ExclamationCircleOutlined } from "@ant-design/icons";
 import Swal from "sweetalert2";
-const { confirm } = Modal;
 const Support = () => {
 
     const [loading, setLoading] = useState<boolean>(true);
@@ -80,6 +78,7 @@ const Support = () => {
                     await api.patch(`/contacts/${contact.id}`);
                     toast.success("Cập nhật phản hồi thành công.");
                     getContacts(); // gọi lại để refresh data
+                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 } catch (error) {
                     toast.error("Có lỗi xảy ra khi cập nhật.");
                 }

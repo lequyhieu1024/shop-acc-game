@@ -1,6 +1,5 @@
 import { initRepository } from "@/app/models/connect";
-import { NextRequest, NextResponse } from "next/server";
-import { uploadFileToPinata } from "@/app/services/pinataService";
+import {  NextResponse } from "next/server";
 import { NotificationBanner } from "@/app/models/entities/NotificationBanner";
 
 export const GET = async () => {

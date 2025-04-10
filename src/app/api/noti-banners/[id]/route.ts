@@ -1,15 +1,13 @@
 import { initRepository } from "@/app/models/connect";
 import { NotificationBanner } from "@/app/models/entities/NotificationBanner";
 import { uploadFileToPinata } from "@/app/services/pinataService";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export const GET = async (
-  _: NextRequest,
-  { params }: { params: { id: string } }
+export const GET = async (_:Request, { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
     const repo = await initRepository(NotificationBanner);
-    const banner = await repo.findOneBy({ id: Number(params.id) });
+    const banner = await repo.findOneBy({ id: Number((await params).id) });
 
     if (!banner) {
       return NextResponse.json(
@@ -28,12 +26,11 @@ export const GET = async (
 };
 
 export const DELETE = async (
-  _: NextRequest,
-  { params }: { params: { id: string } }
+  req:Request, { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
     const repo = await initRepository(NotificationBanner);
-    const banner = await repo.findOneBy({ id: Number(params.id) });
+    const banner = await repo.findOneBy({ id: Number((await params).id) });
 
     if (!banner) {
       return NextResponse.json(
@@ -53,12 +50,11 @@ export const DELETE = async (
 };
 
 export const PATCH = async (
-  req: NextRequest,
-  { params }: { params: { id: string } }
+  req:Request, { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
     const repo = await initRepository(NotificationBanner);
-    const id = Number(params.id);
+    const id = Number((await params).id);
     const banner = await repo.findOneBy({ id });
 
     if (!banner) {
@@ -69,6 +65,7 @@ export const PATCH = async (
     }
 
     const formData = await req.formData();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const data: any = Object.fromEntries(formData.entries());
 
     // Convert is_active từ string sang boolean

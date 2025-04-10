@@ -43,12 +43,6 @@ export default function NotificationBannerPage() {
         }
     };
 
-    const changeStatus = async (id: number) => {
-        await api.patch(`noti-banners/${id}/change-status`);
-        getBanners();
-        toast.success("Thay đổi trạng thái thành công");
-    };
-
     useEffect(() => {
         getBanners();
         const msg = sessionStorage.getItem("message");
@@ -84,6 +78,7 @@ export default function NotificationBannerPage() {
                     await api.patch(`noti-banners/${ntb.id}/change-status`);
                     toast.success("Cập nhật phản hồi thành công.");
                     getBanners(); // gọi lại để refresh data
+                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 } catch (error) {
                     toast.error("Có lỗi xảy ra khi cập nhật.");
                 }
