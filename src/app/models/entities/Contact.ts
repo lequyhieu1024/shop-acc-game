@@ -15,14 +15,17 @@ export class Contact {
     @Column({ type: "varchar", length: 255 })
     fullName!: string;
 
-    @Column({ type: "varchar", length: 255 })
+    @Column({ type: "varchar", length: 255, nullable: true  })
     email!: string;
 
     @Column({ type: "text" })
     message!: string;
 
-    @Column({ type: "varchar", length: 20, nullable: true })
+    @Column({ type: "varchar", length: 20})
     phone?: string;
+
+    @Column({ type: "boolean" })
+    is_feedback!: boolean;
 
     @CreateDateColumn({ type: "timestamp" })
     created_at!: Date;

@@ -143,6 +143,9 @@ export const Navbar = () => {
                                 <Link href="/admin/banners">Banner</Link>
                             </li>
                             <li>
+                                <Link href="/admin/noti-banners">Thông báo nổi</Link>
+                            </li>
+                            <li>
                                 <Link target="_blank" href={system?.youtube ?? "#"}><i className="ri-youtube-line"></i>Đi đến kênh Youtube</Link>
                             </li>
                             <li>

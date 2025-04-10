@@ -7,6 +7,10 @@ function isValidEmail(email: string) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
 }
+function isValidPhone(phone: string) {
+    const phoneRegex = /^(\+84|0)[3|5|7|8|9]\d{8}$/;
+    return phoneRegex.test(phone);
+}
 
 export const POST = async (req: NextRequest) => {
     try {
@@ -24,6 +28,10 @@ export const POST = async (req: NextRequest) => {
 
         if (!message || message.trim().length < 2) {
             errors.push("Nội dung tin nhắn phải có ít nhất 2 ký tự.");
+        }
+
+        if (phone && !isValidPhone(phone)) {
+            errors.push("Số điện thoại không hợp lệ.");
         }
 
         if (errors.length > 0) {
