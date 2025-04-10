@@ -94,7 +94,7 @@ export default function ContactPage() {
                                 />
                             </div>
                             <div>
-                                <label htmlFor="email" className="block text-gray-700 font-medium mb-1 after:content-['*'] after:text-red-500">Email</label>
+                                <label htmlFor="email" className="block text-gray-700 font-medium mb-1 ">Email</label>
                                 <input
                                     type="email"
                                     id="email"
@@ -107,7 +107,7 @@ export default function ContactPage() {
                                 />
                             </div>
                             <div>
-                                <label htmlFor="phone" className="block text-gray-700 font-medium mb-1">Số điện thoại (tùy chọn)</label>
+                                <label htmlFor="phone" className="block text-gray-700 font-medium mb-1 after:content-['*'] after:text-red-500">Số điện thoại </label>
                                 <input
                                     type="tel"
                                     id="phone"

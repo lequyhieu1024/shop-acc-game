@@ -13,6 +13,7 @@ import { ProductImage } from "@/app/models/entities/Image";
 import { Banner } from "@/app/models/entities/Banner";
 import { CardTransaction } from "@/app/models/entities/CardTransaction";
 import { Contact } from "./entities/Contact";
+import { NotificationBanner } from "./entities/NotificationBanner";
 
 export const AppDataSource = new DataSource({
   type: "mysql",
@@ -34,7 +35,8 @@ export const AppDataSource = new DataSource({
     ProductImage,
     Banner,
     CardTransaction,
-    Contact
+    Contact,
+    NotificationBanner
   ],
   synchronize: true,
   logging: false
