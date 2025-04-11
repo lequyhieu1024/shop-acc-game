@@ -38,6 +38,7 @@ export const PATCH = async (req: NextRequest) => {
     }
     
     // Tạo object mới để lưu dữ liệu cập nhật
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const newData: Record<string, any> = {};
     
     // Xử lý các trường văn bản

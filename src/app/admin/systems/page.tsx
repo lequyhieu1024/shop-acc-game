@@ -83,13 +83,6 @@ const System: React.FC = () => {
         formData.append("qr_code", selectedFiles.qr_code);
       }
 
-      // Log kiểm tra dữ liệu FormData
-      for (const pair of formData.entries()) {
-        const value = pair[1] instanceof File 
-          ? `File: ${(pair[1] as File).name}` 
-          : pair[1];
-      }
-
       // Gửi request với header đúng cho multipart/form-data
       const response = await api.patch("systems", formData, {
         headers: {
@@ -106,6 +99,7 @@ const System: React.FC = () => {
       }
     } catch (error) {
       console.error("Lỗi khi cập nhật:", error);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       toast.error(`Lỗi khi cập nhật: ${(error as any).message || 'Lỗi không xác định'}`);
       setError(true);
     } finally {
