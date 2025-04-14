@@ -56,7 +56,7 @@ export default function AboutPage() {
                         Sẵn sàng chinh phục Free Fire cùng Shop Cuti Gaming?
                     </h3>
                     <a
-                        href="/shop"
+                        href="/danh-muc"
                         className="inline-block bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition"
                     >
                         Xem ngay kho acc Free Fire
