@@ -55,7 +55,7 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
         payment_status,
         total_amount,
       });
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
       const itemEntities = order_items.map((item: any) =>
         orderItemRepo.create({
           order: newOrder, // ManyToOne(Order)

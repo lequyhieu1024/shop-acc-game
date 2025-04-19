@@ -96,7 +96,7 @@ export default function Order() {
     setPagination((prev) => ({ ...prev, current: 1 }));
     fetchOrders(1);
   }, [fetchOrders]);
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleTableChange = useCallback(({ current, pageSize }: any) => {
     fetchOrders(current, pageSize);
   }, [fetchOrders]);

@@ -61,11 +61,11 @@ export default function OrderForm({
   }, []);
 
   // Hàm khởi tạo initialValues từ initialData
-  
+
   const getInitialValues = useCallback(() => {
-    if (!!isEditing&&initialData) {
+    if (!!isEditing && initialData) {
       console.log(initialData);
-              
+
       const initialValues = {
         orders: [
           {
@@ -73,8 +73,8 @@ export default function OrderForm({
             customer_email: initialData.customer_email || "",
             customer_phone: initialData.customer_phone || "",
             order_items: initialData.items?.map((item, index) => {
-              const unitPrice = parseFloat(String( item.unit_price || item.product?.sale_price)) || 0;
-            
+              const unitPrice = parseFloat(String(item.unit_price || item.product?.sale_price)) || 0;
+
               return {
                 key: `existing_${index}`,
                 product_id: item.product_id,
@@ -112,12 +112,15 @@ export default function OrderForm({
   }, [isEditing, initialData, generateKey]);
 
   const handleSubmit = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async (values: any) => {
       setLoading(true);
       try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const orders = values.orders.map((order: any) => {
           const orderItems = order.order_items
             .filter((item: IOrderItem) => item.product_id)
+       // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
             .map(({ key, product_name, sale_price, ...item }: any) => ({
               ...item,
               total_amount: item.quantity * item.unit_price,
@@ -140,6 +143,7 @@ export default function OrderForm({
             payment_method: order.payment_method,
             payment_status: order.payment_status,
             total_amount: orderItems.reduce(
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               (sum: number, item: any) => sum + item.total_amount,
               0
             ),
@@ -154,6 +158,7 @@ export default function OrderForm({
           toast.success(isEditing ? "Cập nhật đơn hàng thành công" : "Thêm đơn hàng thành công");
           router.push("/admin/orders");
         }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         setError(true);
         toast.error(error.message || "Có lỗi xảy ra khi gửi dữ liệu");
@@ -227,7 +232,7 @@ export default function OrderForm({
 
       form.setFieldsValue({
         orders: { [orderIndex]: { order_items: currentItems } },
-        });
+      });
 
       updateOrderTotal(orderIndex);
     },
@@ -262,6 +267,7 @@ export default function OrderForm({
     (orderIndex: number, itemIndex: number) => {
       const currentItems =
         form.getFieldValue(["orders", orderIndex, "order_items"]) || [];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const newItems = currentItems.filter((_: any, index: number) => index !== itemIndex);
 
       form.setFieldsValue({
@@ -278,6 +284,7 @@ export default function OrderForm({
       {
         title: "STT",
         width: 60,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render: (_: any, __: any, index: number) => index + 1,
       },
       {
@@ -285,6 +292,7 @@ export default function OrderForm({
         dataIndex: "product_id",
         key: "product_id",
         width: 300,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render: (_: any, record: any, index: number) => {
           return (
             <Form.Item
@@ -301,7 +309,7 @@ export default function OrderForm({
                   value: product.id,
                   label: product.name,
                 }))}
-                disabled={!!(initialData && Object.keys(initialData).length) &&(productsLoading || !products.length)}
+                disabled={!!(initialData && Object.keys(initialData).length) && (productsLoading || !products.length)}
               />
             </Form.Item>
           );
@@ -312,6 +320,7 @@ export default function OrderForm({
         dataIndex: "quantity",
         key: "quantity",
         width: 120,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render: (_: any, __: any, index: number) => (
           <Form.Item
             name={[index, "quantity"]}
@@ -328,11 +337,12 @@ export default function OrderForm({
       },
       {
         title: "Đơn giá",
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         dataIndex: "unit_price",
         key: "unit_price",
         width: 150,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render: (_: any, __: any, index: number) => {
-          const unitPrice = form.getFieldValue(["orders", 0, "order_items", index, "unit_price"]);
           return (
             <Form.Item name={[index, "unit_price"]} noStyle>
               <InputNumber
@@ -347,11 +357,12 @@ export default function OrderForm({
       },
       {
         title: "Thành tiền",
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         dataIndex: "line_total",
         key: "line_total",
         width: 150,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render: (_: any, __: any, index: number) => {
-          const lineTotal = form.getFieldValue(["orders", 0, "order_items", index, "line_total"]);
           return (
             <Form.Item name={[index, "line_total"]} noStyle>
               <InputNumber
@@ -368,6 +379,7 @@ export default function OrderForm({
         title: "Thao tác",
         key: "action",
         width: 100,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render: (_: any, __: any, index: number) => (
           <Button
             type="text"
@@ -396,7 +408,9 @@ export default function OrderForm({
       className="space-y-6 p-6 bg-white shadow-lg rounded-md"
     >
       <Form.List name="orders">
+
         {(fields, { add, remove }) => (
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           <>
             {fields.map(({ key, name: orderIndex, ...restField }) => (
               <div key={key} className="order-item space-y-4 p-4 border rounded-md">
@@ -445,30 +459,31 @@ export default function OrderForm({
                 </h5>
 
                 <Form.List name={[orderIndex, "order_items"]}>
-                  {(productFields, { add: addProduct }) => {
-                    const dataSource = form.getFieldValue(["orders", orderIndex, "order_items"]) || [];
-                    console.log(dataSource);
-                    
-                    return (
-                      <Table
-                        dataSource={dataSource}
-                        pagination={false}
-                        rowKey={(record) => record.key}
-                        columns={tableColumns}
-                        footer={() => (
-                          <Button
-                            type="dashed"
-                            onClick={() => addProductLine(orderIndex)}
-                            block
-                            icon={<PlusOutlined />}
-                            disabled={!!(initialData && Object.keys(initialData).length) &&(productsLoading || !products.length)}
-                          >
-                            Thêm sản phẩm
-                          </Button>
-                        )}
-                      />
-                    );
-                  }}
+                  {
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    (productFields, { add: addProduct }) => {
+                      const dataSource = form.getFieldValue(["orders", orderIndex, "order_items"]) || [];
+
+                      return (
+                        <Table
+                          dataSource={dataSource}
+                          pagination={false}
+                          rowKey={(record) => record.key}
+                          columns={tableColumns}
+                          footer={() => (
+                            <Button
+                              type="dashed"
+                              onClick={() => addProductLine(orderIndex)}
+                              block
+                              icon={<PlusOutlined />}
+                              disabled={!!(initialData && Object.keys(initialData).length) && (productsLoading || !products.length)}
+                            >
+                              Thêm sản phẩm
+                            </Button>
+                          )}
+                        />
+                      );
+                    }}
                 </Form.List>
 
                 <Row justify="end">

@@ -81,6 +81,7 @@ export const PATCH = async (
     await orderItemRepository.delete({ order: { id: Number(orderId) } });
 
     // Tạo mới items
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updatedOrderItems = newOrderItems.map((item: any) => {
       const orderItem = new OrderItem();
       orderItem.product_id = item.product_id;

@@ -54,6 +54,7 @@ export const PATCH = async (
     }
 
     const formData = await req.formData();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const newData: Record<string, any> = Object.fromEntries(formData.entries());
     newData.total_amount = parseFloat(newData.total_amount); // Ensure total_amount is a number
 
