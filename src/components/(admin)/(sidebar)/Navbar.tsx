@@ -39,10 +39,10 @@ export const Navbar = () => {
                     </li>
 
                     <li className="sidebar-list">
-                        <a className="sidebar-link sidebar-title link-nav" href="media.html">
+                        <Link className="sidebar-link sidebar-title link-nav" href="/admin/orders">
                             <i className="ri-archive-line"></i>
                             <span>Đơn hàng</span>
-                        </a>
+                        </Link>
                     </li>
 
                     <li className="sidebar-list">
