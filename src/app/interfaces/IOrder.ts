@@ -1,4 +1,5 @@
 import { OrderStatus, PaymentMethod, PaymentStatus } from "../models/entities/Order";
+import { IProduct } from "./IProduct";
 
 export interface IOrder {
   id: number;
@@ -12,6 +13,7 @@ export interface IOrder {
   payment_method: PaymentMethod;
   payment_status: PaymentStatus;
   order_items?: IOrderItem[]
+  items?: IOrderItem[]
 
 }
 export interface IOrderItem {
@@ -21,5 +23,6 @@ export interface IOrderItem {
   quantity: number;         // Quantity of the product
   unit_price: number;       // Unit price of the product
   line_total: number;       // Total price for this line item (quantity * unit_price)
+  product?:IProduct
 
 }

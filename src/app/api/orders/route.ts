@@ -30,7 +30,6 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
     const orderItemRepo = await initRepository(OrderItem);
 
     const body = await req.json();
-    console.log("Received body:", body);
 
     const orders = Array.isArray(body) ? body : [body];
     const results = [];

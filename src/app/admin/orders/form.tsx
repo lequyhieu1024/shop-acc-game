@@ -35,6 +35,10 @@ export default function OrderForm({
         if (response.status === 200) {
           const data = Array.isArray(response.data.products) ? response.data?.products : [];
           setProducts(data);
+          if (isEditing && initialData) {
+            const initialValues = getInitialValues();
+            form.setFieldsValue(initialValues);
+          }
         } else {
           setProducts([]);
         }
@@ -48,7 +52,7 @@ export default function OrderForm({
     };
 
     fetchProducts();
-  }, []);
+  }, [form, isEditing, initialData]);
 
   const generateKey = useCallback(() => {
     const key = `item_${keyCounterRef.current}`;
@@ -56,15 +60,56 @@ export default function OrderForm({
     return key;
   }, []);
 
-  const getInitialOrderItems = useCallback(() => {
-    if (initialData?.order_items?.length) {
-      return initialData.order_items.map((item, index) => ({
-        ...item,
-        key: `existing_${index}`,
-      }));
+  // Hàm khởi tạo initialValues từ initialData
+  
+  const getInitialValues = useCallback(() => {
+    if (!!isEditing&&initialData) {
+      console.log(initialData);
+              
+      const initialValues = {
+        orders: [
+          {
+            customer_name: initialData.customer_name || "",
+            customer_email: initialData.customer_email || "",
+            customer_phone: initialData.customer_phone || "",
+            order_items: initialData.items?.map((item, index) => {
+              const unitPrice = parseFloat(String( item.unit_price || item.product?.sale_price)) || 0;
+            
+              return {
+                key: `existing_${index}`,
+                product_id: item.product_id,
+                product_name: item.product?.name || item.product_name || "",
+                quantity: item.quantity,
+                unit_price: unitPrice,
+                line_total: item.quantity * unitPrice,
+                sale_price: parseFloat(String(item.product?.sale_price)) || unitPrice,
+              };
+            }) || [{ key: generateKey(), quantity: 1, unit_price: 0, line_total: 0, product_id: undefined, product_name: "", sale_price: 0 }],
+            status: initialData.status || OrderStatus.PENDING,
+            payment_method: initialData.payment_method || PaymentMethod.CASH,
+            payment_status: initialData.payment_status || PaymentStatus.UNPAID,
+            total_amount: parseFloat(String(initialData.total_amount)) || 0,
+          },
+        ],
+      };
+      return initialValues;
     }
-    return [{ key: generateKey(), quantity: 1, unit_price: 0, line_total: 0 }];
-  }, [initialData, generateKey]);
+
+    return {
+      orders: [
+        {
+          customer_name: "",
+          customer_email: "",
+          customer_phone: "",
+          order_items: [{ key: generateKey(), quantity: 1, unit_price: 0, line_total: 0, product_id: undefined, product_name: "", sale_price: 0 }],
+          status: OrderStatus.PENDING,
+          payment_method: PaymentMethod.CASH,
+          payment_status: PaymentStatus.UNPAID,
+          total_amount: 0,
+        },
+      ],
+    };
+  }, [isEditing, initialData, generateKey]);
 
   const handleSubmit = useCallback(
     async (values: any) => {
@@ -73,7 +118,7 @@ export default function OrderForm({
         const orders = values.orders.map((order: any) => {
           const orderItems = order.order_items
             .filter((item: IOrderItem) => item.product_id)
-            .map(({ key, ...item }: IOrderItem) => ({
+            .map(({ key, product_name, sale_price, ...item }: any) => ({
               ...item,
               total_amount: item.quantity * item.unit_price,
             }));
@@ -101,10 +146,12 @@ export default function OrderForm({
           };
         });
 
-        const response = await api.post("/orders", orders);
+        const endpoint = isEditing ? `/orders/${initialData?.id}` : "/orders";
+        const method = isEditing ? api.patch : api.post;
+        const response = await method(endpoint, orders[0]);
 
         if (response.status === 200) {
-          toast.success("Thêm đơn hàng thành công");
+          toast.success(isEditing ? "Cập nhật đơn hàng thành công" : "Thêm đơn hàng thành công");
           router.push("/admin/orders");
         }
       } catch (error: any) {
@@ -114,7 +161,7 @@ export default function OrderForm({
         setLoading(false);
       }
     },
-    [router]
+    [router, isEditing, initialData]
   );
 
   const updateOrderTotal = useCallback(
@@ -144,13 +191,15 @@ export default function OrderForm({
         const currentItems =
           form.getFieldValue(["orders", orderIndex, "order_items"]) || [];
         const quantity = currentItems[itemIndex]?.quantity || 1;
+        const unitPrice = parseFloat(String(selectedProduct.sale_price)) || 0;
 
         currentItems[itemIndex] = {
           ...currentItems[itemIndex],
           product_id: value,
           product_name: selectedProduct.name,
-          unit_price: selectedProduct.sale_price,
-          line_total: quantity * selectedProduct.sale_price,
+          unit_price: unitPrice,
+          line_total: quantity * unitPrice,
+          sale_price: unitPrice,
         };
 
         form.setFieldsValue({
@@ -178,7 +227,7 @@ export default function OrderForm({
 
       form.setFieldsValue({
         orders: { [orderIndex]: { order_items: currentItems } },
-      });
+        });
 
       updateOrderTotal(orderIndex);
     },
@@ -194,9 +243,11 @@ export default function OrderForm({
         {
           key: generateKey(),
           product_id: undefined,
+          product_name: "",
           quantity: 1,
           unit_price: 0,
           line_total: 0,
+          sale_price: 0,
         },
       ];
 
@@ -234,24 +285,27 @@ export default function OrderForm({
         dataIndex: "product_id",
         key: "product_id",
         width: 300,
-        render: (_: any, __: any, index: number) => (
-          <Form.Item
-            name={[index, "product_id"]}
-            rules={[{ required: true, message: "Vui lòng chọn sản phẩm" }]}
-            noStyle
-          >
-            <Select
-              placeholder="Chọn sản phẩm"
-              style={{ width: "100%" }}
-              onChange={(value: number) => handleProductChange(value, 0, index)}
-              options={products.map((product) => ({
-                value: product.id,
-                label: product.name,
-              }))}
-              disabled={productsLoading || !products.length}
-            />
-          </Form.Item>
-        ),
+        render: (_: any, record: any, index: number) => {
+          return (
+            <Form.Item
+              name={[index, "product_id"]}
+              rules={[{ required: true, message: "Vui lòng chọn sản phẩm" }]}
+              noStyle
+              initialValue={record.product_id}
+            >
+              <Select
+                placeholder="Chọn sản phẩm"
+                style={{ width: "100%" }}
+                onChange={(value: number) => handleProductChange(value, 0, index)}
+                options={products.map((product) => ({
+                  value: product.id,
+                  label: product.name,
+                }))}
+                disabled={!!(initialData && Object.keys(initialData).length) &&(productsLoading || !products.length)}
+              />
+            </Form.Item>
+          );
+        },
       },
       {
         title: "Số lượng",
@@ -277,32 +331,38 @@ export default function OrderForm({
         dataIndex: "unit_price",
         key: "unit_price",
         width: 150,
-        render: (_: any, __: any, index: number) => (
-          <Form.Item name={[index, "unit_price"]} noStyle>
-            <InputNumber
-              disabled
-              formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-              parser={(value) => value!.replace(/\$\s?|(,*)/g, "")}
-              style={{ width: "100%" }}
-            />
-          </Form.Item>
-        ),
+        render: (_: any, __: any, index: number) => {
+          const unitPrice = form.getFieldValue(["orders", 0, "order_items", index, "unit_price"]);
+          return (
+            <Form.Item name={[index, "unit_price"]} noStyle>
+              <InputNumber
+                disabled
+                formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                parser={(value) => value!.replace(/\$\s?|(,*)/g, "")}
+                style={{ width: "100%" }}
+              />
+            </Form.Item>
+          );
+        },
       },
       {
         title: "Thành tiền",
         dataIndex: "line_total",
         key: "line_total",
         width: 150,
-        render: (_: any, __: any, index: number) => (
-          <Form.Item name={[index, "line_total"]} noStyle>
-            <InputNumber
-              disabled
-              formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-              parser={(value) => value!.replace(/\$\s?|(,*)/g, "")}
-              style={{ width: "100%" }}
-            />
-          </Form.Item>
-        ),
+        render: (_: any, __: any, index: number) => {
+          const lineTotal = form.getFieldValue(["orders", 0, "order_items", index, "line_total"]);
+          return (
+            <Form.Item name={[index, "line_total"]} noStyle>
+              <InputNumber
+                disabled
+                formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                parser={(value) => value!.replace(/\$\s?|(,*)/g, "")}
+                style={{ width: "100%" }}
+              />
+            </Form.Item>
+          );
+        },
       },
       {
         title: "Thao tác",
@@ -331,17 +391,7 @@ export default function OrderForm({
       form={form}
       name="order_form"
       onFinish={handleSubmit}
-      initialValues={{
-        orders: [
-          {
-            customer_id: undefined,
-            order_items: getInitialOrderItems(),
-            status: OrderStatus.PENDING,
-            payment_method: PaymentMethod.CASH,
-            payment_status: PaymentStatus.UNPAID,
-          },
-        ],
-      }}
+      initialValues={getInitialValues()}
       layout="vertical"
       className="space-y-6 p-6 bg-white shadow-lg rounded-md"
     >
@@ -395,27 +445,30 @@ export default function OrderForm({
                 </h5>
 
                 <Form.List name={[orderIndex, "order_items"]}>
-                  {(productFields, { add: addProduct }) => (
-                    <Table
-                      dataSource={
-                        form.getFieldValue(["orders", orderIndex, "order_items"]) || []
-                      }
-                      pagination={false}
-                      rowKey={(record) => record.key}
-                      columns={tableColumns}
-                      footer={() => (
-                        <Button
-                          type="dashed"
-                          onClick={() => addProductLine(orderIndex)}
-                          block
-                          icon={<PlusOutlined />}
-                          disabled={productsLoading || !products.length}
-                        >
-                          Thêm sản phẩm
-                        </Button>
-                      )}
-                    />
-                  )}
+                  {(productFields, { add: addProduct }) => {
+                    const dataSource = form.getFieldValue(["orders", orderIndex, "order_items"]) || [];
+                    console.log(dataSource);
+                    
+                    return (
+                      <Table
+                        dataSource={dataSource}
+                        pagination={false}
+                        rowKey={(record) => record.key}
+                        columns={tableColumns}
+                        footer={() => (
+                          <Button
+                            type="dashed"
+                            onClick={() => addProductLine(orderIndex)}
+                            block
+                            icon={<PlusOutlined />}
+                            disabled={!!(initialData && Object.keys(initialData).length) &&(productsLoading || !products.length)}
+                          >
+                            Thêm sản phẩm
+                          </Button>
+                        )}
+                      />
+                    );
+                  }}
                 </Form.List>
 
                 <Row justify="end">
@@ -500,7 +553,7 @@ export default function OrderForm({
                 icon={<PlusOutlined />}
                 onClick={() =>
                   add({
-                    order_items: [{ key: generateKey(), quantity: 1, unit_price: 0, line_total: 0 }],
+                    order_items: [{ key: generateKey(), quantity: 1, unit_price: 0, line_total: 0, product_id: undefined, product_name: "", sale_price: 0 }],
                   })
                 }
                 block
@@ -512,7 +565,7 @@ export default function OrderForm({
         )}
       </Form.List>
 
-      <div className=" flex justify-between gap-3 flex-col p-3" style={{display:"flex",alignItems:"center"}}>
+      <div className="flex justify-between gap-3 flex-col p-3" style={{ display: "flex", alignItems: "center" }}>
         <Button
           type="primary"
           htmlType="submit"

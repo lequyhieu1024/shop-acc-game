@@ -103,6 +103,13 @@ export default function Order() {
 
   const columns: TableProps<IOrder>["columns"] = useMemo(() => [
     {
+      title: "STT",
+      key: "index",
+      render: (_text, _record, index) => index + 1,
+      width: 60,
+      align: "center",
+    },
+    {
       title: "Mã Đơn Hàng",
       dataIndex: "id",
       key: "id",
