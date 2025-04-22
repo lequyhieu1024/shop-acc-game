@@ -7,6 +7,7 @@ import Loading from "@/components/Loading";
 import ErrorPage from "@/components/(admin)/Error";
 import { Space, Table, TableProps, Tag } from "antd";
 import { CardStatus } from "@/app/models/entities/CardTransaction";
+import { Timestamp } from "typeorm";
 
 interface Filters {
   [key: string]: string | number | boolean;
@@ -25,7 +26,7 @@ export default function Transaction() {
   const [formData, setFormData] = useState({
     user_code: "",
     status: "",
-    value: "",
+    request_id: "", // Thay value thành request_id
     created_at: "",
   });
 
@@ -37,7 +38,7 @@ export default function Transaction() {
     try {
       setLoading(true);
       const params = new URLSearchParams({
-        page: page.toString(), // Sử dụng "page" thay vì "size" để đồng bộ với Product
+        page: page.toString(),
         size: size.toString(),
       });
 
@@ -48,7 +49,22 @@ export default function Transaction() {
       const response = await api.get(`transactions?${params.toString()}`);
 
       if (response.status === 200) {
-        setTransactions(response.data.transactions || []);
+        const mappedTransactions: ITransaction[] = response.data.transactions.map(
+            (trans: any) => ({
+              ...trans,
+              id: Number(trans.id),
+              user_id: Number(trans.user_id),
+              request_id: Number(trans.request_id),
+              status: trans.status.toString() as CardStatus,
+              amount: Number(trans.amount),
+              declared_value: trans.declared_value ? Number(trans.declared_value) : null,
+              value: trans.value ? Number(trans.value) : null,
+              trans_id: trans.trans_id ? Number(trans.trans_id) : null,
+              created_at: trans.created_at, // Timestamp sẽ được xử lý khi hiển thị
+              user_code: trans.user_code, // Đảm bảo user_code được lấy từ API
+            })
+        );
+        setTransactions(mappedTransactions || []);
         setPagination({
           current: page,
           pageSize: size,
@@ -77,7 +93,7 @@ export default function Transaction() {
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setPagination((prev) => ({ ...prev, current: 1 })); // Reset về trang 1 khi tìm kiếm
+    setPagination((prev) => ({ ...prev, current: 1 }));
     fetchTransactions(formData, 1);
   };
 
@@ -86,18 +102,18 @@ export default function Transaction() {
     setFormData({
       user_code: "",
       status: "",
-      value: "",
+      request_id: "", // Thay value thành request_id
       created_at: "",
     });
     setPagination((prev) => ({ ...prev, current: 1 }));
     fetchTransactions({
       user_code: "",
       status: "",
-      value: "",
+      request_id: "",
       created_at: "",
     });
   };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const handleTableChange = (pagination: any) => {
     const { current, pageSize } = pagination;
     fetchTransactions(formData, current, pageSize);
@@ -105,7 +121,6 @@ export default function Transaction() {
 
   useEffect(() => {
     fetchTransactions();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const columns: TableProps<ITransaction>["columns"] = [
@@ -115,26 +130,32 @@ export default function Transaction() {
       key: "request_id",
     },
     {
+      title: "Mã người dùng",
+      dataIndex: "user_code",
+      key: "user_code",
+      // render: (user_code: string | undefined) => user_code || "-",
+    },
+    {
       title: "Nhà mạng",
       dataIndex: "telco",
       key: "telco",
     },
     {
-      title: "Giá trị khai báo",
+      title: "Giá trị thẻ khai báo",
       dataIndex: "declared_value",
       key: "declared_value",
       render: (value: number | null) =>
           value ? `${value.toLocaleString()} VND` : "-",
     },
     {
-      title: "Giá trị thực nhận",
+      title: "Giá trị thực của thẻ",
       dataIndex: "value",
       key: "value",
       render: (value: number | null) =>
           value ? `${value.toLocaleString()} VND` : "-",
     },
     {
-      title: "Số tiền",
+      title: "Số tiền thực nhận",
       dataIndex: "amount",
       key: "amount",
       render: (amount: number) => `${amount.toLocaleString()} VND`,
@@ -143,16 +164,16 @@ export default function Transaction() {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
-      render: (status: number) => {
+      render: (status: CardStatus) => {
         const statusMap: Record<CardStatus, { label: string; color: string }> = {
-          [CardStatus.SUCCESS_CORRECT]: { label: "SUCCESS_CORRECT", color: "green" },
-          [CardStatus.SUCCESS_INCORRECT]: { label: "SUCCESS_INCORRECT", color: "blue" },
-          [CardStatus.FAILED]: { label: "FAILED", color: "red" },
-          [CardStatus.MAINTENANCE]: { label: "MAINTENANCE", color: "orange" },
-          [CardStatus.PENDING]: { label: "PENDING", color: "gold" },
-          [CardStatus.SUBMIT_FAILED]: { label: "SUBMIT_FAILED", color: "purple" },
+          "1": { label: "SUCCESS_CORRECT", color: "green" },
+          "2": { label: "SUCCESS_INCORRECT", color: "blue" },
+          "3": { label: "FAILED", color: "red" },
+          "4": { label: "MAINTENANCE", color: "orange" },
+          "99": { label: "PENDING", color: "gold" },
+          "100": { label: "SUBMIT_FAILED", color: "purple" },
         };
-        const { label, color } = statusMap[status as CardStatus] || {
+        const { label, color } = statusMap[status] || {
           label: "Không xác định",
           color: "gray",
         };
@@ -163,7 +184,7 @@ export default function Transaction() {
       title: "Ngày tạo",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: Date) => new Date(created_at).toLocaleString(),
+      render: (created_at: Timestamp) => new Date(created_at.toString()).toLocaleString(),
     },
     {
       title: "Hành động",
@@ -223,10 +244,10 @@ export default function Transaction() {
                           <div className="col-md-3">
                             <input
                                 type="number"
-                                name="value"
+                                name="request_id" // Thay value thành request_id
                                 className="form-control"
-                                placeholder="Giá trị"
-                                value={formData.value}
+                                placeholder="Mã yêu cầu"
+                                value={formData.request_id}
                                 onChange={handleChange}
                             />
                           </div>
@@ -260,7 +281,7 @@ export default function Transaction() {
                           bordered
                           dataSource={transactions.map((transaction) => ({
                             ...transaction,
-                            key: transaction.id,
+                            key: transaction.id.toString(),
                           }))}
                           locale={{ emptyText: "Không có dữ liệu" }}
                           pagination={{

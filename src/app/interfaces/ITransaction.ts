@@ -15,5 +15,6 @@ export interface ITransaction {
     trans_id?: number | null;
     callback_sign?: string | null;
     command: string;
+    user_code?: string;
     created_at: Timestamp;
 }
