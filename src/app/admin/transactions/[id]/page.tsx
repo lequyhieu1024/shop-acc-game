@@ -1,7 +1,6 @@
 "use client"
 import { Card, Descriptions, Tag, Button } from "antd";
 import React, { useEffect, useState } from "react";
-import {CardStatus} from "@/app/models/entities/CardTransaction";
 import api from "@/app/services/axiosService";
 import Loading from "@/components/Loading";
 import {useParams, useRouter} from "next/navigation";
@@ -33,15 +32,6 @@ const TransactionDetail = () => {
         fetchTransaction();
     }, [params.id]);
 
-    const statusColors: Record<number, string> = {
-        [CardStatus.SUCCESS_CORRECT]: "green",
-        [CardStatus.SUCCESS_INCORRECT]: "blue",
-        [CardStatus.FAILED]: "red",
-        [CardStatus.MAINTENANCE]: "orange",
-        [CardStatus.PENDING]: "gray",
-        [CardStatus.SUBMIT_FAILED]: "volcano",
-    };
-
     if (loading) return <Loading/>;
     if (!transaction) return <p>Không tìm thấy giao dịch</p>;
 
@@ -68,12 +58,24 @@ const TransactionDetail = () => {
                     )
                 }
                 <Descriptions.Item label="Trạng thái">
-                    <Tag color={statusColors[transaction.status] || "default"}>
-                        {CardStatus[transaction.status] ?? "Không xác định"}
-                    </Tag>
-                    <Tag color={statusColors[transaction.status] || "default"}>
-                        {transaction.message ?? "Không xác định"}
-                    </Tag>
+                    {/*<Tag color={statusColors[transaction.status] || "default"}>*/}
+                    {/*    {CardStatus[transaction.status] ?? "Không xác định"}*/}
+                    {/*</Tag>*/}
+                    {/*<Tag color={statusColors[transaction.status] || "default"}>*/}
+                    {/*    {transaction.message ?? "Không xác định"}*/}
+                    {/*</Tag>*/}
+                    {
+                        transaction.status == '1' && <Tag color="success">Thành công, đúng mệnh giá</Tag>
+                    }
+                    {
+                        transaction.status == '2' && <Tag color="success">Thành công, sai mệnh giá</Tag>
+                    }
+                    {
+                        transaction.status == '3' && <Tag color="success">Thất bại</Tag>
+                    }
+                    {
+                        transaction.status == '99' && <Tag color="success">Đang chờ</Tag>
+                    }
                 </Descriptions.Item>
                 <Descriptions.Item
                     label="Mệnh giá khai báo">{numberFormat(transaction.declared_value)} vnđ</Descriptions.Item>

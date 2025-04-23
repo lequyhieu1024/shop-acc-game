@@ -33,12 +33,9 @@ export async function GET(req: NextRequest) {
             query.andWhere("DATE(user.created_at) = :created_at", { created_at });
         }
 
-        // Tính tổng số bản ghi
-        const total = await query.getCount();
-
         query.skip((page - 1) * size).take(size);
 
-        const users = await query.getMany();
+        const [users, total] = await query.getManyAndCount();
 
         return NextResponse.json(
             {
@@ -54,7 +51,7 @@ export async function GET(req: NextRequest) {
     } catch (error) {
         console.error("Error fetching users:", error);
         return NextResponse.json(
-            { message: "Có lỗi xảy ra khi lấy danh sách người dùng." },
+            { message: "Có lỗi xảy ra khi lấy danh sách người dùng: " + error },
             { status: 500 }
         );
     }

@@ -1,6 +1,6 @@
 import {NextRequest, NextResponse} from "next/server";
 import {initRepository} from "@/app/models/connect";
-import {CardStatus, CardTransaction} from "@/app/models/entities/CardTransaction";
+import {CardTransaction} from "@/app/models/entities/CardTransaction";
 import {User} from "@/app/models/entities/User";
 
 export const GET = async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
@@ -22,7 +22,7 @@ export const GET = async (req: NextRequest, { params }: { params: Promise<{ id: 
 export const PATCH = async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
     try {
         const { status } = await req.json();
-        if (![CardStatus.SUCCESS_CORRECT, CardStatus.SUCCESS_INCORRECT, CardStatus.FAILED].includes(status)) {
+        if (!["1", "2", "3", "99"].includes(status)) {
             return NextResponse.json(
                 { result: false, message: "Trạng thái không hợp lệ!" },
                 { status: 400 }
@@ -40,15 +40,8 @@ export const PATCH = async (req: NextRequest, { params }: { params: Promise<{ id
             );
         }
 
-        transaction.status = status;
-        transaction.message =
-            status === CardStatus.SUCCESS_CORRECT
-                ? "Thành công"
-                : status === CardStatus.SUCCESS_INCORRECT
-                    ? "Thành công, sai mệnh giá"
-                    : "Thất bại";
 
-        if (status === CardStatus.SUCCESS_CORRECT) {
+        if (status === "1" || status === "2" && transaction.status == "99") {
             const user = await userRepo.findOne({ where: { id: transaction.user_id } });
             if (!user) {
                 return NextResponse.json(
@@ -56,10 +49,11 @@ export const PATCH = async (req: NextRequest, { params }: { params: Promise<{ id
                     { status: 404 }
                 );
             }
-            user.balance = (user.balance || 0) + transaction.amount;
+            user.balance = Number(user.balance || 0) + Number(transaction.amount);
             await userRepo.save(user);
         }
 
+        transaction.status = status;
         await cardTransRepo.save(transaction);
 
         return NextResponse.json(

@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { initRepository } from "@/app/models/connect";
 import { CardTransaction } from "@/app/models/entities/CardTransaction";
-import { Between } from "typeorm";
 
 export const GET = async (req: NextRequest) => {
   try {
@@ -60,10 +59,7 @@ export const GET = async (req: NextRequest) => {
       queryBuilder.andWhere("user.user_code = :userCode", { userCode });
     }
 
-    console.log("SQL Query:", queryBuilder.getSql());
     const [transactions, total] = await queryBuilder.getManyAndCount();
-
-    console.log("Transactions:", transactions);
 
     return NextResponse.json({
       transactions,

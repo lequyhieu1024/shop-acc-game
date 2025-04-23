@@ -5,9 +5,9 @@ import { ITransaction } from "@/app/interfaces/ITransaction";
 import api from "@/app/services/axiosService";
 import Loading from "@/components/Loading";
 import ErrorPage from "@/components/(admin)/Error";
-import { Space, Table, TableProps, Tag } from "antd";
-import { CardStatus } from "@/app/models/entities/CardTransaction";
+import { Space, Table, TableProps, Tag, Modal, Select, Button } from "antd";
 import { Timestamp } from "typeorm";
+import {toast} from "react-toastify";
 
 interface Filters {
   [key: string]: string | number | boolean;
@@ -26,9 +26,14 @@ export default function Transaction() {
   const [formData, setFormData] = useState({
     user_code: "",
     status: "",
-    request_id: "", // Thay value thành request_id
+    request_id: "",
     created_at: "",
   });
+
+  // State for modal
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState<ITransaction | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState("");
 
   const fetchTransactions = async (
       filters: Filters = formData,
@@ -50,18 +55,19 @@ export default function Transaction() {
 
       if (response.status === 200) {
         const mappedTransactions: ITransaction[] = response.data.transactions.map(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (trans: any) => ({
               ...trans,
               id: Number(trans.id),
               user_id: Number(trans.user_id),
               request_id: Number(trans.request_id),
-              status: trans.status.toString() as CardStatus,
+              status: trans.status.toString(),
               amount: Number(trans.amount),
               declared_value: trans.declared_value ? Number(trans.declared_value) : null,
               value: trans.value ? Number(trans.value) : null,
               trans_id: trans.trans_id ? Number(trans.trans_id) : null,
-              created_at: trans.created_at, // Timestamp sẽ được xử lý khi hiển thị
-              user_code: trans.user_code, // Đảm bảo user_code được lấy từ API
+              created_at: trans.created_at,
+              user_code: trans.user_code,
             })
         );
         setTransactions(mappedTransactions || []);
@@ -102,7 +108,7 @@ export default function Transaction() {
     setFormData({
       user_code: "",
       status: "",
-      request_id: "", // Thay value thành request_id
+      request_id: "",
       created_at: "",
     });
     setPagination((prev) => ({ ...prev, current: 1 }));
@@ -114,9 +120,51 @@ export default function Transaction() {
     });
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleTableChange = (pagination: any) => {
     const { current, pageSize } = pagination;
     fetchTransactions(formData, current, pageSize);
+  };
+
+  // Function to handle opening the modal
+  const showEditModal = (transaction: ITransaction) => {
+    setSelectedTransaction(transaction);
+    setSelectedStatus(transaction.status);
+    setIsModalVisible(true);
+  };
+
+  // Function to handle modal cancellation
+  const handleCancel = () => {
+    setIsModalVisible(false);
+    setSelectedTransaction(null);
+    setSelectedStatus("");
+  };
+
+  // Function to handle status update
+  const handleUpdateStatus = async () => {
+    if (!selectedTransaction || !selectedStatus) return;
+
+    try {
+      setLoading(true);
+      const response = await api.patch(`/transactions/${selectedTransaction.id}`, {
+        status: selectedStatus,
+      });
+
+      if (response.status === 200) {
+        toast.success("Cập nhật trạng thái thành công!");
+        // Refresh transactions
+        await fetchTransactions(formData, pagination.current, pagination.pageSize);
+        handleCancel();
+      } else {
+        toast.error(response.data.message || "Cập nhật trạng thái thất bại!");
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
+      console.error(e);
+      toast.error(e.response?.data?.message || "Đã xảy ra lỗi khi cập nhật trạng thái!");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -133,7 +181,6 @@ export default function Transaction() {
       title: "Mã người dùng",
       dataIndex: "user_code",
       key: "user_code",
-      // render: (user_code: string | undefined) => user_code || "-",
     },
     {
       title: "Nhà mạng",
@@ -147,15 +194,15 @@ export default function Transaction() {
       render: (value: number | null) =>
           value ? `${value.toLocaleString()} VND` : "-",
     },
+    // {
+    //   title: "Giá trị thực của thẻ",
+    //   dataIndex: "value",
+    //   key: "value",
+    //   render: (value: number | null) =>
+    //       value ? `${value.toLocaleString()} VND` : "-",
+    // },
     {
-      title: "Giá trị thực của thẻ",
-      dataIndex: "value",
-      key: "value",
-      render: (value: number | null) =>
-          value ? `${value.toLocaleString()} VND` : "-",
-    },
-    {
-      title: "Số tiền thực nhận",
+      title: "Số tiền thực nhận (đã trừ phí và phạt (nếu có))",
       dataIndex: "amount",
       key: "amount",
       render: (amount: number) => `${amount.toLocaleString()} VND`,
@@ -164,21 +211,34 @@ export default function Transaction() {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
-      render: (status: CardStatus) => {
-        const statusMap: Record<CardStatus, { label: string; color: string }> = {
-          "1": { label: "SUCCESS_CORRECT", color: "green" },
-          "2": { label: "SUCCESS_INCORRECT", color: "blue" },
-          "3": { label: "FAILED", color: "red" },
-          "4": { label: "MAINTENANCE", color: "orange" },
-          "99": { label: "PENDING", color: "gold" },
-          "100": { label: "SUBMIT_FAILED", color: "purple" },
-        };
-        const { label, color } = statusMap[status] || {
-          label: "Không xác định",
-          color: "gray",
-        };
+      render: (status: string) => {
+        let color = "";
+        let label = "";
+
+        switch (status) {
+          case '1':
+            color = "green";
+            label = "Thành công, đúng mệnh giá";
+            break;
+          case '2':
+            color = "blue";
+            label = "Thành công, sai mệnh giá";
+            break;
+          case '3':
+            color = "red";
+            label = "Thất bại";
+            break;
+          case '99':
+            color = "orange";
+            label = "Đang chờ";
+            break;
+          default:
+            color = "default";
+            label = "Không xác định";
+        }
+
         return <Tag color={color}>{label}</Tag>;
-      },
+      }
     },
     {
       title: "Ngày tạo",
@@ -194,6 +254,13 @@ export default function Transaction() {
             <Link href={`/admin/transactions/${transaction.id}`}>
               <i className="ri-eye-line"></i>
             </Link>
+            {
+              transaction.status == "99" && (
+                    <a onClick={() => showEditModal(transaction)}>
+                      <i className="ri-pencil-line"></i>
+                    </a>
+                )
+            }
           </Space>
       ),
     },
@@ -244,7 +311,7 @@ export default function Transaction() {
                           <div className="col-md-3">
                             <input
                                 type="number"
-                                name="request_id" // Thay value thành request_id
+                                name="request_id"
                                 className="form-control"
                                 placeholder="Mã yêu cầu"
                                 value={formData.request_id}
@@ -293,6 +360,38 @@ export default function Transaction() {
                             onChange: (page, pageSize) => handleTableChange({ current: page, pageSize }),
                           }}
                       />
+
+                      {/* Modal for editing status */}
+                      <Modal
+                          title="Chỉnh sửa trạng thái giao dịch"
+                          open={isModalVisible}
+                          onCancel={handleCancel}
+                          footer={[
+                            <Button key="cancel" onClick={handleCancel}>
+                              Hủy
+                            </Button>,
+                            <Button
+                                key="submit"
+                                type="primary"
+                                onClick={handleUpdateStatus}
+                                disabled={!selectedStatus}
+                            >
+                              Cập nhật
+                            </Button>,
+                          ]}
+                      >
+                        <Select
+                            style={{ width: "100%" }}
+                            value={selectedStatus}
+                            onChange={(value) => setSelectedStatus(value)}
+                            placeholder="Chọn trạng thái"
+                        >
+                          <Select.Option value="99">Đang chờ xử lý</Select.Option>
+                          <Select.Option value="1">Nạp thành công, đúng mệnh giá</Select.Option>
+                          <Select.Option value="2">Nạp thành công, sai mệnh giá</Select.Option>
+                          <Select.Option value="3">Nạp thất bại</Select.Option>
+                        </Select>
+                      </Modal>
                     </div>
                   </div>
                 </div>
