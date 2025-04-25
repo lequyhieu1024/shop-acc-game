@@ -2,6 +2,10 @@
 import { Form, Input, Button, Card, Row, Col, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import MethodPayment from './MethodPayment';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import api from '@/app/services/axiosService';
+import { PaymentMethod } from '@/app/models/entities/Order';
 
 interface CartItem {
     id: number;
@@ -13,7 +17,6 @@ interface CartItem {
 interface CheckoutFormValues {
     name: string;
     phone: string;
-    address: string;
     email: string;
 }
 
@@ -23,6 +26,9 @@ export default function CheckoutPage() {
     const [form] = Form.useForm<CheckoutFormValues>();
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
+    const { data: session } = useSession();
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -36,9 +42,39 @@ export default function CheckoutPage() {
         0
     );
 
+    const handlePayment = async (paymentMethod: PaymentMethod) => {
+        try {
+            setIsLoading(true);
+            const response = await api.post('/api/purchase', {
+                items: cartItems.map(item => ({
+                    id: item.id,
+                    quantity: item.quantity
+                })),
+                paymentMethod
+            });
+
+            if (response.data.success) {
+                // Xóa giỏ hàng
+                localStorage.removeItem('cartItems');
+                setCartItems([]);
+
+                // Hiển thị thông báo thành công
+                alert(response.data.message);
+
+                // Chuyển hướng về trang chủ
+                router.push('/');
+            }
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            alert(error.response?.data?.error || 'Có lỗi xảy ra khi xử lý thanh toán');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     const onFinish = (values: CheckoutFormValues) => {
         setIsModalVisible(true);
-        console.log('Thông tin thanh toán:', values);
+        console.log(values);
     };
 
     return (
@@ -75,14 +111,6 @@ export default function CheckoutPage() {
                                 <Input placeholder="Nhập số điện thoại" />
                             </Form.Item>
 
-                            {/* <Form.Item
-                                label="Địa chỉ"
-                                name="address"
-                                rules={[{ required: true, message: 'Vui lòng nhập địa chỉ!' }]}
-                            >
-                                <Input.TextArea rows={3} placeholder="Nhập địa chỉ giao hàng" />
-                            </Form.Item> */}
-
                             <Form.Item
                                 label="Email"
                                 name="email"
@@ -118,14 +146,32 @@ export default function CheckoutPage() {
                                 </div>
                             </div>
 
-                            <Button
-                                type="primary"
-                                htmlType="submit"
-                                className="w-full bg-blue-500 hover:bg-blue-600"
-                                onClick={() => form.submit()}
-                            >
-                                Xác nhận thanh toán
-                            </Button>
+                            <div className="space-y-2">
+                                <Button
+                                    type="primary"
+                                    htmlType="submit"
+                                    className="w-full bg-blue-500 hover:bg-blue-600"
+                                    onClick={() => form.submit()}
+                                    loading={isLoading}
+                                >
+                                    Thanh toán thủ công
+                                </Button>
+                                <Button
+                                    type="primary"
+                                    className="w-full bg-green-500 hover:bg-green-600"
+                                    onClick={() => {
+                                        if (!session?.user?.id) {
+                                            alert("Vui lòng đăng nhập để thanh toán bằng ví!");
+                                            router.push("/dang-nhap");
+                                            return;
+                                        }
+                                        handlePayment(PaymentMethod.THIRD_PARTY);
+                                    }}
+                                    loading={isLoading}
+                                >
+                                    Thanh toán bằng ví
+                                </Button>
+                            </div>
                         </div>
                     </Card>
                 </Col>

@@ -41,6 +41,16 @@ export const authOptions: NextAuthOptions = {
                     throw new Error("Tên đăng nhập và mật khẩu là bắt buộc");
                 }
 
+                // Validate username
+                if (username.length < 3) {
+                    throw new Error("Tên đăng nhập phải có ít nhất 3 ký tự");
+                }
+
+                // Validate password
+                if (password.length < 6) {
+                    throw new Error("Mật khẩu phải có ít nhất 6 ký tự");
+                }
+
                 const userRepository = await initRepository(UserEntity);
                 const user = await userRepository.findOne({ where: { username } });
 
@@ -59,6 +69,7 @@ export const authOptions: NextAuthOptions = {
                     };
                 }
 
+                // Kiểm tra username đã tồn tại chưa
                 const existingUser = await userRepository.findOne({
                     where: { username },
                 });
@@ -72,19 +83,21 @@ export const authOptions: NextAuthOptions = {
                     .toUpperCase()}`;
                 const hashedPassword = await bcrypt.hash(password, 10);
                 let initialBalance = 0;
+                let referrerId = null;
 
                 if (referral_code) {
                     initialBalance = Number(process.env.INITIAL_BALANCE) || 0;
-                    // const referrer = await userRepository.findOne({
-                    //     where: { user_code: referral_code },
-                    // });
-                    // if (referrer) {
-                    //     initialBalance += Number(process.env.INITIAL_BALANCE);
-                    //     await userRepository.update(
-                    //         { id: referrer.id },
-                    //         { balance: referrer.balance + 20000 }
-                    //     );
-                    // }
+                    const referrer = await userRepository.findOne({
+                        where: { referral_code },
+                    });
+                    if (referrer) {
+                        initialBalance += Number(process.env.INITIAL_BALANCE);
+                        await userRepository.update(
+                            { id: referrer.id },
+                            { balance: referrer.balance + 20000 }
+                        );
+                        referrerId = referrer.id;
+                    }
                 }
 
                 const newUser = userRepository.create({
@@ -94,8 +107,10 @@ export const authOptions: NextAuthOptions = {
                     phone: "",
                     balance: initialBalance,
                     referral_code: referral_code,
+                    referrer_id: referrerId,
                     number_of_free_draw: 1,
                     role: "user",
+                    is_for_sale: 0, // Mặc định không cho phép bán
                 });
 
                 await userRepository.save(newUser);

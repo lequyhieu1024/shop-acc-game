@@ -5,7 +5,7 @@ import api from "@/app/services/axiosService";
 export interface SocialLink {
     name: string;
     url: string;
-    icon: React.ReactNode; // Sử dụng React node để render SVG
+    icon: React.ReactNode;
     bgColor: string;
     hoverColor: string;
     phone?: string;
@@ -19,10 +19,11 @@ interface FloatingSocialIconsProps {
 }
 
 const FloatingSocialIcons: React.FC<FloatingSocialIconsProps> = ({
-                                                                     position = 'right',
-                                                                     offset = 20,
-                                                                 }) => {
+    position = 'right',
+    offset = 20,
+}) => {
     const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
+    const [isOpen, setIsOpen] = useState(false);
 
     // SVG icons cho các mạng xã hội
     const TikTokIcon = () => (
@@ -45,7 +46,7 @@ const FloatingSocialIcons: React.FC<FloatingSocialIconsProps> = ({
 
     const ZaloIcon = () => (
         <svg className="w-8 h-8" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="24" cy="24" r="24" fill="#0068FF" /> {/* Nền tròn màu xanh lam */}
+            <circle cx="24" cy="24" r="24" fill="#0068FF" />
             <text
                 x="50%"
                 y="50%"
@@ -62,12 +63,8 @@ const FloatingSocialIcons: React.FC<FloatingSocialIconsProps> = ({
     );
 
     const PhoneIcon = () => (
-        <svg className="w-8 h-8" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="24" cy="24" r="24" fill="#1E90FF" />
-            <path
-                d="M34 36c-1.5 0-3-.5-4.5-1.5-3-2-6-4.5-9-7.5s-5-6-7-9c-1-1.5-1.5-3-1.5-4.5 0-1.5.5-3 1.5-4.5l2-2c.5-.5 1-.5 1.5 0l4 4c.5.5.5 1 0 1.5l-2 2c-.5.5-.5 1 0 1.5 1 1.5 2 3 3.5 4.5s3 2.5 4.5 3.5c.5.5 1 .5 1.5 0l2-2c.5-.5 1-.5 1.5 0l4 4c.5.5.5 1 0 1.5l-2 2c-1.5 1-3 1.5-4.5 1.5z"
-                fill="white"
-            />
+        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z" />
         </svg>
     );
 
@@ -124,8 +121,8 @@ const FloatingSocialIcons: React.FC<FloatingSocialIconsProps> = ({
                         name: 'Phone',
                         url: `tel:${data.phone}`,
                         icon: <PhoneIcon />,
-                        bgColor: 'bg-gradient-to-br from-blue-600 to-cyan-500',
-                        hoverColor: 'hover:from-blue-700 hover:to-cyan-600',
+                        bgColor: 'bg-gradient-to-br from-green-500 to-emerald-600',
+                        hoverColor: 'hover:from-green-600 hover:to-emerald-700',
                     });
                 }
 
@@ -138,12 +135,16 @@ const FloatingSocialIcons: React.FC<FloatingSocialIconsProps> = ({
         fetchSystemData();
     }, []);
 
+    const toggleMenu = () => {
+        setIsOpen(!isOpen);
+    };
+
     return (
         <div
             className={`
                 fixed
                 ${position === 'left' ? 'left-4' : 'right-4'}
-                top-3/4
+                top-1/2
                 -translate-y-1/2
                 z-20
                 flex
@@ -153,80 +154,84 @@ const FloatingSocialIcons: React.FC<FloatingSocialIconsProps> = ({
             `}
             style={{ [position]: `${offset}px` }}
         >
-            {socialLinks.map((social, index) => (
-                <div key={social.name} className="relative group">
-                    <a
-                        href={social.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`
-                            block
-                            w-12
-                            h-12
-                            rounded-full
-                            ${social.bgColor}
-                            ${social.hoverColor}
-                            flex
-                            items-center
-                            justify-center
-                            shadow-lg
-                            hover:shadow-xl
-                            transform
-                            transition-all
-                            duration-300
-                            hover:scale-110
-                            relative
-                            overflow-hidden
-                            animate-[float_3s_ease-in-out_infinite]
-                        `}
-                        style={{ animationDelay: `${index * 0.2}s` }}
-                    >
-                        {/* Hiệu ứng ánh sáng khi hover */}
-                        <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transform skew-x-12 transition-opacity duration-300" />
+            {/* Nút liên hệ chính */}
+            <div className="relative group">
+                <button
+                    onClick={toggleMenu}
+                    className={`
+                        block
+                        w-12
+                        h-12
+                        rounded-full
+                        bg-gradient-to-br from-green-500 to-emerald-600
+                        hover:from-green-600 hover:to-emerald-700
+                        flex
+                        items-center
+                        justify-center
+                        shadow-lg
+                        hover:shadow-xl
+                        transform
+                        transition-all
+                        duration-300
+                        hover:scale-110
+                        relative
+                        overflow-hidden
+                    `}
+                >
+                    {/* Hiệu ứng ánh sáng khi hover */}
+                    <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transform skew-x-12 transition-opacity duration-300" />
 
-                        {/* Biểu tượng SVG */}
-                        <div className="text-white transform group-hover:scale-110 transition-transform duration-300">
-                            {social.icon}
-                        </div>
+                    {/* Biểu tượng điện thoại */}
+                    <div className="text-white transform group-hover:scale-110 transition-transform duration-300">
+                        <PhoneIcon />
+                    </div>
 
-                        {/* Hiệu ứng pulse */}
-                        <span
-                            className="absolute inset-0 rounded-full border-2 border-white opacity-20 scale-125 animate-[pulse_2s_infinite]"
-                            style={{ animationDelay: `${index * 0.4}s` }}
-                        />
-                    </a>
+                    {/* Hiệu ứng pulse */}
+                    <span
+                        className="absolute inset-0 rounded-full border-2 border-white opacity-20 scale-125 animate-[pulse_2s_infinite]"
+                    />
+                </button>
 
-                    {/* Tooltip cho Zalo */}
-                    {social.name === 'Zalo' && social.phone && (
-                        <div
-                            className={`
-                                absolute
-                                ${position === 'left' ? 'right-14' : 'left-14'}
-                                top-1/2
-                                -translate-y-1/2
-                                bg-gray-800
-                                text-white
-                                px-3
-                                py-1
-                                rounded-lg
-                                text-sm
-                                font-medium
-                                opacity-0
-                                group-hover:opacity-100
-                                transform
-                                ${position === 'left' ? 'group-hover:-translate-x-2' : 'group-hover:translate-x-2'}
-                                transition-all
-                                duration-300
-                                pointer-events-none
-                                whitespace-nowrap
-                                shadow-md
-                            `}
-                        >
-                            {social.phone}
-                        </div>
-                    )}
+                {/* Tooltip */}
+                <div className="absolute right-16 top-1/2 -translate-y-1/2 bg-white px-3 py-1.5 rounded-lg shadow-lg text-sm font-medium text-gray-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+                    Liên hệ ngay
                 </div>
-            ))}
+
+                {/* Menu xổ xuống chứa các nút social */}
+                {isOpen && (
+                    <div className="absolute right-0 top-16 bg-white rounded-lg shadow-xl p-2 w-48 transform transition-all duration-300">
+                        <div className="text-center font-bold text-gray-800 mb-2 pb-2 border-b border-gray-200">
+                            Liên hệ với chúng tôi
+                        </div>
+                        <div className="max-h-[300px] overflow-y-auto custom-scrollbar">
+                            <div className="flex flex-col gap-2">
+                                {socialLinks.map((social) => (
+                                    <a
+                                        key={social.name}
+                                        href={social.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={`
+                                            flex items-center gap-2 p-2 rounded-md
+                                            ${social.bgColor}
+                                            ${social.hoverColor}
+                                            text-white
+                                            transition-all
+                                            duration-300
+                                            hover:scale-105
+                                        `}
+                                    >
+                                        <div className="w-6 h-6 flex items-center justify-center">
+                                            {social.icon}
+                                        </div>
+                                        <span className="font-medium">{social.name}</span>
+                                    </a>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };

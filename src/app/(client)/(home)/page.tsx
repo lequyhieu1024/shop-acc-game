@@ -7,7 +7,7 @@ import NotiBannerPage from "./NotiBanner";
 
 export default function Home() {
   return (
-    <div style={{ paddingTop: 20 }}>
+    <div style={{ paddingTop: 10 }}>
       <NotiBannerPage />
       <Banner />
       <ExclusiveOffers />
