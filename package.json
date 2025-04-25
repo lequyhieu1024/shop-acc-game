@@ -17,6 +17,8 @@
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.7",
     "formik": "^2.4.6",
+    "framer-motion": "^12.6.3",
+    "gsap": "^3.12.7",
     "jsonwebtoken": "^9.0.2",
     "md5": "^2.3.0",
     "mysql2": "^3.12.0",
@@ -34,6 +36,7 @@
     "simplebar-react": "^3.3.0",
     "sweetalert2": "^11.16.0",
     "typeorm": "^0.3.20",
+    "winwheel": "^1.0.1",
     "yup": "^1.6.1",
     "zod": "^3.24.2"
   },
