@@ -31,7 +31,7 @@ const Banner = () => {
         <div key={index} className="">
           <Image width={500} height={500}
             src={banner.image_url}
-            alt=""
+            alt="Shop cu tí gaming"
             className="w-full h-[320px] object-cover"
           />
         </div>

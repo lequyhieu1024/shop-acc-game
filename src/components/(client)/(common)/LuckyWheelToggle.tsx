@@ -73,11 +73,11 @@ const LuckyWheelToggle: React.FC = () => {
     return (
         <>
             <div
-                className="fixed left-6 top-2/3 -translate-y-2/3 z-50 cursor-pointer group"
+                className="fixed right-6 top-2/3 -translate-y-2/3 z-50 cursor-pointer group"
                 onClick={handleToggleModal}
             >
-                <div className="relative w-20 h-20">
-                    <div className="w-20 h-20 rounded-full border-2 border-white shadow-lg overflow-hidden relative">
+                <div className="relative w-12 h-12">
+                    <div className="w-12 h-12 rounded-full border-2 border-white shadow-lg overflow-hidden relative">
                         <div
                             ref={wheelRef}
                             className="w-full h-full rounded-full relative overflow-hidden"
@@ -109,15 +109,15 @@ const LuckyWheelToggle: React.FC = () => {
                         </div>
 
                         <div
-                            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 bg-white rounded-full flex justify-center items-center z-10">
+                            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full flex justify-center items-center z-10">
                             <div
-                                className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-[8px] font-bold">
+                                className="w-3 h-3 rounded-full bg-gray-200 flex items-center justify-center text-[6px] font-bold">
                                 QUAY
                             </div>
                         </div>
 
                         <div
-                            className="absolute w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[10px] border-b-white top-[-5px] left-[13px] z-20"></div>
+                            className="absolute w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-b-[8px] border-b-white top-[-4px] left-[8px] z-20"></div>
                     </div>
 
                     <div
@@ -125,7 +125,7 @@ const LuckyWheelToggle: React.FC = () => {
                 </div>
 
                 <div
-                    className="absolute right-full ml-2 top-1/2 -translate-y-1/2 bg-yellow-500 text-white px-2 py-1 rounded text-sm font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-md">
+                    className="absolute right-full mr-2 top-1/2 -translate-y-1/2 bg-yellow-500 text-white px-2 py-1 rounded text-sm font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-md">
                     Vòng Quay May Mắn
                 </div>
             </div>

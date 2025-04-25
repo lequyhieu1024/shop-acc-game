@@ -31,7 +31,9 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "public/admin/assets/js/notify/index.js"
+    "public/admin/assets/js/notify/index.js",
+    "types"
   ],
+  "typeRoots": ["./node_modules/@types", "./types"],
   "exclude": ["node_modules"]
 }

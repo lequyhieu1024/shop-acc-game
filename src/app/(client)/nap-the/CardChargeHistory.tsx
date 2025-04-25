@@ -12,6 +12,7 @@ export default function CardChargeHistory({ mt = 'mt-0' }: {mt: string}) {
     const { data: session } = useSession();
     const [histories, setHistories] = useState<ITransaction[]>([])
     const fetchCardChargeHistory = async () => {
+        console.log('call fetchCardChargeHistory');
         try {
             const response = await api.get("clients/get-card-charge-histories")
             setHistories(response.data.histories || [])
@@ -24,7 +25,7 @@ export default function CardChargeHistory({ mt = 'mt-0' }: {mt: string}) {
             fetchCardChargeHistory();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [session])
 
 
     const columns: ColumnsType<ITransaction> = [
@@ -59,7 +60,7 @@ export default function CardChargeHistory({ mt = 'mt-0' }: {mt: string}) {
         { title: 'Serial', dataIndex: 'serial', key: 'serial', align: 'center' },
         { title: 'Mạng', dataIndex: 'telco', key: 'telco', align: 'center' },
         { title: 'Tổng gửi', dataIndex: 'declared_value', key: 'declared_value', align: 'center' },
-        { title: 'Tổng thực', dataIndex: 'value', key: 'value', align: 'center' },
+        // { title: 'Tổng thực', dataIndex: 'value', key: 'value', align: 'center' },
         // { title: 'Phí', dataIndex: 'fee', key: 'fee', align: 'center' },
         // { title: 'Phạt', dataIndex: 'penalty', key: 'penalty', align: 'center' },
         { title: 'Nhận', dataIndex: 'amount', key: 'amount', align: 'center' },
