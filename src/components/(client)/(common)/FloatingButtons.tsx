@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import LuckyWheelToggle from './LuckyWheelToggle';
+// import LuckyWheelToggle from './LuckyWheelToggle';
 import FloatingSocialIcons from '@/components/SocialButton';
+import ChatToggle from '@/components/ChatToggle';
 
 interface Position {
   x: number;
@@ -10,13 +11,14 @@ interface Position {
 }
 
 const FloatingButtons: React.FC = () => {
-  const [luckyWheelPos, setLuckyWheelPos] = useState<Position>({ x: 20, y: window.innerHeight / 2 });
+  const [chatPos, setChatPos] = useState<Position>({ x: 20, y: window.innerHeight / 2 });
+  // const [luckyWheelPos, setLuckyWheelPos] = useState<Position>({ x: 20, y: window.innerHeight / 2 });
   const [contactPos, setContactPos] = useState<Position>({ x: window.innerWidth - 80, y: window.innerHeight / 2 });
-  const [isDragging, setIsDragging] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState<'chat' | 'luckyWheel' | 'contact' | null>(null);
   const [dragOffset, setDragOffset] = useState<Position>({ x: 0, y: 0 });
 
   const handleMouseDown = (e: React.MouseEvent, button: string) => {
-    setIsDragging(button);
+    setIsDragging(button as 'chat' | 'luckyWheel' | 'contact' | null);
     const rect = (e.target as HTMLElement).getBoundingClientRect();
     setDragOffset({
       x: e.clientX - rect.left,
@@ -36,8 +38,8 @@ const FloatingButtons: React.FC = () => {
     const boundedX = Math.max(0, Math.min(x, maxX));
     const boundedY = Math.max(0, Math.min(y, maxY));
 
-    if (isDragging === 'luckyWheel') {
-      setLuckyWheelPos({ x: boundedX, y: boundedY });
+    if (isDragging === 'chat') {
+      setChatPos({ x: boundedX, y: boundedY });
     } else if (isDragging === 'contact') {
       setContactPos({ x: boundedX, y: boundedY });
     }
@@ -82,22 +84,17 @@ const FloatingButtons: React.FC = () => {
 
   return (
     <>
-      {/* Lucky Wheel Button */}
+      {/* Chat Button */}
       <div
+        className="fixed z-50"
         style={{
-          ...containerStyle,
-          left: `${luckyWheelPos.x}px`,
-          top: `${luckyWheelPos.y}px`,
-          cursor: isDragging === 'luckyWheel' ? 'grabbing' : 'grab',
+          left: `${chatPos.x}px`,
+          top: `${chatPos.y}px`,
+          cursor: isDragging === 'chat' ? 'grabbing' : 'grab',
         }}
-        onMouseDown={(e) => handleMouseDown(e, 'luckyWheel')}
+        onMouseDown={(e) => handleMouseDown(e, 'chat')}
       >
-        <div style={{
-          ...buttonStyle,
-          background: 'linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%)',
-        }}>
-          <LuckyWheelToggle />
-        </div>
+        <ChatToggle />
       </div>
 
       {/* Contact Button */}
@@ -117,6 +114,19 @@ const FloatingButtons: React.FC = () => {
           <FloatingSocialIcons position="right" offset={0} />
         </div>
       </div>
+
+      {/* Lucky Wheel Button */}
+      {/* <div
+        className="fixed z-50"
+        style={{
+          left: `${luckyWheelPos.x}px`,
+          top: `${luckyWheelPos.y}px`,
+          cursor: isDragging === 'luckyWheel' ? 'grabbing' : 'grab',
+        }}
+        onMouseDown={(e) => handleMouseDown(e, 'luckyWheel')}
+      >
+        <LuckyWheelToggle />
+      </div> */}
     </>
   );
 };

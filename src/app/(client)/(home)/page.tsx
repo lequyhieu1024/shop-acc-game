@@ -2,7 +2,7 @@ import Banner from "./Banner";
 import ExclusiveOffers from "./ExclusiveOffers";
 import InfoCards from "./InforCard";
 import LatestProducts from "./LatestProducts";
-import LuckyWheelToggle from "@/components/(client)/(common)/LuckyWheelToggle";
+// import LuckyWheelToggle from "@/components/(client)/(common)/LuckyWheelToggle";
 import NotiBannerPage from "./NotiBanner";
 
 export default function Home() {
@@ -17,7 +17,7 @@ export default function Home() {
       {/*<RobloxServices />*/}
       {/*<NickChip />*/}
       <InfoCards />
-      <LuckyWheelToggle />
+      {/* <LuckyWheelToggle /> */}
     </div>
   );
 }
