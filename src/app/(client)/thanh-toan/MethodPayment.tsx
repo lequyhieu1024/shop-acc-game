@@ -1,12 +1,12 @@
 "use client";
-import { Modal, Space, Tooltip, Typography } from 'antd';
+import { Modal, Space, Tooltip, Typography, Alert } from 'antd';
 import { useEffect, useState } from 'react';
 import api from '@/app/services/axiosService';
 import { SocialLink } from '@/components/SocialButton';
 import { ISystem } from '@/app/interfaces/ISystem';
 import Image from 'next/image';
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 interface MethodPaymentProps {
     visible: boolean;
@@ -36,10 +36,9 @@ const WebsiteIcon = () => (
     </svg>
 );
 
-
 const ZaloIcon = () => (
     <svg className="w-8 h-8" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="24" cy="24" r="24" fill="#0068FF" /> {/* Nền tròn màu xanh lam */}
+        <circle cx="24" cy="24" r="24" fill="#0068FF" />
         <text
             x="50%"
             y="50%"
@@ -64,15 +63,17 @@ const PhoneIcon = () => (
         />
     </svg>
 );
+
 export default function MethodPayment({ visible, onClose }: MethodPaymentProps) {
     const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
     const [data, setData] = useState<ISystem | undefined>(undefined);
+
     useEffect(() => {
         const fetchSystemData = async () => {
             try {
                 const response = await api.get('/clients/systems');
                 const data = response.data.system;
-                setData(data)
+                setData(data);
 
                 const links: SocialLink[] = [];
 
@@ -105,13 +106,7 @@ export default function MethodPayment({ visible, onClose }: MethodPaymentProps) 
                         hoverColor: 'hover:from-blue-600 hover:to-indigo-700',
                     });
                 }
-                links.push({
-                    name: 'THESIEURE',
-                    url: `https://thesieure.com`,
-                    icon: <WebsiteIcon />,
-                    bgColor: 'bg-gradient-to-br from-blue-600 to-cyan-500',
-                    hoverColor: 'hover:from-blue-700 hover:to-cyan-600',
-                });
+
                 setSocialLinks(links);
             } catch (error) {
                 console.error('Error fetching system data:', error);
@@ -120,16 +115,33 @@ export default function MethodPayment({ visible, onClose }: MethodPaymentProps) 
 
         fetchSystemData();
     }, []);
+
     return (
         <Modal
             open={visible}
             onCancel={onClose}
             footer={null}
             centered
-            title={<Title level={4} className="text-center">Chọn phương thức thanh toán</Title>}
+            width={600}
         >
-            <div>
+            <div className="space-y-6">
+                <Title level={4} className="text-center">Liên hệ với Admin để mua nick</Title>
+                
+                <Alert
+                    message="Thông báo"
+                    description={
+                        <div className="space-y-2">
+                            <p>Chọn phương thức liên lạc với admin để mua nick.</p>
+                            <p>Admin cam kết giao dịch uy tín, minh bạch nhất Việt Nam.</p>
+                            <p>Có thể giao dịch trực tiếp.</p>
+                        </div>
+                    }
+                    type="info"
+                    showIcon
+                />
+
                 {data && data.qr_code && (
+                    <div className="text-center">
                         <Image
                             height={300}
                             width={300}
@@ -137,8 +149,10 @@ export default function MethodPayment({ visible, onClose }: MethodPaymentProps) 
                             alt={'QR Code'}
                             className='m-auto'
                         />
+                    </div>
                 )}
-                <Space size="large" className="flex justify-center text-3xl mt-4">
+
+                <Space size="large" className="flex justify-center text-3xl">
                     {socialLinks.map((social, index) => (
                         <Tooltip title={social.name} color='blue' key={index}>
                             <div key={index} className="relative group">
@@ -147,69 +161,37 @@ export default function MethodPayment({ visible, onClose }: MethodPaymentProps) 
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className={`
-                            block
-                            w-12
-                            h-12
-                            rounded-full
-                            ${social.bgColor}
-                            ${social.hoverColor}
-                            flex
-                            items-center
-                            justify-center
-                            shadow-lg
-                            hover:shadow-xl
-                            transform
-                            transition-all
-                            duration-300
-                            hover:scale-110
-                            relative
-                            overflow-hidden
-                        `}
+                                        block
+                                        w-12
+                                        h-12
+                                        rounded-full
+                                        ${social.bgColor}
+                                        ${social.hoverColor}
+                                        flex
+                                        items-center
+                                        justify-center
+                                        shadow-lg
+                                        hover:shadow-xl
+                                        transform
+                                        transition-all
+                                        duration-300
+                                        hover:scale-110
+                                        relative
+                                        overflow-hidden
+                                    `}
                                     style={{ animationDelay: `${index * 0.2}s` }}
                                 >
-                                    {/* Hiệu ứng ánh sáng khi hover */}
                                     <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transform skew-x-12 transition-opacity duration-300" />
-
-                                    {/* Biểu tượng SVG */}
                                     <div className="text-white transform group-hover:scale-110 transition-transform duration-300">
                                         {social.icon}
                                     </div>
-
-                                    {/* Hiệu ứng pulse */}
                                     <span
                                         className="absolute inset-0 rounded-full border-2 border-white opacity-20 scale-125 animate-[pulse_2s_infinite]"
                                         style={{ animationDelay: `${index * 0.4}s` }}
                                     />
                                 </a>
-
-                                {/* Tooltip cho Zalo */}
-                                {social.name === 'Zalo' && social.phone && (
-                                    <div
-                                        className={`
-                                top-1/2
-                                -translate-y-1/2
-                                bg-gray-800
-                                text-white
-                                px-3
-                                py-1
-                                rounded-lg
-                                text-sm
-                                font-medium
-                                opacity-0
-                                group-hover:opacity-100
-                                transform
-                                duration-300
-                                pointer-events-none
-                                whitespace-nowrap
-                                shadow-md
-                            `}
-                                    >
-                                        {social.phone}
-                                    </div>
-                                )}
                             </div>
                         </Tooltip>
-
                     ))}
                 </Space>
             </div>

@@ -5,7 +5,8 @@ import MethodPayment from './MethodPayment';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import api from '@/app/services/axiosService';
-import { PaymentMethod } from '@/app/models/entities/Order';
+import { PaymentMethod, PaymentStatus } from '@/app/models/entities/Order';
+import { toast } from 'react-toastify';
 
 interface CartItem {
     id: number;
@@ -18,6 +19,7 @@ interface CheckoutFormValues {
     name: string;
     phone: string;
     email: string;
+    voucherCode?: string;
 }
 
 const { Title, Text } = Typography;
@@ -26,7 +28,9 @@ export default function CheckoutPage() {
     const [form] = Form.useForm<CheckoutFormValues>();
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isWebPurchaseLoading, setIsWebPurchaseLoading] = useState(false);
+    const [isAdminPurchaseLoading, setIsAdminPurchaseLoading] = useState(false);
+    const [voucherDiscount, setVoucherDiscount] = useState(0);
     const router = useRouter();
     const { data: session } = useSession();
 
@@ -42,43 +46,128 @@ export default function CheckoutPage() {
         0
     );
 
-    const handlePayment = async (paymentMethod: PaymentMethod) => {
+    const finalAmount = totalAmount - voucherDiscount;
+
+    const handleWebPurchase = async () => {
+        if (!session?.user?.id) {
+            toast.error("Vui lòng đăng nhập để mua nick!");
+            router.push("/dang-nhap");
+            return;
+        }
+
         try {
-            setIsLoading(true);
-            const response = await api.post('/api/purchase', {
-                items: cartItems.map(item => ({
-                    id: item.id,
-                    quantity: item.quantity
-                })),
-                paymentMethod
+            setIsWebPurchaseLoading(true);
+            const values = await form.validateFields();
+            
+            // Kiểm tra số dư
+            const balanceResponse = await api.get('/user/balance');
+            const userBalance = balanceResponse.data.balance;
+
+            if (userBalance < finalAmount) {
+                toast.error(`Số dư không đủ! Số dư hiện tại: ${userBalance.toLocaleString('vi-VN')} đ, Số tiền cần thanh toán: ${finalAmount.toLocaleString('vi-VN')} đ`);
+                return;
+            }
+
+            // Kiểm tra voucher nếu có
+            if (values.voucherCode) {
+                const voucherResponse = await api.post('/vouchers/validate', {
+                    code: values.voucherCode,
+                    amount: totalAmount
+                });
+                
+                if (!voucherResponse.data.valid) {
+                    toast.error(`Mã giảm giá không hợp lệ: ${voucherResponse.data.message}`);
+                    return;
+                }
+            }
+
+            // Kiểm tra số lượng sản phẩm còn lại
+            for (const item of cartItems) {
+                const productResponse = await api.get(`/products/${item.id}`);
+                if (productResponse.data.quantity < item.quantity) {
+                    toast.error(`Sản phẩm ${item.name} chỉ còn ${productResponse.data.quantity} sản phẩm, không đủ số lượng bạn yêu cầu.`);
+                    return;
+                }
+            }
+
+            // 1. Tạo đơn hàng
+            const orderResponse = await api.post('/orders', {
+                user_id: session.user.id,
+                customer_name: values.name,
+                customer_email: values.email,
+                customer_phone: values.phone,
+                total_amount: finalAmount,
+                payment_method: PaymentMethod.THIRD_PARTY,
+                payment_status: PaymentStatus.UNPAID,
+                order_items: cartItems.map(item => ({
+                    product_id: item.id,
+                    quantity: item.quantity,
+                    unit_price: item.price
+                }))
             });
 
-            if (response.data.success) {
-                // Xóa giỏ hàng
-                localStorage.removeItem('cartItems');
-                setCartItems([]);
-
-                // Hiển thị thông báo thành công
-                alert(response.data.message);
-
-                // Chuyển hướng về trang chủ
-                router.push('/');
+            if (!orderResponse.data.result) {
+                toast.error(orderResponse.data.message || 'Có lỗi xảy ra khi tạo đơn hàng. Vui lòng thử lại sau.');
+                return;
             }
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+            const orderId = orderResponse.data.order_id;
+
+            // 2. Trừ số dư
+            const deductBalanceResponse = await api.post('/user/balance/deduct', {
+                amount: finalAmount,
+                order_id: orderId
+            });
+
+            if (!deductBalanceResponse.data.result) {
+                // Nếu trừ số dư thất bại, xóa đơn hàng
+                await api.delete(`/orders/${orderId}`);
+                toast.error(deductBalanceResponse.data.message || 'Có lỗi xảy ra khi trừ số dư. Vui lòng thử lại sau.');
+                return;
+            }
+
+            // 3. Trừ số lượng sản phẩm
+            for (const item of cartItems) {
+                await api.patch(`/products/${item.id}/deduct-quantity`, {
+                    quantity: item.quantity
+                });
+            }
+
+            // 4. Cập nhật trạng thái thanh toán
+            await api.patch(`/orders/${orderId}/payment-status`, {
+                payment_status: PaymentStatus.PAID
+            });
+
+            // 5. Xóa giỏ hàng
+            localStorage.removeItem('cartItems');
+            setCartItems([]);
+
+            toast.success('Đặt hàng thành công! Vui lòng kiểm tra email để xem chi tiết đơn hàng.');
+            router.push('/');
         } catch (error: any) {
-            alert(error.response?.data?.error || 'Có lỗi xảy ra khi xử lý thanh toán');
+            console.error('Error during purchase:', error);
+            
+            let errorMessage = 'Có lỗi xảy ra khi xử lý thanh toán';
+            if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            } else if (error.response?.data?.error) {
+                errorMessage = error.response.data.error;
+            }
+
+            toast.error(errorMessage);
         } finally {
-            setIsLoading(false);
+            setIsWebPurchaseLoading(false);
         }
     };
 
-    const onFinish = (values: CheckoutFormValues) => {
+    const handleAdminPurchase = () => {
+        setIsAdminPurchaseLoading(true);
         setIsModalVisible(true);
-        console.log(values);
+        setIsAdminPurchaseLoading(false);
     };
 
     return (
-        <div className="max-w-4xl mx-auto mt-10 px-4">
+        <div className="max-w-4xl mx-auto mt-16 px-4">
             <Title level={2} className="text-center mb-8">
                 Trang Thanh Toán
             </Title>
@@ -89,7 +178,6 @@ export default function CheckoutPage() {
                         <Form
                             form={form}
                             layout="vertical"
-                            onFinish={onFinish}
                             className="space-y-4"
                         >
                             <Form.Item
@@ -121,6 +209,13 @@ export default function CheckoutPage() {
                             >
                                 <Input placeholder="Nhập email" />
                             </Form.Item>
+
+                            <Form.Item
+                                label="Mã giảm giá (nếu có)"
+                                name="voucherCode"
+                            >
+                                <Input placeholder="Nhập mã giảm giá" />
+                            </Form.Item>
                         </Form>
                     </Card>
                 </Col>
@@ -139,37 +234,36 @@ export default function CheckoutPage() {
                                 </div>
                             ))}
 
+                            {voucherDiscount > 0 && (
+                                <div className="flex justify-between text-green-500">
+                                    <Text>Giảm giá:</Text>
+                                    <Text>-{voucherDiscount.toLocaleString('vi-VN')} đ</Text>
+                                </div>
+                            )}
+
                             <div className="border-t pt-4">
                                 <div className="flex justify-between font-bold text-red-500">
                                     <Text>Tổng cộng:</Text>
-                                    <Text>{totalAmount.toLocaleString('vi-VN')} đ</Text>
+                                    <Text>{finalAmount.toLocaleString('vi-VN')} đ</Text>
                                 </div>
                             </div>
 
                             <div className="space-y-2">
                                 <Button
                                     type="primary"
-                                    htmlType="submit"
                                     className="w-full bg-blue-500 hover:bg-blue-600"
-                                    onClick={() => form.submit()}
-                                    loading={isLoading}
+                                    onClick={handleWebPurchase}
+                                    loading={isWebPurchaseLoading}
                                 >
-                                    Thanh toán thủ công
+                                    Mua nick qua web
                                 </Button>
                                 <Button
                                     type="primary"
                                     className="w-full bg-green-500 hover:bg-green-600"
-                                    onClick={() => {
-                                        if (!session?.user?.id) {
-                                            alert("Vui lòng đăng nhập để thanh toán bằng ví!");
-                                            router.push("/dang-nhap");
-                                            return;
-                                        }
-                                        handlePayment(PaymentMethod.THIRD_PARTY);
-                                    }}
-                                    loading={isLoading}
+                                    onClick={handleAdminPurchase}
+                                    loading={isAdminPurchaseLoading}
                                 >
-                                    Thanh toán bằng ví
+                                    Mua nick qua admin
                                 </Button>
                             </div>
                         </div>

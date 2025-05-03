@@ -30,7 +30,7 @@ export class OrderItem {
     quantity!: number;
 
     @Column({ type: "decimal", precision: 10, scale: 2 })
-    price!: number;
+    unit_price!: number;
 
     @CreateDateColumn({ type: "timestamp" })
     created_at!: Date;
