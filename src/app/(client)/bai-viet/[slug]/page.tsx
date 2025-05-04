@@ -93,7 +93,18 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 
     return {
         title: post.title,
-        description: post.description,
+        description: post.description.replace(/\*\*/g, '').replace(/\n/g, ' ').substring(0, 160),
+        openGraph: {
+            title: post.title,
+            description: post.description.replace(/\*\*/g, '').replace(/\n/g, ' ').substring(0, 160),
+            type: 'article',
+            siteName: 'Shop Cu Tí Gaming',
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: post.title,
+            description: post.description.replace(/\*\*/g, '').replace(/\n/g, ' ').substring(0, 160),
+        },
     };
 }
 
@@ -111,20 +122,83 @@ export default async function PostPage({ params }: { params: Params }) {
         notFound();
     }
 
+    // Convert markdown-like content to HTML
+    const convertToHtml = (content: string) => {
+        // Replace bold text
+        let html = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        
+        // Replace headings
+        html = html.replace(/### (.*?)\n/g, '<h2 class="text-2xl font-bold mt-8 mb-4">$1</h2>');
+        
+        // Replace list items
+        html = html.replace(/- (.*?)\n/g, '<li class="mb-2">$1</li>');
+        
+        // Replace numbered list items
+        html = html.replace(/(\d+)\. (.*?)\n/g, '<li class="mb-2">$1. $2</li>');
+        
+        // Wrap lists in ul/ol tags
+        html = html.replace(/<li class="mb-2">(.*?)<\/li>\n/g, '<ul class="list-disc pl-6 mb-4"><li class="mb-2">$1</li></ul>');
+        
+        // Replace newlines with <br> for proper spacing
+        html = html.replace(/\n/g, '<br>');
+        
+        return html;
+    };
+
+    const htmlContent = convertToHtml(post.description);
+
     return (
         <div className="min-h-screen bg-gray-100 font-sans py-20">
-            <main className="container mx-auto">
-                <Link
-                    href="/bai-viet"
-                    className="text-blue-600 hover:underline mb-6 inline-block"
-                >
-                    ← Quay lại danh sách bài viết
-                </Link>
-                <article className="bg-white p-6 rounded-lg shadow-md">
-                    <h1 className="text-3xl font-bold mb-4">{post.title}</h1>
-                    <div className="text-gray-700 leading-relaxed whitespace-pre-line">
-                        {post.description}
-                    </div>
+            <main className="container mx-auto px-4">
+                <nav aria-label="Breadcrumb" className="mb-6">
+                    <ol className="flex items-center">
+                        <li className="mr-2">
+                            <Link href="/" className="text-blue-600 hover:underline">
+                                Trang chủ
+                            </Link>
+                        </li>
+                        <li className="mx-2 text-gray-500">/</li>
+                        <li className="mr-2">
+                            <Link href="/bai-viet" className="text-blue-600 hover:underline">
+                                Bài viết
+                            </Link>
+                        </li>
+                        <li className="mx-2 text-gray-500">/</li>
+                        <li className="text-gray-700">{post.title}</li>
+                    </ol>
+                </nav>
+                
+                <article className="bg-white p-6 md:p-8 rounded-lg shadow-md">
+                    <header className="mb-8">
+                        <h1 className="text-3xl md:text-4xl font-bold mb-4">{post.title}</h1>
+                        <div className="flex items-center text-gray-600 text-sm">
+                            <time dateTime={new Date().toISOString()}>Cập nhật: {new Date().toLocaleDateString('vi-VN')}</time>
+                            <span className="mx-2">•</span>
+                            <span>Shop Cu Tí Gaming</span>
+                        </div>
+                    </header>
+                    
+                    <div 
+                        className="prose prose-lg max-w-none text-gray-700 leading-relaxed"
+                        dangerouslySetInnerHTML={{ __html: htmlContent }}
+                    />
+                    
+                    <footer className="mt-12 pt-6 border-t border-gray-200">
+                        <div className="flex flex-wrap gap-4">
+                            <Link href="/bai-viet" className="inline-flex items-center text-blue-600 hover:underline">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+                                </svg>
+                                Quay lại danh sách bài viết
+                            </Link>
+                            <Link href="/" className="inline-flex items-center text-blue-600 hover:underline">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                                </svg>
+                                Về trang chủ
+                            </Link>
+                        </div>
+                    </footer>
                 </article>
             </main>
         </div>

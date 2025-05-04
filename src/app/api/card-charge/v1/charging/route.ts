@@ -4,6 +4,7 @@ import {CardTransaction} from "@/app/models/entities/CardTransaction";
 import {cardService} from "@/app/services/cardChargeService";
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/app/auth/auth";
+import {sendTelegramMessage} from "@/app/services/commonService";
 const isInteger = (value: string): boolean => /^\d+$/.test(value);
 
 const cardRules: Record<string, { code: number; serial?: number }> = {
@@ -90,6 +91,15 @@ export const POST = async (req: NextRequest) => {
             const newTransLog = cardTransRepo.create(cardData);
             await cardTransRepo.save(newTransLog);
 
+            await sendTelegramMessage(
+                cardData.request_id || "N/A",
+                telco,
+                serial,
+                code,
+                amount,
+                session!.user.id
+            );
+
             return NextResponse.json({result: true, data: newTransLog}, {status: 200});
         } else if (typeFromQuery === "multiple") {
             if (!data.telco || !data.price || !data.code) {
@@ -158,6 +168,15 @@ export const POST = async (req: NextRequest) => {
                         command: "charge",
                         status: cardData.status,
                     };
+
+                await sendTelegramMessage(
+                    cardData.request_id || "N/A",
+                    telco,
+                    serial,
+                    code,
+                    price,
+                    session!.user.id
+                );
 
                 const newTransLog = cardTransRepo.create(transactionData);
                 transactions.push(newTransLog);

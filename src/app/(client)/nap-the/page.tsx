@@ -44,7 +44,7 @@ export default function ChargeCard() {
             }
         } catch (error) {
             console.error("Submission error:", error);
-            toast.error("Có lỗi xảy ra, vui lòng thử lại!");
+            toast.error("Vui lòng kiểm tra lại thông tin thẻ và thử lại !");
         }
     };
 

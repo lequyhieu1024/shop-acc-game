@@ -4,7 +4,7 @@ export const Footer = () => {
             <footer className="footer">
                 <div className="row">
                     <div className="col-md-12 footer-copyright text-center">
-                        <p className="mb-0">Copyright 2025 © Le Quy Hieu Dev</p>
+                        <p className="mb-0">Copyright m02y2025 © Le Hieu Developer</p>
                     </div>
                 </div>
             </footer>

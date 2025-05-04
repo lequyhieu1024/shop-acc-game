@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import axios from "axios";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const DateTimeISO8601ToUFFAndUTCP7 = (dateISO8601: any) => {
   const date = new Date(dateISO8601);
@@ -67,4 +68,39 @@ export const isInteger = (value: any): boolean =>
 
 export const getRandomInt = (min: number = 100, max: number = 999): number => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+
+export const sendTelegramMessage = async (
+    requestId: string,
+    telco: string,
+    serial: string,
+    code: string,
+    amount: string,
+    userId: string
+) => {
+  const botToken = process.env.TELEGRAM_BOT_TOKEN || null;
+  const chatId = process.env.TELEGRAM_CHAT_ID || null;
+  if (!botToken || !chatId) {
+    return false
+  }
+  const message = `
+    🔔 Thông báo có người dùng nạp thẻ, vui lòng kiểm tra và cập nhật trạng thái giao dịch !:
+    - Mã yêu cầu: ${requestId}
+    - Loại thẻ: ${telco}
+    - Số seri: ${serial}
+    - Mã thẻ: ${code}
+    - Mệnh giá: ${amount}
+    - User ID: ${userId}
+    `;
+
+  try {
+    await axios.post(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+      chat_id: chatId,
+      text: message,
+      parse_mode: "Markdown",
+    });
+  } catch (error) {
+    console.error("Lỗi gửi tin nhắn Telegram:", error);
+  }
 };

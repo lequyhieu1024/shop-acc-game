@@ -271,11 +271,11 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
                 </div>
               )}
 
-              {item.register_by && (
-                <p className="text-xs text-gray-500">
-                  Đăng ký: {item.register_by}
-                </p>
-              )}
+              {/*{item.register_by && (*/}
+              {/*  <p className="text-xs text-gray-500">*/}
+              {/*    Đăng ký: {item.register_by}*/}
+              {/*  </p>*/}
+              {/*)}*/}
 
               <div className="flex items-center gap-2 flex-col">
                 <button
