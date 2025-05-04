@@ -4,13 +4,18 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  DeleteDateColumn
+  DeleteDateColumn,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
 } from "typeorm";
+import { Category, OrderItem } from "./index"; // Import từ index.ts
 
 export enum SystemStatus {
   ACTIVE = "active",
-  INACTIVE = "inactive"
+  INACTIVE = "inactive",
 }
+
 @Entity({ name: "products" })
 export class Product {
   @PrimaryGeneratedColumn()
@@ -64,8 +69,15 @@ export class Product {
   @Column({ type: "boolean", default: true })
   is_for_sale!: boolean;
 
-  @Column({ type: "bigint" })
-  category_id!: number;
+  @Column({ type: "bigint", nullable: true })
+  category_id?: number;
+
+  @ManyToOne(() => Category, (category) => category.id, { eager: false, nullable: true })
+  @JoinColumn({ name: "category_id", foreignKeyConstraintName: "FK_product_category" })
+  category?: Category;
+
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.product)
+  orderItems!: OrderItem[];
 
   @Column({ type: "int" })
   quantity!: number;

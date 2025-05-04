@@ -1,6 +1,37 @@
+"use client"
+
+import api from "@/app/services/axiosService";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export default function DashboardPage() {
+  const [data, setData] = useState<any[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<boolean>(false)
+  const [message, setMessage] = useState<string>("")
+  const getStatistical = async () => {
+    try {
+      const response = await api.get('statisticals');
+      if (response.status === 200) {
+        console.log(response);
+        
+        setData(response.data.banners || [])
+      }
+      setError(false)
+    } catch {
+      console.log("error")
+      setError(true)
+    } finally {
+      setLoading(false)
+    }
+  }
+  
+      useEffect(() => {
+          getStatistical();
+          console.log(data);
+          
+      }, []);
+
   return (
     <div className="row">
       <div className="col-sm-6 col-xxl-3 col-lg-6">
