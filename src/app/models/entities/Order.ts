@@ -16,6 +16,15 @@ export enum OrderStatus {
     CANCELLED = 'cancelled',
     FAILED = 'failed'
 }
+
+export const statusLabels: Record<string, string> = {
+    pending: "Chờ xử lý",
+    processing: "Đang bàn giao nick",
+    completed: "Đã bàn giao nick",
+    cancelled: "Hủy đơn",
+    failed: "Có lỗi",
+};
+
 export enum PaymentMethod {
     CASH = 'cash',
     BANK_TRANSFER = 'bank_transfer',

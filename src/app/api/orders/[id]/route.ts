@@ -86,7 +86,7 @@ export const PATCH = async (
       const orderItem = new OrderItem();
       orderItem.product_id = item.product_id;
       orderItem.quantity = item.quantity;
-      orderItem.price = parseFloat(String(item.unit_price));
+      orderItem.unit_price = parseFloat(String(item.unit_price));
       orderItem.order = order as Order;
       return orderItem;
     });
@@ -114,7 +114,7 @@ export const PATCH = async (
         id: item.id,
         product_id: item.product_id,
         quantity: item.quantity,
-        price: item.price,
+        price: item.unit_price,
         // Exclude the 'order' property to break the circular reference
       })),
     };

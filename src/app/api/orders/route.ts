@@ -1,5 +1,5 @@
 import { initRepository } from "@/app/models/connect";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { Order } from "@/app/models/entities/Order";
 import { OrderItem } from "@/app/models/entities/OrderItem";
 import { getServerSession } from "next-auth";
@@ -7,26 +7,69 @@ import { authOptions } from "@/app/auth/auth";
 import { User } from "@/app/models/entities/User";
 import { Product } from "@/app/models/entities/Product";
 import { PaymentStatus, OrderStatus } from "@/app/models/entities/Order";
+import {Like} from "typeorm";
+import {sendTelegramMessage, sendTelegramMessage2} from "@/app/services/commonService";
 
-export const GET = async () => {
+
+export const GET = async (request: Request) => {
   try {
     const orderRepo = await initRepository(Order);
-    const orders = await orderRepo.find();
-    
-    // Tính tổng số phần tử trong mảng orders
-    const total = orders.length;
+    const { searchParams } = new URL(request.url);
+
+    // Lấy các tham số lọc từ query
+    const customerName = searchParams.get("customer_name") || "";
+    const status = searchParams.get("status") || "";
+    // const minAmount = parseFloat(searchParams.get("min_amount") || "0");
+    // const maxAmount = parseFloat(searchParams.get("max_amount") || "Infinity");
+    const paymentStatus = searchParams.get("payment_status") || "";
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "10");
+
+    // Xây dựng điều kiện lọc
+    const where: any = {};
+
+    if (customerName) {
+      where.customer_name = Like(`%${customerName}%`) ;
+    }
+    if (status) {
+      where.status = status;
+    }
+    // if (minAmount || maxAmount !== Infinity) {
+    //   where.total_amount = {};
+    //   if (minAmount) {
+    //     where.total_amount[">="] = minAmount;
+    //   }
+    //   if (maxAmount !== Infinity) {
+    //     where.total_amount["<="] = maxAmount;
+    //   }
+    // }
+    if (paymentStatus) {
+      where.payment_status = paymentStatus;
+    }
+
+    // Thực hiện truy vấn với phân trang và lọc
+    const [orders, total] = await orderRepo.findAndCount({
+      where,
+      order: {
+        id: "DESC",
+      },
+      skip: (page - 1) * limit,
+      take: limit,
+    });
 
     return NextResponse.json({
       orders,
       pagination: {
-        total,  // Trả về tổng số phần tử
-      }
+        total,
+        current: page,
+        pageSize: limit,
+      },
     });
   } catch (e) {
     return NextResponse.json({
       result: false,
-      message: (e as Error).message
-    });
+      message: (e as Error).message,
+    }, { status: 500 });
   }
 };
 
@@ -78,7 +121,7 @@ export async function POST(request: Request) {
 
     if (user.balance < total_amount) {
       return NextResponse.json(
-        { error: "Insufficient balance" },
+        { error: "Số dư không đủ" },
         { status: 400 }
       );
     }
@@ -91,14 +134,21 @@ export async function POST(request: Request) {
 
       if (!product) {
         return NextResponse.json(
-          { error: `Product ${item.product_id} not found` },
+          { error: `Sản phẩm ${item.product_id} không tồn tại` },
           { status: 404 }
+        );
+      }
+
+      if (!product.is_for_sale) {
+        return NextResponse.json(
+            { error: `Sản phẩm ${product.name} không dành cho bạn, vui lòng liên hệ quản trị viên để có thể mua` },
+            { status: 400 }
         );
       }
 
       if (product.quantity < item.quantity) {
         return NextResponse.json(
-          { error: `Insufficient quantity for product ${product.name}` },
+          { error: `Sản phẩm ${product.name} đã hết hàng, vui lòng liên hệ quản trị viên hoặc đợi` },
           { status: 400 }
         );
       }
@@ -119,7 +169,7 @@ export async function POST(request: Request) {
         total_amount,
         payment_method,
         payment_status: PaymentStatus.PAID,
-        status: OrderStatus.PROCESSING
+        status: OrderStatus.PENDING
       });
       await queryRunner.manager.save(order);
 
@@ -152,22 +202,27 @@ export async function POST(request: Request) {
       // Commit transaction
       await queryRunner.commitTransaction();
 
+      console.log(total_amount)
+
+      await sendTelegramMessage2(
+          customer_name,
+          customer_phone,
+      );
+
       return NextResponse.json({ 
         result: true,
-        message: "Order created successfully",
-        order_id: order.id
+        message: "Tạo đơn hàng thành công, chờ quản trị viên liên hệ sau !",
       });
     } catch (error) {
-      // Rollback transaction on error
       await queryRunner.rollbackTransaction();
       throw error;
     } finally {
       await queryRunner.release();
     }
   } catch (error) {
-    console.error("Error creating order:", error);
+    console.error("Có lỗi sảy ra khi tạo đơn hàng:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Lỗi Server 500 !" },
       { status: 500 }
     );
   }
