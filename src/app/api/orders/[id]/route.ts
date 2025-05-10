@@ -1,174 +1,94 @@
+import { NextRequest, NextResponse } from "next/server";
 import { initRepository } from "@/app/models/connect";
-import { NextResponse } from "next/server";
 import { Order } from "@/app/models/entities/Order";
-import { OrderItem } from "@/app/models/entities/OrderItem";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/auth/auth";
 
-export const GET = async (
-  req: Request,
-  { params }: { params: Promise<{ id: string }> }
-) => {
+const VALID_STATUSES = ["pending", "processing", "completed", "cancelled"];
+
+export async function GET(
+    req: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const orderId: string = (await params).id;
-    const orderRepository = await initRepository(Order);
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user?.role.includes("admin")) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
+    const orderRepository = await initRepository(Order);
     const order = await orderRepository.findOne({
-      where: { id: Number(orderId) },
-      relations: ['items', 'items.product'] // <-- thêm quan hệ ở đây
+      where: { id: Number((await params).id) },
+      relations: [
+        "items",
+        "items.product",
+        "items.product.category",
+      ],
     });
 
     if (!order) {
-      return NextResponse.json(
-        {
-          result: false,
-          message: "Order not found"
-        },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Đơn hàng không tồn tại !" }, { status: 404 });
     }
 
-    return NextResponse.json({ order });
-  } catch (e) {
+    return NextResponse.json(order);
+  } catch (error) {
+    console.error("Error fetching order:", error);
     return NextResponse.json(
-      {
-        result: false,
-        message: (e as Error).message
-      },
-      { status: 500 }
+        { error: "Internal server error" },
+        { status: 500 }
     );
   }
-};
-export const PATCH = async (
-  req: Request,
-  { params }: { params: Promise<{ id: string }> }
-) => {
-  try {
-    const orderRepository = await initRepository(Order);
-    const orderItemRepository = await initRepository(OrderItem);
-    const orderId: string = (await params).id;
+}
 
-    // Tìm đơn hàng với các items liên quan
+// PATCH /api/orders/[id] - Cập nhật trạng thái đơn hàng
+export async function PATCH(
+    request: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user?.role.includes("admin")) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const orderRepository = await initRepository(Order);
     const order = await orderRepository.findOne({
-      where: { id: Number(orderId) },
-      relations: ["items"],
+      where: { id: Number((await params).id) },
     });
 
     if (!order) {
+      return NextResponse.json({ error: "Đơn hàng không tồn tại" }, { status: 404 });
+    }
+
+    const body = await request.json();
+    const { status } = body;
+
+    if (status && !VALID_STATUSES.includes(status)) {
       return NextResponse.json(
-        {
-          result: false,
-          message: "Order not found",
-        },
-        { status: 404 }
+          { error: `Invalid status. Must be one of: ${VALID_STATUSES.join(", ")}` },
+          { status: 400 }
       );
     }
 
-    // Lấy dữ liệu JSON từ request
-    const newData = await req.json();
+    // Cập nhật trạng thái
+    if (status) order.status = status;
+    order.updated_at = new Date();
 
-    // Cập nhật các trường của Order
-    order.customer_name = newData.customer_name || order.customer_name;
-    order.customer_email = newData.customer_email || order.customer_email;
-    order.customer_phone = newData.customer_phone || order.customer_phone;
-    order.status = newData.status || order.status;
-    order.payment_method = newData.payment_method || order.payment_method;
-    order.payment_status = newData.payment_status || order.payment_status;
-    order.total_amount = parseFloat(String(newData.total_amount)) || order.total_amount;
-
-    // Xử lý order_items
-    const newOrderItems = newData.order_items || [];
-
-    // Xóa các items hiện có
-    await orderItemRepository.delete({ order: { id: Number(orderId) } });
-
-    // Tạo mới items
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const updatedOrderItems = newOrderItems.map((item: any) => {
-      const orderItem = new OrderItem();
-      orderItem.product_id = item.product_id;
-      orderItem.quantity = item.quantity;
-      orderItem.unit_price = parseFloat(String(item.unit_price));
-      orderItem.order = order as Order;
-      return orderItem;
-    });
-
-    // Lưu items mới
-    await orderItemRepository.save(updatedOrderItems);
-
-    // Gán items mới vào order
-    order.items = updatedOrderItems;
-
-    // Lưu order đã cập nhật
     await orderRepository.save(order);
 
-    // Manually construct the response to avoid circular reference
-    const responseOrder = {
-      id: order.id,
-      customer_name: order.customer_name,
-      customer_email: order.customer_email,
-      customer_phone: order.customer_phone,
-      status: order.status,
-      payment_method: order.payment_method,
-      payment_status: order.payment_status,
-      total_amount: order.total_amount,
-      items: updatedOrderItems.map((item: OrderItem) => ({
-        id: item.id,
-        product_id: item.product_id,
-        quantity: item.quantity,
-        price: item.unit_price,
-        // Exclude the 'order' property to break the circular reference
-      })),
-    };
-
     return NextResponse.json({
-      result: true,
-      message: "Order updated successfully",
-      order: responseOrder,
-    });
-  } catch (e) {
-    return NextResponse.json(
-      {
-        result: false,
-        message: `Error: ${(e as Error).message}`,
+      message: "Cập nhật thành công",
+      order: {
+        id: order.id,
+        status: order.status,
+        updated_at: order.updated_at,
       },
-      { status: 500 }
+    });
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    return NextResponse.json(
+        { error: "Internal server error" },
+        { status: 500 }
     );
   }
-};
-export const DELETE = async (
-  req: Request,
-  { params }: { params: Promise<{ id: string }> }
-) => {
-  try {
-    const orderRepo = await initRepository(Order);
-    const orderId: string = (await params).id;
-    const order = await orderRepo.findOne({
-      where: { id: Number(orderId) }
-    });
-    if (!order) {
-      return NextResponse.json(
-        {
-          result: false,
-          message: "Order not found"
-        },
-        { status: 404 }
-      );
-    }
-
-    await orderRepo.softDelete(orderId);
-    return NextResponse.json(
-      {
-        result: true,
-        message: "Soft delete order successfully!"
-      },
-      { status: 200 }
-    );
-  } catch (e) {
-    return NextResponse.json(
-      {
-        result: false,
-        message: (e as Error).message
-      },
-      { status: 500 }
-    );
-  }
-};
+}

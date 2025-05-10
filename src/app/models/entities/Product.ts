@@ -4,8 +4,10 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  DeleteDateColumn
+  DeleteDateColumn, ManyToOne, JoinColumn, OneToMany
 } from "typeorm";
+import {Category} from "@/app/models/entities/Category";
+import {ProductImage} from "@/app/models/entities/Image";
 
 export enum SystemStatus {
   ACTIVE = "active",
@@ -78,4 +80,11 @@ export class Product {
 
   @DeleteDateColumn()
   deleted_at?: Date;
+
+  @ManyToOne(() => Category, { eager: false })
+  @JoinColumn({ name: "category_id" })
+  category: Category | undefined;
+
+  @OneToMany(() => ProductImage, item => item.product, { cascade: false })
+  images: ProductImage[] | undefined;
 }

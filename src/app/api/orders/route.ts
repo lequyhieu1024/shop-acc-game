@@ -181,7 +181,7 @@ export async function POST(request: Request) {
           order: order,
           product_id: item.product_id,
           quantity: item.quantity,
-          price: item.unit_price
+          unit_price: item.unit_price
         });
         await queryRunner.manager.save(orderItem);
 

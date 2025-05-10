@@ -14,7 +14,7 @@ export interface IOrder {
   payment_status: PaymentStatus;
   order_items?: IOrderItem[]
   items?: IOrderItem[]
-
+  created_at?: Date
 }
 export interface IOrderItem {
   key?: string;

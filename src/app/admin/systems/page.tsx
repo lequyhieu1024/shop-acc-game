@@ -158,7 +158,7 @@ const System: React.FC = () => {
                 Cập nhật hệ thống
               </button>
             </li>
-            <li className="nav-item">
+            <li className="nav-item d-none">
               <button
                 className={`nav-link ${activeTab === "password" ? "active" : ""}`}
                 onClick={() => setActiveTab("password")}

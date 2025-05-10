@@ -135,3 +135,6 @@ export const sendTelegramMessage2 = async (
     console.error("Lỗi gửi tin nhắn Telegram:", error);
   }
 };
+
+export const number_format = (value: number) =>
+    value.toLocaleString("vi-VN", { style: "decimal" });
