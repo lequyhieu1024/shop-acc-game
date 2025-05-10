@@ -96,6 +96,7 @@ export default function Order() {
   }, [fetchOrders]);
 
   const handleTableChange = useCallback(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ({ current, pageSize }: any) => {
         fetchOrders(current, pageSize);
       },

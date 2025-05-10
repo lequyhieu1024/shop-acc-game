@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 // import LuckyWheelToggle from './LuckyWheelToggle';
 import FloatingSocialIcons from '@/components/SocialButton';
-import ChatToggle from '@/components/ChatToggle';
+// import ChatToggle from '@/components/ChatToggle';
 
 interface Position {
   x: number;
@@ -94,7 +94,7 @@ const FloatingButtons: React.FC = () => {
         }}
         onMouseDown={(e) => handleMouseDown(e, 'chat')}
       >
-        <ChatToggle />
+        {/*<ChatToggle />*/}
       </div>
 
       {/* Contact Button */}

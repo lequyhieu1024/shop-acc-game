@@ -8,7 +8,7 @@ import { User } from "@/app/models/entities/User";
 import { Product } from "@/app/models/entities/Product";
 import { PaymentStatus, OrderStatus } from "@/app/models/entities/Order";
 import {Like} from "typeorm";
-import {sendTelegramMessage, sendTelegramMessage2} from "@/app/services/commonService";
+import { sendTelegramMessage2} from "@/app/services/commonService";
 
 
 export const GET = async (request: Request) => {
@@ -26,6 +26,7 @@ export const GET = async (request: Request) => {
     const limit = parseInt(searchParams.get("limit") || "10");
 
     // Xây dựng điều kiện lọc
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const where: any = {};
 
     if (customerName) {
@@ -201,8 +202,6 @@ export async function POST(request: Request) {
 
       // Commit transaction
       await queryRunner.commitTransaction();
-
-      console.log(total_amount)
 
       await sendTelegramMessage2(
           customer_name,

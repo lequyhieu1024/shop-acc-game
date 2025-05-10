@@ -1,4 +1,13 @@
-import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn} from "typeorm";
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    CreateDateColumn,
+    UpdateDateColumn,
+    DeleteDateColumn,
+    OneToMany
+} from "typeorm";
+import {CardTransaction} from "@/app/models/entities/CardTransaction";
 
 enum UserRole {
     USER = "user",
@@ -46,4 +55,7 @@ export class User {
 
     @DeleteDateColumn()
     deleted_at?: Date;
+
+    @OneToMany(() => CardTransaction, cardTransaction => cardTransaction.user, { cascade: true }) // Trì hoãn import và thêm cascade
+    cardTransactions: CardTransaction[] | undefined;
 }

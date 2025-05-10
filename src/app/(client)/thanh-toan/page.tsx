@@ -30,7 +30,7 @@ export default function CheckoutPage() {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [isWebPurchaseLoading, setIsWebPurchaseLoading] = useState(false);
     const [isAdminPurchaseLoading, setIsAdminPurchaseLoading] = useState(false);
-    const [voucherDiscount, setVoucherDiscount] = useState(0);
+    const [voucherDiscount] = useState(0);
     const router = useRouter();
     const { data: session } = useSession();
 
@@ -110,6 +110,7 @@ export default function CheckoutPage() {
 
             toast.success('Đặt hàng thành công! Vui lòng kiểm tra email để xem chi tiết đơn hàng.');
             window.location.href = '/';
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             console.error('Error during purchase:', error);
             

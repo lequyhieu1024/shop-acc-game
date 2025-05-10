@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { initRepository } from "@/app/models/connect";
 import { CardTransaction } from "@/app/models/entities/CardTransaction";
+import {Between} from "typeorm";
 
 export const GET = async (req: NextRequest) => {
   try {
@@ -16,30 +17,16 @@ export const GET = async (req: NextRequest) => {
     const requestId = searchParams.get("request_id");
     const createdAt = searchParams.get("created_at");
 
-    const queryBuilder = transRepo
-        .createQueryBuilder("transaction")
-        .leftJoinAndSelect("users", "user", "user.id = transaction.user_id") // Sử dụng leftJoinAndSelect
-        .select([
-          "transaction.id",
-          "transaction.status",
-          "transaction.request_id",
-          "transaction.telco",
-          "transaction.declared_value",
-          "transaction.amount",
-          "transaction.value",
-          "transaction.created_at",
-          "user.user_code",
-        ])
-        .orderBy("transaction.created_at", "DESC")
-        .skip(skip)
-        .take(size);
+    // Xây dựng điều kiện where
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const where: any = {};
 
     if (status) {
-      queryBuilder.andWhere("transaction.status = :status", { status });
+      where.status = status;
     }
 
     if (requestId) {
-      queryBuilder.andWhere("transaction.request_id = :requestId", { requestId: Number(requestId) });
+      where.request_id = Number(requestId);
     }
 
     if (createdAt) {
@@ -49,20 +36,50 @@ export const GET = async (req: NextRequest) => {
       const endDate = new Date(createdAt);
       endDate.setHours(23, 59, 59, 999);
 
-      queryBuilder.andWhere("transaction.created_at BETWEEN :start AND :end", {
-        start: startDate,
-        end: endDate,
-      });
+      where.created_at = Between(startDate, endDate);
     }
 
+    // Nếu có userCode, cần lọc dựa trên user.user_code
     if (userCode) {
-      queryBuilder.andWhere("user.user_code = :userCode", { userCode });
+      where.user = { user_code: userCode };
     }
 
-    const [transactions, total] = await queryBuilder.getManyAndCount();
+    // Sử dụng findAndCount với relations để lấy dữ liệu
+    const [transactions, total] = await transRepo.findAndCount({
+      where,
+      relations: ["user"], // Tải mối quan hệ user
+      select: [
+        "id",
+        "status",
+        "request_id",
+        "telco",
+        "declared_value",
+        "amount",
+        "value",
+        "created_at",
+      ],
+      order: { created_at: "DESC" },
+      skip,
+      take: size,
+    });
+
+    // Định dạng lại dữ liệu để khớp với output mong muốn
+    const formattedTransactions = transactions.map((transaction) => ({
+      id: transaction.id,
+      status: transaction.status,
+      request_id: transaction.request_id,
+      telco: transaction.telco,
+      declared_value: transaction.declared_value,
+      amount: transaction.amount,
+      value: transaction.value,
+      created_at: transaction.created_at,
+      user: {
+        user_code: transaction.user?.user_code || "N/A",
+      },
+    }));
 
     return NextResponse.json({
-      transactions,
+      transactions: formattedTransactions,
       pagination: {
         page,
         size,
