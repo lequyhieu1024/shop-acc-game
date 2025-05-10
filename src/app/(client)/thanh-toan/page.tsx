@@ -30,7 +30,7 @@ export default function CheckoutPage() {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [isWebPurchaseLoading, setIsWebPurchaseLoading] = useState(false);
     const [isAdminPurchaseLoading, setIsAdminPurchaseLoading] = useState(false);
-    const [voucherDiscount, setVoucherDiscount] = useState(0);
+    const [voucherDiscount] = useState(0);
     const router = useRouter();
     const { data: session } = useSession();
 
@@ -81,7 +81,6 @@ export default function CheckoutPage() {
                 }
             }
 
-            // Kiểm tra số lượng sản phẩm còn lại
             for (const item of cartItems) {
                 const productResponse = await api.get(`/products/${item.id}`);
                 if (productResponse.data.quantity < item.quantity) {
@@ -90,15 +89,14 @@ export default function CheckoutPage() {
                 }
             }
 
-            // 1. Tạo đơn hàng
-            const orderResponse = await api.post('/orders', {
+             await api.post('/orders', {
                 user_id: session.user.id,
                 customer_name: values.name,
                 customer_email: values.email,
                 customer_phone: values.phone,
                 total_amount: finalAmount,
                 payment_method: PaymentMethod.THIRD_PARTY,
-                payment_status: PaymentStatus.UNPAID,
+                payment_status: PaymentStatus.PAID,
                 order_items: cartItems.map(item => ({
                     product_id: item.id,
                     quantity: item.quantity,
@@ -106,44 +104,13 @@ export default function CheckoutPage() {
                 }))
             });
 
-            if (!orderResponse.data.result) {
-                toast.error(orderResponse.data.message || 'Có lỗi xảy ra khi tạo đơn hàng. Vui lòng thử lại sau.');
-                return;
-            }
-
-            const orderId = orderResponse.data.order_id;
-
-            // 2. Trừ số dư
-            const deductBalanceResponse = await api.post('/user/balance/deduct', {
-                amount: finalAmount,
-                order_id: orderId
-            });
-
-            if (!deductBalanceResponse.data.result) {
-                // Nếu trừ số dư thất bại, xóa đơn hàng
-                await api.delete(`/orders/${orderId}`);
-                toast.error(deductBalanceResponse.data.message || 'Có lỗi xảy ra khi trừ số dư. Vui lòng thử lại sau.');
-                return;
-            }
-
-            // 3. Trừ số lượng sản phẩm
-            for (const item of cartItems) {
-                await api.patch(`/products/${item.id}/deduct-quantity`, {
-                    quantity: item.quantity
-                });
-            }
-
-            // 4. Cập nhật trạng thái thanh toán
-            await api.patch(`/orders/${orderId}/payment-status`, {
-                payment_status: PaymentStatus.PAID
-            });
-
-            // 5. Xóa giỏ hàng
-            localStorage.removeItem('cartItems');
             setCartItems([]);
+            localStorage.removeItem("cartItems");
+            localStorage.removeItem("totalItems");
 
             toast.success('Đặt hàng thành công! Vui lòng kiểm tra email để xem chi tiết đơn hàng.');
-            router.push('/');
+            window.location.href = '/';
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             console.error('Error during purchase:', error);
             

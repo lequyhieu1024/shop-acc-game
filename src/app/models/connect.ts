@@ -43,7 +43,7 @@ export const AppDataSource = new DataSource({
     OrderItem,
 
   ],
-  synchronize: true,
+  synchronize: false,
   logging: false
 });
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -6,7 +6,7 @@ import { SocialLink } from '@/components/SocialButton';
 import { ISystem } from '@/app/interfaces/ISystem';
 import Image from 'next/image';
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 interface MethodPaymentProps {
     visible: boolean;
@@ -16,23 +16,6 @@ interface MethodPaymentProps {
 const FacebookIcon = () => (
     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
         <path d="M22 12a10 10 0 1 0-11.56 9.88V15h-2.27v-3h2.27V9.5a3.13 3.13 0 0 1 3.34-3.5 13.38 13.38 0 0 1 2 .17v2.32h-1.38a1.27 1.27 0 0 0-1.43 1.38V12h2.5l-.4 3H14v6.88A10 10 0 0 0 22 12z" />
-    </svg>
-);
-
-const WebsiteIcon = () => (
-    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10
-                 10-4.48 10-10S17.52 2 12 2zm6.93 6h-2.12a15.38
-                 15.38 0 0 0-1.44-3.56A8.027 8.027 0 0 1 18.93 8zM12
-                 4c.84 0 2.49 2.39 2.91 6h-5.82C9.51 6.39 11.16 4
-                 12 4zM4.07 8a8.027 8.027 0 0 1 3.56-3.56A15.38
-                 15.38 0 0 0 6.19 8H4.07zM4 12c0-.68.07-1.34.18-2h3.64c-.1.65-.16
-                 1.32-.16 2s.06 1.35.16 2H4.18c-.11-.66-.18-1.32-.18-2zm.07 4h2.12a15.38
-                 15.38 0 0 0 1.44 3.56A8.027 8.027 0 0 1 4.07 16zM12
-                 20c-.84 0-2.49-2.39-2.91-6h5.82c-.42 3.61-2.07 6-2.91
-                 6zm2.37-.44A15.38 15.38 0 0 0 15.81 16h2.12a8.027
-                 8.027 0 0 1-3.56 3.56zM16.18 14c.1-.65.16-1.32.16-2s-.06-1.35-.16-2h3.64c.11.66.18
-                 1.32.18 2s-.07 1.34-.18 2h-3.64z" />
     </svg>
 );
 

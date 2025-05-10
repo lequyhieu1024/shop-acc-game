@@ -104,3 +104,34 @@ export const sendTelegramMessage = async (
     console.error("Lỗi gửi tin nhắn Telegram:", error);
   }
 };
+
+export const sendTelegramMessage2 = async (
+    customerName: string,
+    customerPhone: number
+) => {
+  const botToken = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+
+  // Kiểm tra nếu thiếu botToken hoặc chatId
+  if (!botToken || !chatId) {
+    console.error("Lỗi: Thiếu TELEGRAM_BOT_TOKEN hoặc TELEGRAM_CHAT_ID trong biến môi trường.");
+    return false;
+  }
+
+  // Định dạng nội dung tin nhắn
+  const message = `
+      🔔 Có đơn hàng mới cần xử lý!
+      - Khách hàng: ${customerName}  
+      - Số điện thoại: ${customerPhone}  
+      `;
+
+  try {
+    await axios.post(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+      chat_id: chatId,
+      text: message,
+      parse_mode: "Markdown",
+    });
+  } catch (error) {
+    console.error("Lỗi gửi tin nhắn Telegram:", error);
+  }
+};

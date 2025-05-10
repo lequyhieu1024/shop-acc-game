@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, JoinColumn, ManyToOne} from 'typeorm';
+import {User} from "@/app/models/entities/User";
 
 export enum CardStatus {
     SUCCESS_CORRECT = 1,
@@ -59,4 +60,8 @@ export class CardTransaction {
 
     @CreateDateColumn({ type: 'timestamp' })
     created_at!: Date;
+
+    @ManyToOne(() => User, user => user.cardTransactions, { eager: false })
+    @JoinColumn({ name: "user_id" })
+    user: User | undefined;
 }
