@@ -197,7 +197,7 @@ const NavBar = () => {
                   <CgProfile className="w-5 h-5" />
                 </span>
               )}
-              <ul className="absolute right-0 top-full invisible w-[150px] bg-white shadow-lg group-hover/profile:visible rounded-md">
+              <ul className="absolute right-0 top-full invisible w-[170px] bg-white shadow-lg group-hover/profile:visible rounded-md">
                 {session ? (
                   <>
                     <li className="sm:hidden px-5 py-3 hover:bg-gray-100 transition-colors rounded-md">
@@ -221,10 +221,15 @@ const NavBar = () => {
                     {session.user.role === "admin" && (
                       <li className="px-5 py-3 hover:bg-gray-100 transition-colors rounded-md">
                         <Link href="/admin/dashboard" className="text-gray-800">
-                          Quản trị
+                          Truy cập admin
                         </Link>
                       </li>
                     )}
+                    <li className="px-5 py-3 hover:bg-gray-100 transition-colors rounded-md">
+                      <Link href="/don-hang-cua-toi" className="text-gray-800">
+                        Đơn hàng của tôi
+                      </Link>
+                    </li>
                     <li className="px-5 py-3 hover:bg-gray-100 transition-colors rounded-md">
                       <button onClick={handleLogout} className="text-gray-800">
                         Đăng xuất
