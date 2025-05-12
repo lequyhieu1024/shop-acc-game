@@ -56,6 +56,12 @@ export const NavMenu = () => {
               <span>Hệ thống</span>
             </Link>
           </li>
+          <li>
+            <Link href="/">
+              <i data-feather="settings"></i>
+              <span>Về trang chủ</span>
+            </Link>
+          </li>
         </ul>
       </li>
     </ul>

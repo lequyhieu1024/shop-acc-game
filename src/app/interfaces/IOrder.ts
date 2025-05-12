@@ -1,5 +1,6 @@
 import { OrderStatus, PaymentMethod, PaymentStatus } from "../models/entities/Order";
 import { IProduct } from "./IProduct";
+import {Voucher} from "@/app/models/entities/Voucher";
 
 export interface IOrder {
   id: number;
@@ -14,7 +15,10 @@ export interface IOrder {
   payment_status: PaymentStatus;
   order_items?: IOrderItem[]
   items?: IOrderItem[]
-  created_at?: Date
+  created_at?: Date,
+  voucher: Voucher | undefined;
+  total_product_price?: number | null,
+  voucher_discount?: number | null,
 }
 export interface IOrderItem {
   key?: string;

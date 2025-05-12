@@ -144,11 +144,33 @@ export default function EditOrder() {
               {statusLabels[order.status] || order.status || "N/A"}
             </Tag>
           </Descriptions.Item>
-          <Descriptions.Item label="Tổng tiền">
-          <span className="text-lg font-bold text-red-500">
-            {order.total_amount?.toLocaleString("vi-VN") || "0"} đ
-          </span>
-          </Descriptions.Item>
+          {
+            order.voucher ? (
+                <>
+                  <Descriptions.Item label="Tổng giá sản phẩm">
+                    <span className="text-lg font-bold text-red-500">
+                      {order.total_product_price?.toLocaleString("vi-VN") || "0"} đ
+                    </span>
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Giảm trừ từ mã giảm giá">
+                    <span className="text-lg font-bold text-red-500">
+                      {order.voucher_discount?.toLocaleString("vi-VN") || "0"} đ
+                    </span>
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Tổng thanh toán">
+                    <span className="text-lg font-bold text-red-500">
+                      {order.total_amount?.toLocaleString("vi-VN") || "0"} đ
+                    </span>
+                  </Descriptions.Item>
+                </>
+              ) : (
+                    <Descriptions.Item label="Tổng thanh toán">
+                        <span className="text-lg font-bold text-red-500">
+                          {order.total_amount?.toLocaleString("vi-VN") || "0"} đ
+                        </span>
+                    </Descriptions.Item>
+              )
+          }
         </Descriptions>
 
         <div className="mt-5">

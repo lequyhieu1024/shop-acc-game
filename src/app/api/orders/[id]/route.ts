@@ -23,6 +23,7 @@ export async function GET(
         "items",
         "items.product",
         "items.product.category",
+        "voucher"
       ],
     });
 
