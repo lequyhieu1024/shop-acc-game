@@ -175,9 +175,9 @@ export default function Order() {
             <div className="card-body">
               <div className="title-header option-title d-flex justify-content-between align-items-center">
                 <h5>Tất Cả Đơn Hàng</h5>
-                <Link href="/admin/orders/create" className="btn btn-theme d-flex align-items-center">
-                  Thêm Mới
-                </Link>
+                {/*<Link href="/admin/orders/create" className="btn btn-theme d-flex align-items-center">*/}
+                {/*  Thêm Mới*/}
+                {/*</Link>*/}
               </div>
 
               {/* Filter Form */}

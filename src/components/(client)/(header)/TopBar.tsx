@@ -218,11 +218,6 @@ const NavBar = () => {
                         </button>
                       </div>
                     </li>
-                    <li className="px-5 py-3 hover:bg-gray-100 transition-colors rounded-md">
-                      <button onClick={handleLogout} className="text-gray-800">
-                        Đăng xuất
-                      </button>
-                    </li>
                     {session.user.role === "admin" && (
                       <li className="px-5 py-3 hover:bg-gray-100 transition-colors rounded-md">
                         <Link href="/admin/dashboard" className="text-gray-800">
@@ -230,6 +225,11 @@ const NavBar = () => {
                         </Link>
                       </li>
                     )}
+                    <li className="px-5 py-3 hover:bg-gray-100 transition-colors rounded-md">
+                      <button onClick={handleLogout} className="text-gray-800">
+                        Đăng xuất
+                      </button>
+                    </li>
                   </>
                 ) : (
                   <>

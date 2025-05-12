@@ -5,9 +5,10 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     DeleteDateColumn,
-    OneToMany
+    OneToMany, ManyToOne, JoinColumn
 } from "typeorm";
 import { OrderItem } from "./OrderItem";
+import {Voucher} from "./Voucher";
 
 export enum OrderStatus {
     PENDING = 'pending',
@@ -59,8 +60,21 @@ export class Order {
     @Column({ type: "varchar", length: 20, nullable: true })
     customer_phone!: string;
 
-    @Column({ type: "decimal", precision: 10, scale: 2,nullable:true })
-    total_amount!: number;
+    @Column({ type: "bigint",nullable:true })
+    total_amount?: number;
+
+    @Column({ type: "bigint",nullable:true })
+    total_product_price?: number;
+
+    @Column({ type: "bigint",nullable:true })
+    voucher_discount?: number;
+
+    @Column({ type: 'bigint', nullable: false })
+    voucher_id?: number;
+
+    @ManyToOne(() => Voucher, voucher => voucher.orders, { eager: false })
+    @JoinColumn({ name: "voucher_id" })
+    voucher: Voucher | undefined;
 
     @Column({
         type: "enum",

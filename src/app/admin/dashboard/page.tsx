@@ -15,6 +15,7 @@ import {
   Filler,
 } from "chart.js";
 import { Line, Bar, Pie } from "react-chartjs-2";
+import Loading from "@/components/Loading";
 
 // Register Chart.js components
 ChartJS.register(
@@ -42,7 +43,7 @@ interface DashboardData {
     sold: number;
     available: number;
     locked: number;
-    top: { product_id: number; sold_count: number }[];
+    top: { product_id: number; product_name: string, sold_count: number }[];
   };
   orders: {
     total: number;
@@ -82,7 +83,7 @@ export default function DashboardPage() {
     fetchData();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loading/>;
   if (!data) return <h1>Không có dữ liệu</h1>;
 
   const formatNumber = (value: number) =>
@@ -104,15 +105,15 @@ export default function DashboardPage() {
 
   // Chart 2: Order Status Distribution (Pie Chart)
   const orderChartData = {
-    labels: ["Hoàn thành", "Chờ xử lý", "Đang xử lý", "Lỗi", "Đã hủy"],
+    labels: ["Chờ xử lý", "Đang bàn giao nick","Đã bàn giao nick", "Lỗi", "Đã hủy"],
     datasets: [
       {
         data: [
-          data.orders.completed,
           data.orders.pending,
           data.orders.processing,
-          data.orders.failed,
+          data.orders.completed,
           data.orders.cancelled,
+          data.orders.failed,
         ],
         backgroundColor: [
           "#36A2EB",
@@ -127,7 +128,7 @@ export default function DashboardPage() {
 
   // Chart 3: Product Availability Breakdown (Bar Chart)
   const productChartData = {
-    labels: ["Tổng sản phẩm", "Đã bán", "Có sẵn"],
+    labels: ["Tổng sản phẩm", "Không dùng để bán", "Sẵn sàng bán"],
     datasets: [
       {
         label: "Số lượng",
@@ -139,7 +140,7 @@ export default function DashboardPage() {
 
   // Chart 4: Top 5 Products by Sales (Horizontal Bar Chart)
   const topProductsChartData = {
-    labels: data.acc.top.map((item) => `Sản phẩm ${item.product_id}`),
+    labels: data.acc.top.map((item) => item.product_name),
     datasets: [
       {
         label: "Số lượng bán",
@@ -232,8 +233,8 @@ export default function DashboardPage() {
                     <h4 className="mb-0 counter">
                       {formatNumber(data.acc.total)}
                     </h4>
-                    <div className="m-0">Không được bán: {formatNumber(data.acc.sold)}</div>
-                    <div className="m-0">Có sẵn: {formatNumber(data.acc.available)}</div>
+                    <div className="m-0">Không dùng để bán: {formatNumber(data.acc.sold)}</div>
+                    <div className="m-0">Sẵn sàng bán: {formatNumber(data.acc.available)}</div>
                   </div>
                   <div className="align-self-center text-center">
                     <i className="ri-chat-3-line"></i>

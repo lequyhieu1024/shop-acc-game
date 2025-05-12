@@ -106,8 +106,11 @@ export async function GET() {
       orderItemRepo
           .createQueryBuilder("item")
           .select("item.product_id", "product_id")
+          .addSelect("product.name", "product_name")
           .addSelect("COUNT(item.id)", "sold_count")
+          .leftJoin("item.product", "product")
           .groupBy("item.product_id")
+          .addGroupBy("product.name")
           .orderBy("sold_count", "DESC")
           .limit(5)
           .getRawMany(),

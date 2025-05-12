@@ -4,8 +4,9 @@ import {
     Entity,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
-    DeleteDateColumn,
+    DeleteDateColumn, OneToMany,
 } from "typeorm";
+import {Product} from "@/app/models/entities/Product";
 
 @Entity("categories")
 export class Category {
@@ -26,4 +27,7 @@ export class Category {
 
     @DeleteDateColumn()
     deleted_at?: Date;
+
+    @OneToMany(() => Product, item => item.category, { cascade: false })
+    products: Product[] | undefined;
 }
