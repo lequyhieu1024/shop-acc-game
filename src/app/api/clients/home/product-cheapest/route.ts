@@ -7,16 +7,15 @@ export const GET = async (req: NextRequest) => {
         const productRepo = await initRepository(Product);
         const { searchParams } = new URL(req.url);
         const page = parseInt(searchParams.get("page") || "1");
-        const limit = parseInt(searchParams.get("limit") || "15");
+        const limit = parseInt(searchParams.get("limit") || "25");
         const skip = (page - 1) * limit;
 
         const [products, total] = await productRepo.findAndCount({
             skip,
             take: limit,
             order: {
-                created_at: "DESC",
+                sale_price: "ASC",
             },
-            where: {is_for_sale: true}
         });
         return NextResponse.json({
             products,

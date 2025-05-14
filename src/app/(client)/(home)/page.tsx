@@ -4,6 +4,7 @@ import InfoCards from "./InforCard";
 import LatestProducts from "./LatestProducts";
 // import LuckyWheelToggle from "@/components/(client)/(common)/LuckyWheelToggle";
 import NotiBannerPage from "./NotiBanner";
+import NickChip from "@/app/(client)/(home)/NickChip";
 
 export default function Home() {
   return (
@@ -12,10 +13,7 @@ export default function Home() {
       <Banner />
       <ExclusiveOffers />
       <LatestProducts />
-      <ExclusiveOffers />
-      {/*<GetDiamondsHot />*/}
-      {/*<RobloxServices />*/}
-      {/*<NickChip />*/}
+      <NickChip />
       <InfoCards />
       {/* <LuckyWheelToggle /> */}
     </div>
