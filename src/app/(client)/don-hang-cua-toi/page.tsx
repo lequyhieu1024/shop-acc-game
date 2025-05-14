@@ -2,12 +2,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Card, List, Typography, Tag, Button } from "antd";
+import { List ,Tag, Button } from "antd";
 import api from "@/app/services/axiosService";
 import { toast } from "react-toastify";
 import { statusLabels, PaymentStatus } from "@/app/models/entities/Order";
-
-const { Title, Text } = Typography;
 
 interface Order {
     id: number;
@@ -51,54 +49,89 @@ export default function MyOrdersPage() {
     }, [session, status, router]);
 
     return (
-        <div className="max-w-4xl mx-auto mt-16 px-4">
-            <Title level={2} className="text-center mb-8">
-                Đơn hàng của tôi
-            </Title>
-            <Card>
-                <List
-                    loading={loading}
-                    dataSource={orders}
-                    renderItem={(order) => (
-                        <List.Item
-                            actions={[
-                                // eslint-disable-next-line react/jsx-key
-                                <Button
-                                    type="link"
-                                    onClick={() => router.push(`/don-hang-cua-toi/${order.id}`)}
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 py-20">
+            <div className="container mx-auto px-4">
+                <div className="max-w-4xl mx-auto">
+                    <div className="text-center mb-12">
+                        <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent mb-4">
+                            Đơn Hàng Của Tôi
+                        </h1>
+                        <p className="text-gray-400 text-lg">
+                            Theo dõi và quản lý đơn hàng của bạn
+                        </p>
+                    </div>
+
+                    <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-purple-500/20 shadow-xl">
+                        <List
+                            loading={loading}
+                            dataSource={orders}
+                            renderItem={(order) => (
+                                <List.Item
+                                    className="mb-4 bg-gray-700/30 rounded-lg p-4 border border-purple-500/10 hover:border-purple-500/30 transition-colors"
+                                    actions={[
+                                        <Button
+                                            key="view"
+                                            type="primary"
+                                            onClick={() => router.push(`/don-hang-cua-toi/${order.id}`)}
+                                            className="bg-gradient-to-r from-purple-600 to-blue-600 border-none hover:from-purple-700 hover:to-blue-700"
+                                        >
+                                            Xem chi tiết
+                                        </Button>
+                                    ]}
                                 >
-                                    Xem chi tiết
-                                </Button>,
-                            ]}
-                        >
-                            <List.Item.Meta
-                                title={`Đơn hàng #${order.id}`}
-                                description={
-                                    <div>
-                                        <Text>
-                                            Tổng tiền: {order.total_amount?.toLocaleString("vi-VN")} đ
-                                        </Text>
-                                        <br />
-                                        <Text>
-                                            Giảm giá: {order.voucher_discount?.toLocaleString("vi-VN")} đ
-                                            {order.voucher_code && ` (Mã: ${order.voucher_code})`}
-                                        </Text>
-                                        <br />
-                                        <Text>Ngày đặt: {new Date(order.created_at).toLocaleString("vi-VN")}</Text>
-                                        <br />
-                                        <Tag color={order.status === "completed" ? "green" : "blue"}>
-                                            {statusLabels[order.status]}
-                                        </Tag>
-                                        <Tag color={order.payment_status === PaymentStatus.PAID ? "green" : "red"}>
-                                            Đã thanh toán
-                                        </Tag>
-                                    </div>
-                                }
-                            />
-                        </List.Item>
-                    )}
-                />
-            </Card>
+                                    <List.Item.Meta
+                                        style={{ paddingLeft: 10}}
+                                        title={
+                                            <span className="text-xl font-semibold text-purple-400">
+                                                Đơn hàng #{order.id}
+                                            </span>
+                                        }
+                                        description={
+                                            <div className="space-y-2 text-gray-300">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-gray-400">Tổng tiền:</span>
+                                                    <span className="text-green-400 font-medium">
+                                                        {order.total_amount?.toLocaleString("vi-VN")} đ
+                                                    </span>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-gray-400">Giảm giá:</span>
+                                                    <span className="text-red-400">
+                                                        {order.voucher_discount?.toLocaleString("vi-VN") ?? 0} đ
+                                                        {order.voucher_code && (
+                                                            <span className="text-purple-400 ml-1">
+                                                                (Mã: {order.voucher_code})
+                                                            </span>
+                                                        )}
+                                                    </span>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-gray-400">Ngày đặt:</span>
+                                                    <span>{new Date(order.created_at).toLocaleString("vi-VN")}</span>
+                                                </div>
+                                                <div className="flex items-center gap-2 mt-2">
+                                                    <Tag 
+                                                        color={order.status === "completed" ? "green" : "blue"}
+                                                        className="px-3 py-1 rounded-full"
+                                                    >
+                                                        {statusLabels[order.status]}
+                                                    </Tag>
+                                                    <Tag 
+                                                        color={order.payment_status === PaymentStatus.PAID ? "green" : "red"}
+                                                        className="px-3 py-1 rounded-full"
+                                                    >
+                                                        {order.payment_status === PaymentStatus.PAID ? "Đã thanh toán" : "Chưa thanh toán"}
+                                                    </Tag>
+                                                </div>
+                                            </div>
+                                        }
+                                    />
+                                </List.Item>
+                            )}
+                        />
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
