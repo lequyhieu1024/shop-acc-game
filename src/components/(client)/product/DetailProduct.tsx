@@ -279,29 +279,41 @@ const DetailProduct: React.FC<DetailProductProps> = ({ product }) => {
           </div>
         </div>
 
-        <Modal
-          open={isModalVisible}
-          footer={null}
-          closable={false}
-          centered
-          className="success-modal"
-          styles={{
-            mask: { backgroundColor: "rgba(0, 0, 0, 0.75)" },
-            body: { 
-              padding: "32px", 
-              textAlign: "center", 
-              background: "linear-gradient(to bottom right, #1a1a2e, #16213e)",
-              borderRadius: "16px",
-              border: "1px solid rgba(139, 92, 246, 0.2)"
-            }
-          }}
-        >
-          <div className="flex flex-col items-center">
-            <CheckCircleFilled style={{ fontSize: 64, color: "#10B981" }} />
-            <p className="mt-4 text-xl font-bold text-white">Thêm sản phẩm thành công!</p>
-          </div>
-        </Modal>
-      </div>
+            {/* Success Modal */}
+            <Modal
+                open={isModalVisible}
+                footer={null}
+                closable={false}
+                centered
+                className="success-modal"
+                styles={{
+                    mask: { backgroundColor: "rgba(0, 0, 0, 0.45)" },
+                    body: { padding: "24px", textAlign: "center" },
+                }}
+            >
+                <div className="flex flex-col items-center">
+                    <CheckCircleFilled style={{ fontSize: 48, color: "#52c41a" }} />
+                    <p className="mt-4 text-lg text-gray-800">Thêm sản phẩm thành công!</p>
+                </div>
+            </Modal>
+
+            {/* Image Preview Modal */}
+            <Modal
+                open={!!previewImage}
+                footer={null}
+                onCancel={() => setPreviewImage(null)}
+                centered
+                width={800}
+                styles={{ body: { padding: 0 } }}
+            >
+                <img
+                    /* eslint-disable @next/next/no-img-element */
+                    src={previewImage || ""}
+                    alt="Preview"
+                    className="w-full h-auto max-h-[80vh] object-contain"
+                />
+            </Modal>
+        </div>
     );
 };
 

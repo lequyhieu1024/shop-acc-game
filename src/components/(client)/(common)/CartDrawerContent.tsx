@@ -63,6 +63,7 @@ const CartDrawerContent: React.FC<CartDrawerContentProps> = ({ setCartDrawerVisi
       title: "Sản phẩm",
       dataIndex: "product",
       key: "product",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (_: any, record: CartItem) => (
         <div className="flex items-center">
           <Text className="text-white font-medium">{record.name}</Text>
@@ -73,6 +74,7 @@ const CartDrawerContent: React.FC<CartDrawerContentProps> = ({ setCartDrawerVisi
       title: "Hình ảnh",
       dataIndex: "image",
       key: "image",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (_: any, record: CartItem) => (
         <div className="flex items-center">
           {record.image ? (
@@ -95,6 +97,7 @@ const CartDrawerContent: React.FC<CartDrawerContentProps> = ({ setCartDrawerVisi
       title: "Đơn giá",
       dataIndex: "price",
       key: "price",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (_: any, record: CartItem) => (
         <Text className="text-purple-400 font-medium">{record.price.toLocaleString("vi-VN")}đ</Text>
       )
@@ -103,6 +106,7 @@ const CartDrawerContent: React.FC<CartDrawerContentProps> = ({ setCartDrawerVisi
       title: "Số lượng",
       dataIndex: "quantity",
       key: "quantity",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (_: any, record: CartItem) => (
         <InputNumber
           min={1}
@@ -125,6 +129,7 @@ const CartDrawerContent: React.FC<CartDrawerContentProps> = ({ setCartDrawerVisi
     {
       title: "Thao tác",
       key: "action",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (_: any, record: CartItem) => (
         <Button
           type="text"

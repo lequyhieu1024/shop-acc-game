@@ -31,7 +31,7 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
     const [isAdding, setIsAdding] = useState(false);
     const { addItem } = useCart();
 
-    // @ts-ignore
+    // @ts-expect-error
     useEffect(() => {
         const styleElement = document.createElement("style");
         styleElement.innerHTML = `
