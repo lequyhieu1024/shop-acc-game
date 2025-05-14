@@ -121,178 +121,187 @@ const DetailProduct: React.FC<DetailProductProps> = ({ product }) => {
         }
     };
 
-    if (!product) return <div className="text-center text-gray-500">Loading...</div>;
+    if (!product) return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
+        <div className="text-white text-xl font-bold animate-pulse">Đang tải thông tin sản phẩm...</div>
+      </div>
+    );
 
     return (
-        <div className="container mx-auto px-4 py-20 max-w-7xl">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Image Section */}
-                <div className="space-y-4">
-                    <div className="rounded-lg overflow-hidden shadow-md">
-                        <img
-                            /* eslint-disable @next/next/no-img-element */
-                            src={String(product.thumbnail) || "/client/assets/images/placeholder.png"}
-                            alt={product.name}
-                            className="w-full h-96 object-cover"
-                        />
-                    </div>
-                    <div className="relative">
-                        <Button
-                            icon={<LeftOutlined />}
-                            onClick={() => scrollThumbnails("left")}
-                            className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white shadow-md rounded-full"
-                        />
-                        <div
-                            ref={thumbnailRef}
-                            className="thumbnail-container flex gap-2 overflow-x-auto pb-2 snap-x snap-mandatory"
-                        >
-                            {Array.isArray(product.images) && product.images.length > 0 ? (
-                                (product.images as IProductImage[]).map((img, index) => (
-                                    <div key={index} className="snap-start flex-shrink-0">
-                                        <img
-                                            /* eslint-disable @next/next/no-img-element */
-                                            src={img.image_url || "/client/assets/images/placeholder.png"}
-                                            alt={`Thumbnail ${index}`}
-                                            className="w-20 h-20 object-cover rounded-md cursor-pointer hover:opacity-75 transition"
-                                            onClick={() => handleImageClick(img.image_url)}
-                                        />
-                                    </div>
-                                ))
-                            ) : null}
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 py-20">
+        <div className="container mx-auto px-4 max-w-7xl">
+          <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-8 border border-purple-500/20 shadow-xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+              {/* Image Section */}
+              <div className="space-y-6">
+                <div className="rounded-xl overflow-hidden shadow-lg border border-purple-500/20 bg-gradient-to-br from-gray-900 to-gray-800">
+                  <img
+                    src={String(product.thumbnail) || "/client/assets/images/placeholder.png"}
+                    alt={product.name}
+                    className="w-full h-[500px] object-cover hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <div className="relative">
+                  <Button
+                    icon={<LeftOutlined />}
+                    onClick={() => scrollThumbnails("left")}
+                    className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-gradient-to-r from-purple-600 to-blue-600 text-white border-none shadow-lg hover:from-purple-700 hover:to-blue-700"
+                  />
+                  <div
+                    ref={thumbnailRef}
+                    className="thumbnail-container flex gap-3 overflow-x-auto pb-4 snap-x snap-mandatory px-12"
+                  >
+                    {Array.isArray(product.images) && product.images.length > 0 ? (
+                      (product.images as IProductImage[]).map((img, index) => (
+                        <div key={index} className="snap-start flex-shrink-0">
+                          <img
+                            src={img.image_url || "/client/assets/images/placeholder.png"}
+                            alt={`Thumbnail ${index}`}
+                            className="w-24 h-24 object-cover rounded-lg cursor-pointer hover:opacity-75 transition border-2 border-purple-500/20 hover:border-purple-500/50"
+                            onClick={() => handleImageClick(img.image_url)}
+                          />
                         </div>
-                        <Button
-                            icon={<RightOutlined />}
-                            onClick={() => scrollThumbnails("right")}
-                            className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white shadow-md rounded-full"
-                        />
-                    </div>
+                      ))
+                    ) : null}
+                  </div>
+                  <Button
+                    icon={<RightOutlined />}
+                    onClick={() => scrollThumbnails("right")}
+                    className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-gradient-to-r from-purple-600 to-blue-600 text-white border-none shadow-lg hover:from-purple-700 hover:to-blue-700"
+                  />
+                </div>
+              </div>
+
+              {/* Product Info */}
+              <div className="space-y-8">
+                <div>
+                  <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent mb-4">
+                    {product.name}
+                  </h1>
+                  <div className="flex items-center space-x-3">
+                    <Rate allowHalf defaultValue={5} disabled className="text-yellow-400" />
+                    <span className="text-gray-400 text-sm">5 đánh giá</span>
+                  </div>
                 </div>
 
-                {/* Product Info */}
-                <div className="space-y-6">
-                    <h1 className="text-3xl font-bold text-gray-800">{product.name}</h1>
-                    <div className="flex items-center space-x-2">
-                        <Rate allowHalf defaultValue={5} disabled className="text-yellow-400" />
-                        <span className="text-gray-500 text-sm">5 đánh giá</span>
-                    </div>
-                    <div className="text-2xl font-semibold text-gray-800">
-                        <del className="text-gray-400 text-lg">{product.regular_price} đ</del>
-                        <span className="text-red-500 ml-2">{product.sale_price} đ</span>
-                    </div>
-                    <div className="text-gray-600 space-y-1">
-                        <p>
-                            Số lượng còn: <span className="font-medium">{product.quantity}</span>
-                        </p>
-                        <p>
-                            Loại đăng ký: <span className="font-medium">{product.register_by}</span>
-                        </p>
-                        {product.is_infinity_card && (
-                            <p>
-                                Thẻ vô cực:{" "}
-                                <span className="font-medium">{product.is_infinity_card ? "Có" : "Không"}</span>
-                            </p>
-                        )}
-                        {product.server && (
-                            <p>
-                                Server: <span className="font-medium">{product.server}</span>
-                            </p>
-                        )}
-                        {product.skin_type && (
-                            <p>
-                                Loại skin: <span className="font-medium">{product.skin_type}</span>
-                            </p>
-                        )}
-                        {product.rank && (
-                            <p>
-                                Rank: <span className="font-medium">{product.rank}</span>
-                            </p>
-                        )}
-                        {product.number_diamond_available !== 0 && (
-                            <p>
-                                SL kim cương đang có:{" "}
-                                <span className="font-medium">{product.number_diamond_available}</span>
-                            </p>
-                        )}
-                    </div>
-                    <div className="flex flex-col gap-3">
-                        <Button
-                            type="primary"
-                            size="large"
-                            className={`w-full flex items-center justify-center cart-button ${clickedButtons[product.id] ? "clicked" : ""
-                                }`}
-                            disabled={isAdding}
-                            onClick={(e) => handleAddToCart(e, product as IProduct)}
-                        >
-                            <div
-                                className="cart-icon"
-                                style={{
-                                    width: "24px",
-                                    height: "24px",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                }}
-                            >
-                                <FaShoppingCart style={{ fontSize: "16px", color: "white" }} />
-                            </div>
-                            <span className="add-to-cart relative z-10 flex items-center">
-                                <ShoppingCartOutlined className="mr-2" /> Thêm vào giỏ hàng
-                            </span>
-                            <span className="added">Đã thêm</span>
-                        </Button>
-                        <Button
-                            size="large"
-                            className="w-full bg-pink-500 text-white hover:bg-pink-600 hover:text-white"
-                        >
-                            Mua ngay
-                        </Button>
-                    </div>
+                <div className="p-6 bg-purple-500/10 rounded-xl border border-purple-500/20">
+                  <div className="flex items-baseline gap-4">
+                    <span className="text-3xl font-bold text-purple-400">{product.sale_price} đ</span>
+                    <del className="text-gray-400 text-lg">{product.regular_price} đ</del>
+                    {product.regular_price && product.sale_price && (
+                      <span className="text-sm text-white bg-gradient-to-r from-purple-600 to-blue-600 px-3 py-1 rounded-full font-bold">
+                        -{Math.round(((product.regular_price - product.sale_price) / product.regular_price) * 100)}%
+                      </span>
+                    )}
+                  </div>
                 </div>
+
+                <div className="space-y-4 bg-gradient-to-br from-gray-800 to-gray-900 p-6 rounded-xl border border-purple-500/20">
+                  <h3 className="text-xl font-bold text-white mb-4">Thông tin tài khoản</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <p className="text-gray-400">Số lượng còn:</p>
+                      <p className="text-white font-medium">{product.quantity}</p>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-gray-400">Loại đăng ký:</p>
+                      <p className="text-white font-medium">{product.register_by}</p>
+                    </div>
+                    {product.is_infinity_card && (
+                      <div className="space-y-2">
+                        <p className="text-gray-400">Thẻ vô cực:</p>
+                        <p className="text-white font-medium">{product.is_infinity_card ? "Có" : "Không"}</p>
+                      </div>
+                    )}
+                    {product.server && (
+                      <div className="space-y-2">
+                        <p className="text-gray-400">Server:</p>
+                        <p className="text-white font-medium">{product.server}</p>
+                      </div>
+                    )}
+                    {product.skin_type && (
+                      <div className="space-y-2">
+                        <p className="text-gray-400">Loại skin:</p>
+                        <p className="text-white font-medium">{product.skin_type}</p>
+                      </div>
+                    )}
+                    {product.rank && (
+                      <div className="space-y-2">
+                        <p className="text-gray-400">Rank:</p>
+                        <p className="text-white font-medium">{product.rank}</p>
+                      </div>
+                    )}
+                    {product.number_diamond_available !== 0 && (
+                      <div className="space-y-2">
+                        <p className="text-gray-400">SL kim cương đang có:</p>
+                        <p className="text-white font-medium">{product.number_diamond_available}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-4">
+                  <Button
+                    type="primary"
+                    size="large"
+                    className={`w-full h-12 bg-gradient-to-r from-purple-600 to-blue-600 border-none hover:from-purple-700 hover:to-blue-700 cart-button ${
+                      clickedButtons[product.id] ? "clicked" : ""
+                    }`}
+                    disabled={isAdding}
+                    onClick={(e) => handleAddToCart(e, product as IProduct)}
+                  >
+                    <div
+                      className="cart-icon"
+                      style={{
+                        width: "24px",
+                        height: "24px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <FaShoppingCart style={{ fontSize: "16px", color: "white" }} />
+                    </div>
+                    <span className="add-to-cart relative z-10 flex items-center justify-center gap-2 text-base font-bold">
+                      <ShoppingCartOutlined /> Thêm vào giỏ hàng
+                    </span>
+                    <span className="added font-bold">Đã thêm</span>
+                  </Button>
+                  <Button
+                    size="large"
+                    className="w-full h-12 bg-gradient-to-r from-pink-500 to-purple-500 border-none hover:from-pink-600 hover:to-purple-600 text-white font-bold"
+                  >
+                    Mua ngay
+                  </Button>
+                </div>
+              </div>
             </div>
-
-            {/* Description */}
-            {product.description && (
-                <div className="mt-10 bg-white p-6 rounded-lg shadow-md">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-4">Mô tả sản phẩm</h2>
-                    <p className="text-gray-600 leading-relaxed">{product.description}</p>
-                </div>
-            )}
-
-            {/* Success Modal */}
-            <Modal
-                open={isModalVisible}
-                footer={null}
-                closable={false}
-                centered
-                className="success-modal"
-                styles={{
-                    mask: { backgroundColor: "rgba(0, 0, 0, 0.45)" },
-                    body: { padding: "24px", textAlign: "center" },
-                }}
-            >
-                <div className="flex flex-col items-center">
-                    <CheckCircleFilled style={{ fontSize: 48, color: "#52c41a" }} />
-                    <p className="mt-4 text-lg text-gray-800">Thêm sản phẩm thành công!</p>
-                </div>
-            </Modal>
-
-            {/* Image Preview Modal */}
-            <Modal
-                open={!!previewImage}
-                footer={null}
-                onCancel={() => setPreviewImage(null)}
-                centered
-                width={800}
-                styles={{ body: { padding: 0 } }}
-            >
-                <img
-                    /* eslint-disable @next/next/no-img-element */
-                    src={previewImage || ""}
-                    alt="Preview"
-                    className="w-full h-auto max-h-[80vh] object-contain"
-                />
-            </Modal>
+          </div>
         </div>
+
+        <Modal
+          open={isModalVisible}
+          footer={null}
+          closable={false}
+          centered
+          className="success-modal"
+          styles={{
+            mask: { backgroundColor: "rgba(0, 0, 0, 0.75)" },
+            body: { 
+              padding: "32px", 
+              textAlign: "center", 
+              background: "linear-gradient(to bottom right, #1a1a2e, #16213e)",
+              borderRadius: "16px",
+              border: "1px solid rgba(139, 92, 246, 0.2)"
+            }
+          }}
+        >
+          <div className="flex flex-col items-center">
+            <CheckCircleFilled style={{ fontSize: 64, color: "#10B981" }} />
+            <p className="mt-4 text-xl font-bold text-white">Thêm sản phẩm thành công!</p>
+          </div>
+        </Modal>
+      </div>
     );
 };
 

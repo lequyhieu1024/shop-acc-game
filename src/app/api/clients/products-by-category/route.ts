@@ -9,18 +9,27 @@ export const GET = async (req: NextRequest) => {
         const categoryRepo = await initRepository(Category);
         const { searchParams } = new URL(req.url);
         const page = parseInt(searchParams.get("page") || "1");
-        const limit = parseInt(searchParams.get("limit") || "20");
+        const limit = parseInt(searchParams.get("limit") || "24");
+        const categoryId = searchParams.get("categoryId");
         const skip = (page - 1) * limit;
 
         const categories = await categoryRepo.find();
+        
+        // Build where clause based on categoryId
+        const whereClause: any = { is_for_sale: true };
+        if (categoryId && categoryId !== "all") {
+            whereClause.category_id = parseInt(categoryId);
+        }
+
         const [products, total] = await productRepo.findAndCount({
             skip,
             take: limit,
             order: {
                 created_at: "DESC",
             },
-            where: {is_for_sale: true}
+            where: whereClause
         });
+
         return NextResponse.json({
             products,
             categories,
@@ -29,6 +38,8 @@ export const GET = async (req: NextRequest) => {
                 limit,
                 total,
                 totalPages: Math.ceil(total / limit),
+                hasNextPage: page < Math.ceil(total / limit),
+                hasPrevPage: page > 1
             },
         }, { status: 200 });
     } catch (e) {
