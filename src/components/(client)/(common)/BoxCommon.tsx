@@ -30,8 +30,6 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
     const router = useRouter();
     const [isAdding, setIsAdding] = useState(false);
     const { addItem } = useCart();
-
-    // @ts-expect-error
     useEffect(() => {
         const styleElement = document.createElement("style");
         styleElement.innerHTML = `
@@ -119,7 +117,10 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
       }
     `;
         document.head.appendChild(styleElement);
-        return () => document.head.removeChild(styleElement);
+        return () => {
+            document.head.removeChild(styleElement);
+            // No return statement needed, or explicitly return undefined
+        };
     }, []);
 
     const handleAddToCart = useCallback(

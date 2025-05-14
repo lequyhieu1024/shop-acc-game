@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from "react";
-import { Button, message } from "antd";
+import { Button } from "antd";
 import Head from "next/head";
 import Link from "next/link";
 import { toast } from "react-toastify";
@@ -33,7 +33,8 @@ export default function ContactPage() {
                 phone: "",
                 message: "",
             });
-        } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch {
             toast.error("Có lỗi xảy ra. Vui lòng thử lại sau.");
         }
     };
