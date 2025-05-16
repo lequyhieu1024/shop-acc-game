@@ -18,8 +18,8 @@ const DrawerCommon: React.FC<DrawerCommonProps> = ({
   title,
   children,
   placement = "right",
-  titleButton = "Lưu",
-  onTitleButtonClick,
+  // titleButton = "Lưu",
+  // onTitleButtonClick,
   screenSize
 }) => {
   const maxWidthMap: Record<string, string> = {
@@ -39,13 +39,13 @@ const DrawerCommon: React.FC<DrawerCommonProps> = ({
       placement={placement}
       onClose={onClose}
       open={open} // Updated from 'visible' to 'open'
-      extra={
-        onTitleButtonClick && (
-          <Button type="primary" onClick={onTitleButtonClick}>
-            {titleButton}
-          </Button>
-        )
-      }
+      // extra={
+      //   onTitleButtonClick && (
+      //     <Button type="primary" onClick={onTitleButtonClick}>
+      //       {titleButton}
+      //     </Button>
+      //   )
+      // }
     >
       {children}
     </Drawer>

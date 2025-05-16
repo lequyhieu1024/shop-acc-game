@@ -6,6 +6,7 @@ import { FaShoppingCart } from "react-icons/fa";
 import { useCart } from "@/app/contexts/CartContext";
 import { IProduct } from "@/app/interfaces/IProduct";
 import { IProductImage } from "@/app/interfaces/IProductImage";
+import {useRouter} from "next/navigation";
 
 interface DetailProductProps {
     product: IProduct | null;
@@ -17,6 +18,7 @@ const DetailProduct: React.FC<DetailProductProps> = ({ product }) => {
     const [isAdding, setIsAdding] = useState(false);
     const [previewImage, setPreviewImage] = useState<string | null>(null);
     const { addItem } = useCart();
+    const router = useRouter();
     const thumbnailRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -107,6 +109,28 @@ const DetailProduct: React.FC<DetailProductProps> = ({ product }) => {
         },
         [isAdding, addItem]
     );
+
+    const handleBuyNow = useCallback(
+        (e: React.MouseEvent, item: IProduct) => {
+            e.stopPropagation();
+            if (isAdding) return;
+            setIsAdding(true);
+            const cartItem = {
+                id: item.id.toString(),
+                name: item.name || "",
+                price: item?.sale_price!.toString() || "0",
+                quantity: 1,
+                image: item.thumbnail,
+            };
+            localStorage.removeItem("cartItems");
+            localStorage.setItem("cartItems", JSON.stringify([cartItem]));
+            localStorage.setItem("totalItems", "1");
+            router.push("/thanh-toan");
+            setTimeout(() => setIsAdding(false), 1000);
+        },
+        [isAdding, router]
+    );
+
 
     const handleImageClick = (imageUrl: string) => {
         setPreviewImage(imageUrl);
@@ -269,7 +293,9 @@ const DetailProduct: React.FC<DetailProductProps> = ({ product }) => {
                   </Button>
                   <Button
                     size="large"
-                    className="w-full h-12 bg-gradient-to-r from-pink-500 to-purple-500 border-none hover:from-pink-600 hover:to-purple-600 text-white font-bold"
+                    className={`w-full h-12 bg-gradient-to-r from-pink-500 to-purple-500 border-none hover:from-pink-600 hover:to-purple-600 text-white font-bold`}
+                    disabled={isAdding}
+                    onClick={(e) => handleBuyNow(e, product)}
                   >
                     Mua ngay
                   </Button>
