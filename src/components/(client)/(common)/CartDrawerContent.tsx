@@ -1,9 +1,11 @@
 import React from "react";
-import { Button, Empty, Table, Typography, InputNumber } from "antd";
+import { Button, Empty, Table, Typography, InputNumber, message } from "antd";
 import Link from "next/link";
 import { DeleteOutlined } from "@ant-design/icons";
 import { useCart } from "@/app/contexts/CartContext";
 import Image from "next/image";
+import { useBalance } from "@/app/hooks/useBalance";
+import { toast } from "react-toastify";
 
 const { Text } = Typography;
 
@@ -25,9 +27,10 @@ interface CartContextType {
 interface CartDrawerContentProps {
   setCartDrawerVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
-const CartDrawerContent: React.FC<CartDrawerContentProps> = ({ setCartDrawerVisible })=> {
+const CartDrawerContent: React.FC<CartDrawerContentProps> = ({ setCartDrawerVisible }) => {
   const { items, totalItems, updateItem, removeItem } =
     useCart() as CartContextType;
+  const { balance, loading, refreshBalance } = useBalance();
 
   // Calculate total price
   const totalPrice = items.reduce((sum, item) => {
@@ -73,7 +76,7 @@ const CartDrawerContent: React.FC<CartDrawerContentProps> = ({ setCartDrawerVisi
         <div className="flex items-center">
           {record.image ? (
             <Image
-              width={ 50}
+              width={50}
               height={50}
               src={record.image}
               alt={record.name}
@@ -139,6 +142,10 @@ const CartDrawerContent: React.FC<CartDrawerContentProps> = ({ setCartDrawerVisi
     }
   ];
   const handleCheckoutClick = () => {
+    if (balance && balance < totalPrice) {
+      toast.warn('Số dư của bạn không đủ')
+      return
+    }
     if (typeof window !== "undefined") {
       window.location.href = "/thanh-toan";
     }
@@ -165,9 +172,9 @@ const CartDrawerContent: React.FC<CartDrawerContentProps> = ({ setCartDrawerVisi
           </Text>
         </div>
         <div className="flex justify-end">
-            <Button type="primary" size="large" onClick={handleCheckoutClick}>
-              Thanh toán
-            </Button>
+          <Button type="primary" size="large" onClick={handleCheckoutClick}>
+            Thanh toán
+          </Button>
         </div>
       </div>
     </div>

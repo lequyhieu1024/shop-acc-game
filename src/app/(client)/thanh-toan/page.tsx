@@ -54,107 +54,116 @@ export default function CheckoutPage() {
             router.push("/dang-nhap");
             return;
         }
-
+    
         try {
-            setIsWebPurchaseLoading(true);
+            // 1. Validate form trước
             const values = await form.validateFields();
-            
+            console.log('Form values:', values);
+    
+            // 2. Nếu validate thành công, tiếp tục gọi API
+            setIsWebPurchaseLoading(true);
+    
             // Kiểm tra số dư
             const balanceResponse = await api.get('/user/balance');
             const userBalance = balanceResponse.data.balance;
-
+    
             if (userBalance < finalAmount) {
-                toast.error(`Số dư không đủ! Số dư hiện tại: ${userBalance.toLocaleString('vi-VN')} đ, Số tiền cần thanh toán: ${finalAmount.toLocaleString('vi-VN')} đ`);
+                toast.error(
+                    `Số dư không đủ! Số dư hiện tại: ${userBalance.toLocaleString('vi-VN')} đ, Số tiền cần thanh toán: ${finalAmount.toLocaleString('vi-VN')} đ`
+                );
                 return;
             }
-
+    
             // Kiểm tra voucher nếu có
             if (values.voucherCode) {
                 const voucherResponse = await api.post('/vouchers/validate', {
                     code: values.voucherCode,
-                    amount: totalAmount
+                    amount: totalAmount,
                 });
-                
                 if (!voucherResponse.data.valid) {
                     toast.error(`Mã giảm giá không hợp lệ: ${voucherResponse.data.message}`);
                     return;
                 }
             }
-
+    
             // Kiểm tra số lượng sản phẩm còn lại
             for (const item of cartItems) {
                 const productResponse = await api.get(`/products/${item.id}`);
                 if (productResponse.data.quantity < item.quantity) {
-                    toast.error(`Sản phẩm ${item.name} chỉ còn ${productResponse.data.quantity} sản phẩm, không đủ số lượng bạn yêu cầu.`);
+                    toast.error(
+                        `Sản phẩm ${item.name} chỉ còn ${productResponse.data.quantity} sản phẩm, không đủ số lượng bạn yêu cầu.`
+                    );
                     return;
                 }
             }
-
-            // 1. Tạo đơn hàng
+    
+            // 3. Tạo đơn hàng
             const orderResponse = await api.post('/orders', {
                 user_id: session.user.id,
                 customer_name: values.name,
                 customer_email: values.email,
                 customer_phone: values.phone,
-                total_amount: finalAmount,
+                total_amount: Number(finalAmount.toFixed(2)),
                 payment_method: PaymentMethod.THIRD_PARTY,
                 payment_status: PaymentStatus.UNPAID,
-                order_items: cartItems.map(item => ({
+                order_items: cartItems.map((item) => ({
                     product_id: item.id,
                     quantity: item.quantity,
-                    unit_price: item.price
-                }))
+                    price: Number(item?.price),
+                })),
             });
-
+    
             if (!orderResponse.data.result) {
                 toast.error(orderResponse.data.message || 'Có lỗi xảy ra khi tạo đơn hàng. Vui lòng thử lại sau.');
                 return;
             }
-
+    
             const orderId = orderResponse.data.order_id;
-
-            // 2. Trừ số dư
-            const deductBalanceResponse = await api.post('/user/balance/deduct', {
+       const deductBalanceResponse = await api.post('/user/balance/deduct', {
                 amount: finalAmount,
-                order_id: orderId
+                order_id: orderId,
             });
-
+            // 4. Trừ số dư
+         
+    
             if (!deductBalanceResponse.data.result) {
-                // Nếu trừ số dư thất bại, xóa đơn hàng
                 await api.delete(`/orders/${orderId}`);
                 toast.error(deductBalanceResponse.data.message || 'Có lỗi xảy ra khi trừ số dư. Vui lòng thử lại sau.');
                 return;
             }
-
-            // 3. Trừ số lượng sản phẩm
+    
+            // 5. Trừ số lượng sản phẩm
             for (const item of cartItems) {
                 await api.patch(`/products/${item.id}/deduct-quantity`, {
-                    quantity: item.quantity
+                    quantity: item.quantity,
                 });
             }
-
-            // 4. Cập nhật trạng thái thanh toán
+    
+            // 6. Cập nhật trạng thái thanh toán
             await api.patch(`/orders/${orderId}/payment-status`, {
-                payment_status: PaymentStatus.PAID
+                payment_status: PaymentStatus.PAID,
             });
-
-            // 5. Xóa giỏ hàng
+    
+            // 7. Xóa giỏ hàng
             localStorage.removeItem('cartItems');
             setCartItems([]);
-
+    
             toast.success('Đặt hàng thành công! Vui lòng kiểm tra email để xem chi tiết đơn hàng.');
             router.push('/');
         } catch (error: any) {
-            console.error('Error during purchase:', error);
-            
-            let errorMessage = 'Có lỗi xảy ra khi xử lý thanh toán';
-            if (error.response?.data?.message) {
-                errorMessage = error.response.data.message;
-            } else if (error.response?.data?.error) {
-                errorMessage = error.response.data.error;
+            // Xử lý lỗi validate form hoặc lỗi API
+            if (error.errorFields) {
+                toast.error('Vui lòng điền đầy đủ và đúng thông tin trong form!');
+            } else {
+                console.error('Error during purchase:', error);
+                let errorMessage = 'Có lỗi xảy ra khi xử lý thanh toán';
+                if (error.response?.data?.message) {
+                    errorMessage = error.response.data.message;
+                } else if (error.response?.data?.error) {
+                    errorMessage = error.response.data.error;
+                }
+                toast.error(errorMessage);
             }
-
-            toast.error(errorMessage);
         } finally {
             setIsWebPurchaseLoading(false);
         }

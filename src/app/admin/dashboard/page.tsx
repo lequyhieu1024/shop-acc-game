@@ -27,7 +27,7 @@ export default function DashboardPage() {
   }
   
       useEffect(() => {
-          getStatistical();
+          // getStatistical();
           console.log(data);
           
       }, []);

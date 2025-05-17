@@ -22,6 +22,7 @@ const NavBar = () => {
   const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const { data: session } = useSession();
   const { balance, loading, refreshBalance } = useBalance();
+  
   const router = useRouter();
 
   const showCartDrawer = () => {

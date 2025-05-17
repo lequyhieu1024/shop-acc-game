@@ -125,12 +125,12 @@ export async function POST(request: Request) {
 
       // 2. Create order items and update product quantities
       for (const item of order_items) {
-        // Create order item
+        // Create order item - Fix here: use item.price instead of item.unit_price
         const orderItem = orderItemRepository.create({
           order: order,
           product_id: item.product_id,
           quantity: item.quantity,
-          price: item.unit_price
+          price: item.price  // Changed from item.unit_price to item.price
         });
         await queryRunner.manager.save(orderItem);
 
@@ -157,10 +157,14 @@ export async function POST(request: Request) {
         message: "Order created successfully",
         order_id: order.id
       });
-    } catch (error) {
+    } catch (error) {  
       // Rollback transaction on error
       await queryRunner.rollbackTransaction();
-      throw error;
+      console.error("Error creating order:", error);
+      return NextResponse.json(
+        { error: "Error creating order: " + (error instanceof Error ? error.message : String(error)) },
+        { status: 500 }
+      );
     } finally {
       await queryRunner.release();
     }
