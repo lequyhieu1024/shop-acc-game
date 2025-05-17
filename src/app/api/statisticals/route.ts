@@ -73,7 +73,6 @@ export async function GET(req: NextRequest) {
       orderRepo,
       orderItemRepo,
       productRepo,
-      categoryRepo,
       userRepo,
       userViewRepo,
       cardTransactionRepo
