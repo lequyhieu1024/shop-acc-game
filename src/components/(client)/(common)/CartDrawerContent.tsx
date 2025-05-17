@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Empty, Table, Typography, InputNumber, message } from "antd";
+import { Button, Empty, Table, Typography, InputNumber } from "antd";
 import Link from "next/link";
 import { DeleteOutlined } from "@ant-design/icons";
 import { useCart } from "@/app/contexts/CartContext";
@@ -30,7 +30,7 @@ interface CartDrawerContentProps {
 const CartDrawerContent: React.FC<CartDrawerContentProps> = ({ setCartDrawerVisible }) => {
   const { items, totalItems, updateItem, removeItem } =
     useCart() as CartContextType;
-  const { balance, loading, refreshBalance } = useBalance();
+  const { balance } = useBalance();
 
   // Calculate total price
   const totalPrice = items.reduce((sum, item) => {
@@ -41,13 +41,19 @@ const CartDrawerContent: React.FC<CartDrawerContentProps> = ({ setCartDrawerVisi
 
   if (totalItems === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-full">
+      <div className="flex flex-col items-center justify-center h-full bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 p-8">
         <Empty
-          description="Giỏ hàng của bạn đang trống"
+          description={
+            <span className="text-white text-lg font-medium">Giỏ hàng của bạn đang trống</span>
+          }
           image={Empty.PRESENTED_IMAGE_SIMPLE}
+          imageStyle={{ filter: "invert(1)" }}
         />
         <Link href="/danh-muc">
-          <Button type="primary" className="mt-4">
+          <Button 
+            type="primary" 
+            className="mt-6 h-12 px-8 bg-gradient-to-r from-purple-600 to-blue-600 border-none hover:from-purple-700 hover:to-blue-700 text-base font-bold"
+          >
             Tiếp tục mua sắm
           </Button>
         </Link>
@@ -63,7 +69,7 @@ const CartDrawerContent: React.FC<CartDrawerContentProps> = ({ setCartDrawerVisi
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (_: any, record: CartItem) => (
         <div className="flex items-center">
-          <Text>{record.name}</Text>
+          <Text className="text-white font-medium">{record.name}</Text>
         </div>
       )
     },
@@ -76,27 +82,14 @@ const CartDrawerContent: React.FC<CartDrawerContentProps> = ({ setCartDrawerVisi
         <div className="flex items-center">
           {record.image ? (
             <Image
-              width={50}
-              height={50}
+              width={60}
+              height={60}
               src={record.image}
               alt={record.name}
-              style={{
-                objectFit: "cover",
-                marginRight: 12
-              }}
+              className="rounded-lg object-cover border border-purple-500/20"
             />
           ) : (
-            <div
-              style={{
-                width: 50,
-                height: 50,
-                background: "#f0f0f0",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                marginRight: 12
-              }}
-            >
+            <div className="w-[60px] h-[60px] bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg border border-purple-500/20 flex items-center justify-center text-gray-400">
               Ảnh
             </div>
           )}
@@ -109,7 +102,7 @@ const CartDrawerContent: React.FC<CartDrawerContentProps> = ({ setCartDrawerVisi
       key: "price",
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (_: any, record: CartItem) => (
-        <Text>{record.price.toLocaleString("vi-VN")}đ</Text>
+        <Text className="text-purple-400 font-medium">{record.price.toLocaleString("vi-VN")}đ</Text>
       )
     },
     {
@@ -124,6 +117,15 @@ const CartDrawerContent: React.FC<CartDrawerContentProps> = ({ setCartDrawerVisi
           value={record.quantity}
           onChange={(value: number | null) => updateItem(record.id, value || 1)}
           size="small"
+          className="cart-input-number"
+          controls={false}
+          style={{
+            background: "linear-gradient(to bottom right, #1a1a2e, #16213e)",
+            border: "1px solid rgba(139, 92, 246, 0.2)",
+            borderRadius: "8px",
+            color: "white",
+            width: "80px"
+          }}
         />
       )
     },
@@ -137,6 +139,7 @@ const CartDrawerContent: React.FC<CartDrawerContentProps> = ({ setCartDrawerVisi
           danger
           icon={<DeleteOutlined />}
           onClick={() => removeItem(record.id)}
+          className="hover:bg-red-500/10 rounded-lg"
         />
       )
     }
@@ -152,27 +155,58 @@ const CartDrawerContent: React.FC<CartDrawerContentProps> = ({ setCartDrawerVisi
     setCartDrawerVisible(false);
   };
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
+      <style jsx global>{`
+        .ant-table {
+          background: transparent !important;
+        }
+        .ant-table-thead > tr > th {
+          background: linear-gradient(to bottom right, #1a1a2e, #16213e) !important;
+          color: white !important;
+          border-bottom: 1px solid rgba(139, 92, 246, 0.2) !important;
+        }
+        .ant-table-tbody > tr > td {
+          background: transparent !important;
+          border-bottom: 1px solid rgba(139, 92, 246, 0.1) !important;
+        }
+        .ant-table-tbody > tr:hover > td {
+          background: rgba(139, 92, 246, 0.1) !important;
+        }
+        .cart-input-number input {
+          color: white !important;
+          text-align: center;
+        }
+        .cart-input-number:hover, .cart-input-number:focus {
+          border-color: rgba(139, 92, 246, 0.5) !important;
+        }
+      `}</style>
+
       <Table
         columns={columns}
         dataSource={items.map((item) => ({ ...item, key: item.id }))}
         pagination={false}
         size="small"
+        className="cart-table"
       />
 
-      <div className="mt-auto pt-4 border-t">
-        <div className="flex justify-between mb-2">
-          <Text>Tổng số sản phẩm:</Text>
-          <Text strong>{totalItems}</Text>
+      <div className="mt-auto pt-6 border-t border-purple-500/20 bg-gradient-to-br from-gray-800 to-gray-900 p-6 rounded-t-xl">
+        <div className="flex justify-between mb-3">
+          <Text className="text-gray-400">Tổng số sản phẩm:</Text>
+          <Text className="text-white font-bold">{totalItems}</Text>
         </div>
-        <div className="flex justify-between mb-4">
-          <Text>Tổng tiền:</Text>
-          <Text strong className="text-lg text-red-500">
+        <div className="flex justify-between mb-6">
+          <Text className="text-gray-400">Tổng tiền:</Text>
+          <Text className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
             {totalPrice.toLocaleString("vi-VN")}đ
           </Text>
         </div>
         <div className="flex justify-end">
-          <Button type="primary" size="large" onClick={handleCheckoutClick}>
+          <Button 
+            type="primary" 
+            size="large" 
+            onClick={handleCheckoutClick}
+            className="h-12 px-8 bg-gradient-to-r from-purple-600 to-blue-600 border-none hover:from-purple-700 hover:to-blue-700 text-base font-bold"
+          >
             Thanh toán
           </Button>
         </div>

@@ -1,12 +1,12 @@
 "use client";
-import { Form, Input, Button, Card, Row, Col, Typography } from 'antd';
-import { useEffect, useState } from 'react';
-import MethodPayment from './MethodPayment';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import api from '@/app/services/axiosService';
-import { PaymentMethod, PaymentStatus } from '@/app/models/entities/Order';
-import { toast } from 'react-toastify';
+import { Form, Input, Button, Card, Row, Col, Typography } from "antd";
+import { useEffect, useState } from "react";
+import MethodPayment from "./MethodPayment";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import api from "@/app/services/axiosService";
+import { PaymentMethod, PaymentStatus } from "@/app/models/entities/Order";
+import { toast } from "react-toastify";
 
 interface CartItem {
     id: number;
@@ -31,12 +31,14 @@ export default function CheckoutPage() {
     const [isWebPurchaseLoading, setIsWebPurchaseLoading] = useState(false);
     const [isAdminPurchaseLoading, setIsAdminPurchaseLoading] = useState(false);
     const [voucherDiscount, setVoucherDiscount] = useState(0);
+    const [isApplyingVoucher, setIsApplyingVoucher] = useState(false);
+    const [isAppliedVoucher, setIsAppliedVoucher] = useState(false)
     const router = useRouter();
     const { data: session } = useSession();
 
     useEffect(() => {
         if (typeof window !== "undefined") {
-            const storedItems = localStorage.getItem('cartItems');
+            const storedItems = localStorage.getItem("cartItems");
             setCartItems(storedItems ? JSON.parse(storedItems) : []);
         }
     }, []);
@@ -48,6 +50,54 @@ export default function CheckoutPage() {
 
     const finalAmount = totalAmount - voucherDiscount;
 
+    // Hàm xử lý áp dụng mã giảm giá
+    const handleApplyVoucher = async () => {
+        const voucherCode = form.getFieldValue("voucherCode");
+        if (!voucherCode) {
+            toast.error("Vui lòng nhập mã giảm giá!");
+            return;
+        }
+
+        try {
+            setIsApplyingVoucher(true);
+            const voucherResponse = await api.post("/vouchers/validate", {
+                code: voucherCode,
+                amount: totalAmount,
+            });
+
+            if (voucherResponse.data.result) {
+                const discount = voucherResponse.data.discount || 0;
+                setVoucherDiscount(discount);
+                setIsAppliedVoucher(true)
+                toast.success(`Áp dụng mã giảm giá thành công! Giảm ${discount.toLocaleString("vi-VN")} đ`);
+            } else {
+                setVoucherDiscount(0);
+                setIsAppliedVoucher(false);
+                toast.error(`${voucherResponse.data.message}`);
+            }
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            setVoucherDiscount(0);
+            if (error.response && error.response.data && error.response.data.message) {
+                toast.error(`${error.response.data.message}`);
+            } else {
+                console.error("Error applying voucher:", error.message);
+                toast.error("Có lỗi khi áp dụng mã giảm giá!");
+            }
+            setIsAppliedVoucher(false);
+        } finally {
+            setIsApplyingVoucher(false);
+        }
+    };
+
+    const handleRemoveVoucher = () => {
+        setVoucherDiscount(0);
+        setIsAppliedVoucher(false);
+        form.setFieldsValue({ voucherCode: "" });
+        form.resetFields(["voucherCode"]);
+        toast.info("Đã xóa mã giảm giá!");
+    };
+
     const handleWebPurchase = async () => {
         if (!session?.user?.id) {
             toast.error("Vui lòng đăng nhập để mua nick!");
@@ -58,35 +108,19 @@ export default function CheckoutPage() {
         try {
             // 1. Validate form trước
             const values = await form.validateFields();
-            console.log('Form values:', values);
-    
-            // 2. Nếu validate thành công, tiếp tục gọi API
-            setIsWebPurchaseLoading(true);
-    
             // Kiểm tra số dư
-            const balanceResponse = await api.get('/user/balance');
+            const balanceResponse = await api.get("/user/balance");
             const userBalance = balanceResponse.data.balance;
     
             if (userBalance < finalAmount) {
                 toast.error(
-                    `Số dư không đủ! Số dư hiện tại: ${userBalance.toLocaleString('vi-VN')} đ, Số tiền cần thanh toán: ${finalAmount.toLocaleString('vi-VN')} đ`
+                    `Số dư không đủ! Số dư hiện tại: ${userBalance.toLocaleString(
+                        "vi-VN"
+                    )} đ, Số tiền cần thanh toán: ${finalAmount.toLocaleString("vi-VN")} đ`
                 );
                 return;
             }
-    
-            // Kiểm tra voucher nếu có
-            if (values.voucherCode) {
-                const voucherResponse = await api.post('/vouchers/validate', {
-                    code: values.voucherCode,
-                    amount: totalAmount,
-                });
-                if (!voucherResponse.data.valid) {
-                    toast.error(`Mã giảm giá không hợp lệ: ${voucherResponse.data.message}`);
-                    return;
-                }
-            }
-    
-            // Kiểm tra số lượng sản phẩm còn lại
+
             for (const item of cartItems) {
                 const productResponse = await api.get(`/products/${item.id}`);
                 if (productResponse.data.quantity < item.quantity) {
@@ -96,74 +130,44 @@ export default function CheckoutPage() {
                     return;
                 }
             }
-    
-            // 3. Tạo đơn hàng
-            const orderResponse = await api.post('/orders', {
+
+            await api.post("/orders", {
                 user_id: session.user.id,
                 customer_name: values.name,
                 customer_email: values.email,
                 customer_phone: values.phone,
-                total_amount: Number(finalAmount.toFixed(2)),
+                total_amount: finalAmount,
+                voucher_code: values.voucherCode, // Gửi mã voucher nếu có
                 payment_method: PaymentMethod.THIRD_PARTY,
-                payment_status: PaymentStatus.UNPAID,
+                payment_status: PaymentStatus.PAID,
                 order_items: cartItems.map((item) => ({
                     product_id: item.id,
                     quantity: item.quantity,
-                    price: Number(item?.price),
+                    unit_price: item.price,
                 })),
             });
-    
-            if (!orderResponse.data.result) {
-                toast.error(orderResponse.data.message || 'Có lỗi xảy ra khi tạo đơn hàng. Vui lòng thử lại sau.');
-                return;
-            }
-    
-            const orderId = orderResponse.data.order_id;
-       const deductBalanceResponse = await api.post('/user/balance/deduct', {
-                amount: finalAmount,
-                order_id: orderId,
-            });
-            // 4. Trừ số dư
-         
-    
-            if (!deductBalanceResponse.data.result) {
-                await api.delete(`/orders/${orderId}`);
-                toast.error(deductBalanceResponse.data.message || 'Có lỗi xảy ra khi trừ số dư. Vui lòng thử lại sau.');
-                return;
-            }
-    
-            // 5. Trừ số lượng sản phẩm
-            for (const item of cartItems) {
-                await api.patch(`/products/${item.id}/deduct-quantity`, {
-                    quantity: item.quantity,
-                });
-            }
-    
-            // 6. Cập nhật trạng thái thanh toán
-            await api.patch(`/orders/${orderId}/payment-status`, {
-                payment_status: PaymentStatus.PAID,
-            });
-    
-            // 7. Xóa giỏ hàng
-            localStorage.removeItem('cartItems');
+
             setCartItems([]);
-    
-            toast.success('Đặt hàng thành công! Vui lòng kiểm tra email để xem chi tiết đơn hàng.');
-            router.push('/');
-        } catch (error: any) {
-            // Xử lý lỗi validate form hoặc lỗi API
-            if (error.errorFields) {
-                toast.error('Vui lòng điền đầy đủ và đúng thông tin trong form!');
-            } else {
-                console.error('Error during purchase:', error);
-                let errorMessage = 'Có lỗi xảy ra khi xử lý thanh toán';
-                if (error.response?.data?.message) {
-                    errorMessage = error.response.data.message;
-                } else if (error.response?.data?.error) {
-                    errorMessage = error.response.data.error;
+            localStorage.removeItem("cartItems");
+            localStorage.removeItem("totalItems");
+
+            toast.success(
+                "Đặt hàng thành công! Vui lòng kiểm tra email để xem chi tiết đơn hàng.",
+                {
+                    onClose: () => window.location.href = "/",
+                    autoClose: 3000,
                 }
-                toast.error(errorMessage);
+            );
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            console.error("Error during purchase:", error);
+            let errorMessage = "Có lỗi xảy ra khi xử lý thanh toán";
+            if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            } else if (error.response?.data?.error) {
+                errorMessage = error.response.data.error;
             }
+            toast.error(errorMessage);
         } finally {
             setIsWebPurchaseLoading(false);
         }
@@ -184,15 +188,11 @@ export default function CheckoutPage() {
             <Row gutter={[16, 16]}>
                 <Col xs={24} md={16}>
                     <Card title="Thông tin khách hàng" className="shadow-md">
-                        <Form
-                            form={form}
-                            layout="vertical"
-                            className="space-y-4"
-                        >
+                        <Form form={form} layout="vertical" className="space-y-4">
                             <Form.Item
                                 label="Họ và tên"
                                 name="name"
-                                rules={[{ required: true, message: 'Vui lòng nhập họ tên!' }]}
+                                rules={[{ required: true, message: "Vui lòng nhập họ tên!" }]}
                             >
                                 <Input placeholder="Nhập họ và tên" />
                             </Form.Item>
@@ -201,8 +201,8 @@ export default function CheckoutPage() {
                                 label="Số điện thoại"
                                 name="phone"
                                 rules={[
-                                    { required: true, message: 'Vui lòng nhập số điện thoại!' },
-                                    { pattern: /^[0-9]{10}$/, message: 'Số điện thoại không hợp lệ!' }
+                                    { required: true, message: "Vui lòng nhập số điện thoại!" },
+                                    { pattern: /^[0-9]{10}$/, message: "Số điện thoại không hợp lệ!" },
                                 ]}
                             >
                                 <Input placeholder="Nhập số điện thoại" />
@@ -212,18 +212,24 @@ export default function CheckoutPage() {
                                 label="Email"
                                 name="email"
                                 rules={[
-                                    { required: true, message: 'Vui lòng nhập email!' },
-                                    { type: 'email', message: 'Email không hợp lệ!' }
+                                    { required: true, message: "Vui lòng nhập email!" },
+                                    { type: "email", message: "Email không hợp lệ!" },
                                 ]}
                             >
                                 <Input placeholder="Nhập email" />
                             </Form.Item>
 
-                            <Form.Item
-                                label="Mã giảm giá (nếu có)"
-                                name="voucherCode"
-                            >
-                                <Input placeholder="Nhập mã giảm giá" />
+                            <Form.Item label="Mã giảm giá (nếu có)" name="voucherCode">
+                                <div className="flex gap-2">
+                                    <Input placeholder="Nhập mã giảm giá" />
+                                    <Button
+                                        type={ isAppliedVoucher ? 'default' : 'primary'}
+                                        onClick={ isAppliedVoucher ? handleRemoveVoucher : handleApplyVoucher }
+                                        loading={isApplyingVoucher}
+                                    >
+                                        { isAppliedVoucher ? "Hủy" : "Áp dụng" }
+                                    </Button>
+                                </div>
                             </Form.Item>
                         </Form>
                     </Card>
@@ -232,28 +238,31 @@ export default function CheckoutPage() {
                 <Col xs={24} md={8}>
                     <Card title="Đơn hàng của bạn" className="shadow-md">
                         <div className="space-y-4">
-                            {cartItems.map(item => (
+                            {cartItems.map((item) => (
                                 <div key={item.id} className="flex justify-between">
-                                    <Text className='font-medium'>
+                                    <Text className="font-medium">
                                         {item.name} x {item.quantity}
                                     </Text>
-                                    <Text className='font-medium text-red-500'>
-                                        {(item.price * item.quantity).toLocaleString('vi-VN')} đ
+                                    <Text className="font-medium text-red-500">
+                                        {(item.price * item.quantity).toLocaleString("vi-VN")} đ
                                     </Text>
                                 </div>
                             ))}
 
-                            {voucherDiscount > 0 && (
-                                <div className="flex justify-between text-green-500">
-                                    <Text>Giảm giá:</Text>
-                                    <Text>-{voucherDiscount.toLocaleString('vi-VN')} đ</Text>
-                                </div>
-                            )}
-
                             <div className="border-t pt-4">
+                                <div className="flex justify-between">
+                                    <Text>Tổng tiền trước giảm:</Text>
+                                    <Text>{totalAmount.toLocaleString("vi-VN")} đ</Text>
+                                </div>
+                                {voucherDiscount > 0 && (
+                                    <div className="flex justify-between text-green-500">
+                                        <Text>Giảm giá:</Text>
+                                        <Text>-{voucherDiscount.toLocaleString("vi-VN")} đ</Text>
+                                    </div>
+                                )}
                                 <div className="flex justify-between font-bold text-red-500">
-                                    <Text>Tổng cộng:</Text>
-                                    <Text>{finalAmount.toLocaleString('vi-VN')} đ</Text>
+                                    <Text>Tổng tiền sau giảm:</Text>
+                                    <Text>{finalAmount.toLocaleString("vi-VN")} đ</Text>
                                 </div>
                             </div>
 

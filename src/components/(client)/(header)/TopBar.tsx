@@ -52,83 +52,83 @@ const NavBar = () => {
 
   return (
     <>
-      <nav className="flex items-center bg-blue-500 fixed z-20 w-full shadow-md py-0 select-none">
-        <div className="container mx-auto flex h-[60px] items-center justify-between px-4">
+      <nav className="flex items-center bg-gradient-to-r from-gray-900 via-purple-900 to-gray-900 fixed z-20 w-full shadow-lg py-0 select-none border-b border-purple-500/20">
+        <div className="container mx-auto flex h-[70px] items-center justify-between px-4">
           {/* Logo and Mobile Menu Button */}
           <div className="flex items-center">
-            <Link href="/" className="text-white hover:text-blue-200 transition-colors mr-4">
-              <IoHome className="w-6 h-6" />
+            <Link href="/" className="text-white hover:text-purple-400 transition-colors mr-4">
+              <IoHome className="w-7 h-7" />
             </Link>
             
             {/* Mobile Menu Button */}
             <button 
-              className="md:hidden text-white p-2 rounded-md hover:bg-blue-600 transition-colors"
+              className="md:hidden text-white p-2 rounded-md hover:bg-purple-500/20 transition-colors"
               onClick={toggleMobileMenu}
             >
-              <FaBars className="w-5 h-5" />
+              <FaBars className="w-6 h-6" />
             </button>
             <div className="hidden md:flex items-center gap-5 md:gap-8">
               {menu.map((menuData, index) => (
                   <div
                       key={index}
-                      className="group/root relative flex h-full cursor-pointer items-center transition-colors hover:bg-blue-600 py-3 px-2 rounded-md"
+                      className="group/root relative flex h-full cursor-pointer items-center transition-all hover:bg-purple-500/20 py-3 px-3 rounded-lg"
                   >
                     {menuData.path ? (
-                        <Link href={menuData.path} className="flex items-center gap-1 text-white">
-                    <span className="uppercase text-sm font-medium tracking-wide hover:text-blue-200 transition-colors">
-                      {menuData.label}
-                    </span>
-                          {menuData.items && <FaCaretDown className="w-4 h-4" />}
+                        <Link href={menuData.path} className="flex items-center gap-2 text-white">
+                          <span className="uppercase text-sm font-bold tracking-wide hover:text-purple-400 transition-colors">
+                            {menuData.label}
+                          </span>
+                          {menuData.items && <FaCaretDown className="w-4 h-4 text-purple-400" />}
                         </Link>
                     ) : (
-                        <div className="flex items-center gap-1 text-white">
-                    <span className="uppercase text-sm font-medium tracking-wide">
-                      {menuData.label}
-                    </span>
-                          {menuData.items && <FaCaretDown className="w-4 h-4" />}
+                        <div className="flex items-center gap-2 text-white">
+                          <span className="uppercase text-sm font-bold tracking-wide">
+                            {menuData.label}
+                          </span>
+                          {menuData.items && <FaCaretDown className="w-4 h-4 text-purple-400" />}
                         </div>
                     )}
                     {menuData.items && (
-                        <ul className="absolute left-0 top-full invisible w-[300px] bg-white shadow-lg group-hover/root:visible rounded-md">
+                        <ul className="absolute left-0 top-full invisible w-[300px] bg-gradient-to-br from-gray-900 to-gray-800 shadow-xl group-hover/root:visible rounded-lg border border-purple-500/20">
                           {menuData.items.map((childMenuData, childIndex) => (
                               <li
                                   key={childIndex}
-                                  className="group/1 relative px-4 py-2 hover:bg-gray-100 transition-colors"
+                                  className="group/1 relative px-4 py-3 hover:bg-purple-500/20 transition-colors"
                               >
                                 {childMenuData.path ? (
-                                    <Link href={childMenuData.path} className="text-gray-800">
+                                    <Link href={childMenuData.path} className="text-white hover:text-purple-400">
                                       {childMenuData.label}
                                     </Link>
                                 ) : (
-                                    <span className="text-gray-800">{childMenuData.label}</span>
+                                    <span className="text-white">{childMenuData.label}</span>
                                 )}
                                 {childMenuData.items && (
-                                    <ul className="invisible absolute left-full top-0 w-[300px] bg-white shadow-lg group-hover/1:visible rounded-md">
+                                    <ul className="invisible absolute left-full top-0 w-[300px] bg-gradient-to-br from-gray-900 to-gray-800 shadow-xl group-hover/1:visible rounded-lg border border-purple-500/20">
                                       {childMenuData.items.map((subMenuData, subIndex) => (
                                           <li
                                               key={subIndex}
-                                              className="group/2 relative px-4 py-2 hover:bg-gray-100 transition-colors"
+                                              className="group/2 relative px-4 py-3 hover:bg-purple-500/20 transition-colors"
                                           >
                                             {subMenuData.path ? (
-                                                <Link href={subMenuData.path} className="text-gray-800">
+                                                <Link href={subMenuData.path} className="text-white hover:text-purple-400">
                                                   {subMenuData.label}
                                                 </Link>
                                             ) : (
-                                                <span className="text-gray-800">{subMenuData.label}</span>
+                                                <span className="text-white">{subMenuData.label}</span>
                                             )}
                                             {subMenuData.items && (
-                                                <ul className="invisible absolute left-full top-0 w-[300px] bg-white shadow-lg group-hover/2:visible rounded-md">
+                                                <ul className="invisible absolute left-full top-0 w-[300px] bg-gradient-to-br from-gray-900 to-gray-800 shadow-xl group-hover/2:visible rounded-lg border border-purple-500/20">
                                                   {subMenuData.items.map((nestedMenuData, nestedIndex) => (
                                                       <li
                                                           key={nestedIndex}
-                                                          className="px-4 py-2 hover:bg-gray-100 transition-colors"
+                                                          className="px-4 py-3 hover:bg-purple-500/20 transition-colors"
                                                       >
                                                         {nestedMenuData.path ? (
-                                                            <Link href={nestedMenuData.path} className="text-gray-800">
+                                                            <Link href={nestedMenuData.path} className="text-white hover:text-purple-400">
                                                               {nestedMenuData.label}
                                                             </Link>
                                                         ) : (
-                                                            <span className="text-gray-800">{nestedMenuData.label}</span>
+                                                            <span className="text-white">{nestedMenuData.label}</span>
                                                         )}
                                                       </li>
                                                   ))}
@@ -148,11 +148,11 @@ const NavBar = () => {
           </div>
 
           {/* Cart and Profile Icons */}
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-6">
             {session?.user && (
-                <div className="hidden sm:flex items-center space-x-2 p-4">
-                  <div className="text-sm text-white font-semibold">Số dư:</div>
-                  <div className="text-sm text-white font-semibold">
+                <div className="hidden sm:flex items-center space-x-3 p-4 bg-purple-500/20 rounded-lg">
+                  <div className="text-sm text-white font-bold">Số dư:</div>
+                  <div className="text-sm text-purple-400 font-bold">
                     {loading ? (
                         "Đang tải..."
                     ) : (
@@ -161,21 +161,21 @@ const NavBar = () => {
                   </div>
                   <button
                       onClick={refreshBalance}
-                      className="text-white hover:text-gray-300 block"
+                      className="text-purple-400 hover:text-purple-300 block"
                       title="Cập nhật số dư"
                   >
-                    <FaSyncAlt size={13} className={loading ? "animate-spin" : ""} />
+                    <FaSyncAlt size={14} className={loading ? "animate-spin" : ""} />
                   </button>
                 </div>
             )}
             <div className="relative leading-[12px] cart-icon" data-totalitems={totalItems}>
               <button
-                className="text-white hover:text-blue-200 transition-colors relative"
+                className="text-white hover:text-purple-400 transition-colors relative bg-purple-500/20 p-2 rounded-lg"
                 onClick={showCartDrawer}
               >
-                <FaShoppingCart className="w-5 h-5" />
+                <FaShoppingCart className="w-6 h-6" />
                 {totalItems > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  <span className="absolute -top-2 -right-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold">
                     {totalItems}
                   </span>
                 )}
@@ -184,26 +184,26 @@ const NavBar = () => {
 
             <div className="group/profile relative flex h-full cursor-pointer items-center transition-colors">
               {session ? (
-                <span className="text-white hover:text-blue-200 transition-colors">
+                <span className="text-white hover:text-purple-400 transition-colors">
                   <Image
                     src={"/client/assets/images/user_placeholder_image.jpg"}
                     alt="Avatar"
-                    width={32}
-                    height={32}
-                    className="rounded-full"
+                    width={40}
+                    height={40}
+                    className="rounded-lg border-2 border-purple-500/50"
                   />
                 </span>
               ) : (
-                <span className="text-white hover:text-blue-200 transition-colors">
-                  <CgProfile className="w-5 h-5" />
+                <span className="text-white hover:text-purple-400 transition-colors bg-purple-500/20 p-2 rounded-lg">
+                  <CgProfile className="w-6 h-6" />
                 </span>
               )}
-              <ul className="absolute right-0 top-full invisible w-[150px] bg-white shadow-lg group-hover/profile:visible rounded-md">
+              <ul className="absolute right-0 top-full invisible w-[200px] bg-gradient-to-br from-gray-900 to-gray-800 shadow-xl group-hover/profile:visible rounded-lg border border-purple-500/20">
                 {session ? (
                   <>
-                    <li className="sm:hidden px-5 py-3 hover:bg-gray-100 transition-colors rounded-md">
+                    <li className="sm:hidden px-5 py-3 hover:bg-purple-500/20 transition-colors">
                       <div className="flex items-center space-x-2">
-                        <div className="text-[16px] text-gray-800">
+                        <div className="text-[16px] text-purple-400 font-bold">
                           {loading ? (
                             "Đang tải..."
                           ) : (
@@ -212,35 +212,40 @@ const NavBar = () => {
                         </div>
                         <button
                           onClick={refreshBalance}
-                          className="hover:text-gray-300 block"
+                          className="text-purple-400 hover:text-purple-300 block"
                           title="Cập nhật số dư"
                         >
-                          <FaSyncAlt size={13} className={loading ? "animate-spin" : "" + "text-gray-500"} />
+                          <FaSyncAlt size={14} className={loading ? "animate-spin" : ""} />
                         </button>
                       </div>
                     </li>
-                    <li className="px-5 py-3 hover:bg-gray-100 transition-colors rounded-md">
-                      <button onClick={handleLogout} className="text-gray-800">
-                        Đăng xuất
-                      </button>
-                    </li>
                     {session.user.role === "admin" && (
-                      <li className="px-5 py-3 hover:bg-gray-100 transition-colors rounded-md">
-                        <Link href="/admin/dashboard" className="text-gray-800">
-                          Quản trị
+                      <li className="px-5 py-3 hover:bg-purple-500/20 transition-colors">
+                        <Link href="/admin/dashboard" className="text-white hover:text-purple-400 font-medium">
+                          Truy cập admin
                         </Link>
                       </li>
                     )}
+                    <li className="px-5 py-3 hover:bg-purple-500/20 transition-colors">
+                      <Link href="/don-hang-cua-toi" className="text-white hover:text-purple-400 font-medium">
+                        Đơn hàng của tôi
+                      </Link>
+                    </li>
+                    <li className="px-5 py-3 hover:bg-purple-500/20 transition-colors">
+                      <button onClick={handleLogout} className="text-white hover:text-purple-400 font-medium">
+                        Đăng xuất
+                      </button>
+                    </li>
                   </>
                 ) : (
                   <>
-                    <li className="px-5 py-3 hover:bg-gray-100 transition-colors rounded-md">
-                      <Link href="/dang-ky" className="text-gray-800">
+                    <li className="px-5 py-3 hover:bg-purple-500/20 transition-colors">
+                      <Link href="/dang-ky" className="text-white hover:text-purple-400 font-medium">
                         Đăng ký
                       </Link>
                     </li>
-                    <li className="px-5 py-3 hover:bg-gray-100 transition-colors rounded-md">
-                      <Link href="/dang-nhap" className="text-gray-800">
+                    <li className="px-5 py-3 hover:bg-purple-500/20 transition-colors">
+                      <Link href="/dang-nhap" className="text-white hover:text-purple-400 font-medium">
                         Đăng nhập
                       </Link>
                     </li>
@@ -252,10 +257,10 @@ const NavBar = () => {
         </div>
 
         {/* Mobile Menu */}
-        <div className={`md:hidden fixed top-[63px] left-0 w-full bg-blue-500 shadow-lg transition-all duration-300 ease-in-out mobile-menu ${mobileMenuVisible ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
+        <div className={`md:hidden fixed top-[73px] left-0 w-full bg-gradient-to-r from-gray-900 via-purple-900 to-gray-900 shadow-lg transition-all duration-300 ease-in-out mobile-menu ${mobileMenuVisible ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
           <ul className="p-3">
             {menu.map((menuData, index) => (
-              <li key={index} className="mobile-menu-item hover:bg-blue-600 py-1 transition-colors">
+              <li key={index} className="mobile-menu-item hover:bg-purple-500/20 py-1 transition-colors">
                 <Link href={menuData.path || '#'} className="flex items-center gap-2 text-white">
                   <span className="mobile-menu-icon">{menuData.icon}</span>
                   <span className="mobile-menu-text">{menuData.label}</span>

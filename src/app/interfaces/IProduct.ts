@@ -1,4 +1,5 @@
 import {IProductImage} from "@/app/interfaces/IProductImage";
+import {Category} from "@/app/models/entities/Category";
 
 export interface IProduct {
     id: number;
@@ -24,4 +25,5 @@ export interface IProduct {
     updated_at: string;
     deleted_at?: string | null;
     images: IProductImage[] | null | File | File[];
+    category? : Category | null;
 }

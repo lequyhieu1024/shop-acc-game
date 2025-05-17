@@ -179,7 +179,7 @@ export default function Transaction() {
     },
     {
       title: "Mã người dùng",
-      dataIndex: "user_code",
+      dataIndex: ["user", "user_code"],
       key: "user_code",
     },
     {

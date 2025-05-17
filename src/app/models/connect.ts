@@ -44,15 +44,12 @@ export const AppDataSource = new DataSource({
     Order,
     OrderItem,
   ],
-  synchronize: process.env.TYPEORM_SYNCHRONIZE === "true",
-  logging: process.env.NODE_ENV !== "production",
-  charset: "utf8mb4_unicode_ci",
-  extra: {
-    connectionLimit: 10,
-  },
+  synchronize: false,
+  logging: false
 });
 
 // Optional: initDB helper
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const initRepository = async (entity: any) => {
   if (!AppDataSource.isInitialized) {
     await AppDataSource.initialize()

@@ -4,18 +4,15 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  DeleteDateColumn,
-  ManyToOne,
-  JoinColumn,
-  OneToMany,
+  DeleteDateColumn, ManyToOne, JoinColumn, OneToMany
 } from "typeorm";
-import { Category, OrderItem } from "./index"; // Import từ index.ts
+import {Category} from "@/app/models/entities/Category";
+import {ProductImage} from "@/app/models/entities/Image";
 
 export enum SystemStatus {
   ACTIVE = "active",
-  INACTIVE = "inactive",
+  INACTIVE = "inactive"
 }
-
 @Entity({ name: "products" })
 export class Product {
   @PrimaryGeneratedColumn()
@@ -69,15 +66,8 @@ export class Product {
   @Column({ type: "boolean", default: true })
   is_for_sale!: boolean;
 
-  @Column({ type: "bigint", nullable: true })
-  category_id?: number;
-
-  @ManyToOne(() => Category, (category) => category.id, { eager: false, nullable: true })
-  @JoinColumn({ name: "category_id", foreignKeyConstraintName: "FK_product_category" })
-  category?: Category;
-
-  @OneToMany(() => OrderItem, (orderItem) => orderItem.product)
-  orderItems!: OrderItem[];
+  @Column({ type: "bigint" })
+  category_id!: number;
 
   @Column({ type: "int" })
   quantity!: number;
@@ -90,4 +80,11 @@ export class Product {
 
   @DeleteDateColumn()
   deleted_at?: Date;
+
+  @ManyToOne(() => Category, { eager: false })
+  @JoinColumn({ name: "category_id" })
+  category: Category | undefined;
+
+  @OneToMany(() => ProductImage, item => item.product, { cascade: false })
+  images: ProductImage[] | undefined;
 }

@@ -5,9 +5,10 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     DeleteDateColumn,
-    OneToMany
+    OneToMany, ManyToOne, JoinColumn
 } from "typeorm";
 import { OrderItem } from "./OrderItem";
+import {Voucher} from "./Voucher";
 
 export enum OrderStatus {
     PENDING = 'pending',
@@ -16,6 +17,15 @@ export enum OrderStatus {
     CANCELLED = 'cancelled',
     FAILED = 'failed'
 }
+
+export const statusLabels: Record<string, string> = {
+    pending: "Chờ xử lý",
+    processing: "Đang bàn giao nick",
+    completed: "Đã bàn giao nick",
+    cancelled: "Hủy đơn",
+    failed: "Có lỗi",
+};
+
 export enum PaymentMethod {
     CASH = 'cash',
     BANK_TRANSFER = 'bank_transfer',
@@ -50,8 +60,21 @@ export class Order {
     @Column({ type: "varchar", length: 20, nullable: true })
     customer_phone!: string;
 
-    @Column({ type: "decimal", precision: 10, scale: 2,nullable:true })
-    total_amount!: number;
+    @Column({ type: "bigint",nullable:true })
+    total_amount?: number;
+
+    @Column({ type: "bigint",nullable:true })
+    total_product_price?: number;
+
+    @Column({ type: "bigint",nullable:true })
+    voucher_discount?: number;
+
+    @Column({ type: 'bigint', nullable: false })
+    voucher_id?: number;
+
+    @ManyToOne(() => Voucher, voucher => voucher.orders, { eager: false })
+    @JoinColumn({ name: "voucher_id" })
+    voucher: Voucher | undefined;
 
     @Column({
         type: "enum",

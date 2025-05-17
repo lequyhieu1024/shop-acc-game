@@ -1,996 +1,363 @@
-"use client"
-
-import api from "@/app/services/axiosService";
-import Image from "next/image";
+"use client";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+} from "chart.js";
+import { Line, Bar, Pie } from "react-chartjs-2";
+import Loading from "@/components/Loading";
+
+// Register Chart.js components
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    BarElement,
+    ArcElement,
+    Title,
+    Tooltip,
+    Legend,
+    Filler
+);
+
+interface DashboardData {
+  revenue: {
+    month: number;
+    quarter: number;
+    week: number;
+    historical: { month: string; revenue: number }[];
+  };
+  acc: {
+    total: number;
+    sold: number;
+    available: number;
+    locked: number;
+    top: { product_id: number; product_name: string, sold_count: number }[];
+  };
+  orders: {
+    total: number;
+    completed: number;
+    processing: number;
+    failed: number;
+    pending: number;
+    cancelled: number;
+  };
+  users: {
+    total: number;
+    newThisMonth: number;
+    historical: { month: string; newUsers: number }[];
+  };
+  topCard: { user_id: number; total_amount: number; username: string; user_code: string; phone: string }[];
+}
 
 export default function DashboardPage() {
-  const [data, setData] = useState<any[]>([])
-  const [loading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<boolean>(false)
-  const [message, setMessage] = useState<string>("")
-  const getStatistical = async () => {
-    try {
-      const response = await api.get('statisticals');
-      if (response.status === 200) {
-        console.log(response);
-        
-        setData(response.data.banners || [])
+  const [data, setData] = useState<DashboardData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch("/api/dashboard", { cache: "no-store" });
+        if (!res.ok) throw new Error("Failed to fetch dashboard data");
+        const result = await res.json();
+        setData(result);
+      } catch (e) {
+        console.error("Lỗi khi lấy dữ liệu dashboard:", (e as Error).message);
+        toast.error("Không thể tải dữ liệu dashboard. Vui lòng thử lại!");
+      } finally {
+        setLoading(false);
       }
-      setError(false)
-    } catch {
-      console.log("error")
-      setError(true)
-    } finally {
-      setLoading(false)
-    }
-  }
-  
-      useEffect(() => {
-          // getStatistical();
-          console.log(data);
-          
-      }, []);
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) return <Loading/>;
+  if (!data) return <h1>Không có dữ liệu</h1>;
+
+  const formatNumber = (value: number) =>
+      value.toLocaleString("vi-VN", { style: "decimal" });
+
+  // Chart 1: Revenue Over Time (Line Chart)
+  const revenueChartData = {
+    labels: data.revenue.historical.map((item) => item.month),
+    datasets: [
+      {
+        label: "Doanh thu (VNĐ)",
+        data: data.revenue.historical.map((item) => item.revenue),
+        borderColor: "rgba(75, 192, 192, 1)",
+        backgroundColor: "rgba(75, 192, 192, 0.2)",
+        fill: true,
+      },
+    ],
+  };
+
+  // Chart 2: Order Status Distribution (Pie Chart)
+  const orderChartData = {
+    labels: ["Chờ xử lý", "Đang bàn giao nick","Đã bàn giao nick", "Lỗi", "Đã hủy"],
+    datasets: [
+      {
+        data: [
+          data.orders.pending,
+          data.orders.processing,
+          data.orders.completed,
+          data.orders.cancelled,
+          data.orders.failed,
+        ],
+        backgroundColor: [
+          "#36A2EB",
+          "#FFCE56",
+          "#FF9F40",
+          "#FF6384",
+          "#4BC0C0",
+        ],
+      },
+    ],
+  };
+
+  // Chart 3: Product Availability Breakdown (Bar Chart)
+  const productChartData = {
+    labels: ["Tổng sản phẩm", "Không dùng để bán", "Sẵn sàng bán"],
+    datasets: [
+      {
+        label: "Số lượng",
+        data: [data.acc.total, data.acc.sold, data.acc.available],
+        backgroundColor: ["#36A2EB", "#FF6384", "#4BC0C0"],
+      },
+    ],
+  };
+
+  // Chart 4: Top 5 Products by Sales (Horizontal Bar Chart)
+  const topProductsChartData = {
+    labels: data.acc.top.map((item) => item.product_name),
+    datasets: [
+      {
+        label: "Số lượng bán",
+        data: data.acc.top.map((item) => item.sold_count),
+        backgroundColor: "rgba(153, 102, 255, 0.6)",
+      },
+    ],
+  };
+
+  // Chart 5: User Growth (Area Chart)
+  const userGrowthChartData = {
+    labels: data.users.historical.map((item) => item.month),
+    datasets: [
+      {
+        label: "Khách hàng mới",
+        data: data.users.historical.map((item) => item.newUsers),
+        borderColor: "rgba(255, 99, 132, 1)",
+        backgroundColor: "rgba(255, 99, 132, 0.2)",
+        fill: true,
+      },
+    ],
+  };
+
+  // Chart 6: Top Card Spenders (Bar Chart)
+  const topCardChartData = {
+    labels: data.topCard.map((item) => item.username),
+    datasets: [
+      {
+        label: "Số tiền nạp (VNĐ)",
+        data: data.topCard.map((item) => item.total_amount),
+        backgroundColor: "rgba(54, 162, 235, 0.6)",
+      },
+    ],
+  };
 
   return (
-    <div className="row">
-      <div className="col-sm-6 col-xxl-3 col-lg-6">
-        <div className="main-tiles border-5 border-0  card-hover card o-hidden">
-          <div className="custome-1-bg b-r-4 card-body">
-            <div className="media align-items-center static-top-widget">
-              <div className="media-body p-0">
-                <span className="m-0">Total Revenue</span>
-                <h4 className="mb-0 counter">
-                  $6659
-                  <span className="badge badge-light-primary grow">
-                    <i data-feather="trending-up"></i>8.5%
-                  </span>
-                </h4>
-              </div>
-              <div className="align-self-center text-center">
-                <i className="ri-database-2-line"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="col-sm-6 col-xxl-3 col-lg-6">
-        <div className="main-tiles border-5 card-hover border-0 card o-hidden">
-          <div className="custome-2-bg b-r-4 card-body">
-            <div className="media static-top-widget">
-              <div className="media-body p-0">
-                <span className="m-0">Total Orders</span>
-                <h4 className="mb-0 counter">
-                  9856
-                  <span className="badge badge-light-danger grow">
-                    <i data-feather="trending-down"></i>8.5%
-                  </span>
-                </h4>
-              </div>
-              <div className="align-self-center text-center">
-                <i className="ri-shopping-bag-3-line"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="col-sm-6 col-xxl-3 col-lg-6">
-        <div className="main-tiles border-5 card-hover border-0  card o-hidden">
-          <div className="custome-3-bg b-r-4 card-body">
-            <div className="media static-top-widget">
-              <div className="media-body p-0">
-                <span className="m-0">Total Products</span>
-                <h4 className="mb-0 counter">
-                  893
-                  <a
-                    href="add-new-product.html"
-                    className="badge badge-light-secondary grow"
-                  >
-                    ADD NEW
-                  </a>
-                </h4>
-              </div>
-
-              <div className="align-self-center text-center">
-                <i className="ri-chat-3-line"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="col-sm-6 col-xxl-3 col-lg-6">
-        <div className="main-tiles border-5 card-hover border-0 card o-hidden">
-          <div className="custome-4-bg b-r-4 card-body">
-            <div className="media static-top-widget">
-              <div className="media-body p-0">
-                <span className="m-0">Total Customers</span>
-                <h4 className="mb-0 counter">
-                  4.6k
-                  <span className="badge badge-light-success grow">
-                    <i data-feather="trending-down"></i>8.5%
-                  </span>
-                </h4>
-              </div>
-
-              <div className="align-self-center text-center">
-                <i className="ri-user-add-line"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="col-12">
-        <div className="card o-hidden card-hover">
-          <div className="card-header border-0 pb-1">
-            <div className="card-header-title p-0">
-              <h4>Category</h4>
-            </div>
-          </div>
-          <div className="card-body p-0">
-            <div className="category-slider no-arrow">
-              <div>
-                <div className="dashboard-category">
-                  <a href="#" className="category-image">
-                    <Image width={500} height={500}
-                      src="/admin/assets/svg/vegetable.svg"
-                      className="img-fluid"
-                      alt=""
-                    />
-                  </a>
-                  <a href="#" className="category-name">
-                    <h6>Vegetables & Fruit</h6>
-                  </a>
-                </div>
-              </div>
-
-              <div>
-                <div className="dashboard-category">
-                  <a href="#" className="category-image">
-                    <Image width={500} height={500}
-                      src="/admin/assets/svg/cup.svg"
-                      className="img-fluid"
-                      alt=""
-                    />
-                  </a>
-                  <a href="#" className="category-name">
-                    <h6>Beverages</h6>
-                  </a>
-                </div>
-              </div>
-
-              <div>
-                <div className="dashboard-category">
-                  <a href="#" className="category-image">
-                    <Image width={500} height={500}
-                      src="/admin/assets/svg/meats.svg"
-                      className="img-fluid"
-                      alt=""
-                    />
-                  </a>
-                  <a href="#" className="category-name">
-                    <h6>Meats & Seafood</h6>
-                  </a>
-                </div>
-              </div>
-
-              <div>
-                <div className="dashboard-category">
-                  <a href="#" className="category-image">
-                    <Image width={500} height={500}
-                      src="/admin/assets/svg/breakfast.svg"
-                      className="img-fluid"
-                      alt=""
-                    />
-                  </a>
-                  <a href="#" className="category-name">
-                    <h6>Breakfast</h6>
-                  </a>
-                </div>
-              </div>
-
-              <div>
-                <div className="dashboard-category">
-                  <a href="#" className="category-image">
-                    <Image width={500} height={500}
-                      src="/admin/assets/svg/frozen.svg"
-                      className="img-fluid"
-                      alt=""
-                    />
-                  </a>
-                  <a href="#" className="category-name">
-                    <h6>Frozen Foods</h6>
-                  </a>
-                </div>
-              </div>
-
-              <div>
-                <div className="dashboard-category">
-                  <a href="#" className="category-image">
-                    <Image width={500} height={500}
-                      src="/admin/assets/svg/milk.svg"
-                      className="img-fluid"
-                      alt=""
-                    />
-                  </a>
-                  <a href="#" className="category-name">
-                    <h6>Milk & Dairies</h6>
-                  </a>
-                </div>
-              </div>
-
-              <div>
-                <div className="dashboard-category">
-                  <a href="#" className="category-image">
-                    <Image width={500} height={500}
-                      src="/admin/assets/svg/pet.svg"
-                      className="img-fluid"
-                      alt=""
-                    />
-                  </a>
-                  <a href="#" className="category-name">
-                    <h6>Pet Food</h6>
-                  </a>
-                </div>
-              </div>
-
-              <div>
-                <div className="dashboard-category">
-                  <a href="#" className="category-image">
-                    <Image width={500} height={500}
-                      src="/admin/assets/svg/vegetable.svg"
-                      className="img-fluid"
-                      alt=""
-                    />
-                  </a>
-                  <a href="#" className="category-name">
-                    <h6>Vegetables & Fruit</h6>
-                  </a>
-                </div>
-              </div>
-
-              <div>
-                <div className="dashboard-category">
-                  <a href="#" className="category-image">
-                    <Image width={500} height={500}
-                      src="/admin/assets/svg/cup.svg"
-                      className="img-fluid"
-                      alt=""
-                    />
-                  </a>
-                  <a href="#" className="category-name">
-                    <h6>Beverages</h6>
-                  </a>
-                </div>
-              </div>
-
-              <div>
-                <div className="dashboard-category">
-                  <a href="#" className="category-image">
-                    <Image width={500} height={500}
-                      src="/admin/assets/svg/meats.svg"
-                      className="img-fluid"
-                      alt=""
-                    />
-                  </a>
-                  <a href="#" className="category-name">
-                    <h6>Meats & Seafood</h6>
-                  </a>
-                </div>
-              </div>
-
-              <div>
-                <div className="dashboard-category">
-                  <a href="#" className="category-image">
-                    <Image width={500} height={500}
-                      src="/admin/assets/svg/breakfast.svg"
-                      className="img-fluid"
-                      alt=""
-                    />
-                  </a>
-                  <a href="#" className="category-name">
-                    <h6>Breakfast</h6>
-                  </a>
-                </div>
-              </div>
-
-              <div>
-                <div className="dashboard-category">
-                  <a href="#" className="category-image">
-                    <Image width={500} height={500}
-                      src="/admin/assets/svg/frozen.svg"
-                      className="img-fluid"
-                      alt=""
-                    />
-                  </a>
-                  <a href="#" className="category-name">
-                    <h6>Frozen Foods</h6>
-                  </a>
-                </div>
-              </div>
-
-              <div>
-                <div className="dashboard-category">
-                  <a href="#" className="category-image">
-                    <Image width={500} height={500}
-                      src="/admin/assets/svg/milk.svg"
-                      className="img-fluid"
-                      alt=""
-                    />
-                  </a>
-                  <a href="#" className="category-name">
-                    <h6>Milk & Dairies</h6>
-                  </a>
-                </div>
-              </div>
-
-              <div>
-                <div className="dashboard-category">
-                  <a href="#" className="category-image">
-                    <Image width={500} height={500}
-                      src="/admin/assets/svg/pet.svg"
-                      className="img-fluid"
-                      alt=""
-                    />
-                  </a>
-                  <a href="#" className="category-name">
-                    <h6>Pet Food</h6>
-                  </a>
+      <div className="container-fluid">
+        <div className="row">
+          {/* Card 1: Revenue */}
+          <div className="col-sm-6 col-xxl-3 col-lg-6">
+            <div className="main-tiles border-5 border-0 card-hover card o-hidden">
+              <div className="custome-1-bg b-r-4 card-body">
+                <div className="media static-top-widget">
+                  <div className="media-body p-0">
+                    <span className="m-0">Tổng doanh thu tháng</span>
+                    <h4 className="mb-0 counter">
+                      {formatNumber(data.revenue.month)} đ
+                    </h4>
+                    <span className="m-0">Tổng doanh thu tuần: {formatNumber(data.revenue.week)} đ</span>
+                  </div>
+                  <div className="align-self-center text-center">
+                    <i className="ri-database-2-line"></i>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-      {/* chart card section End  */}
 
-      {/* Earning chart star */}
-      <div className="col-xl-6">
-        <div className="card o-hidden card-hover">
-          <div className="card-header border-0 pb-1">
-            <div className="card-header-title">
-              <h4>Revenue Report</h4>
+          {/* Thẻ Đơn hàng */}
+          <div className="col-sm-6 col-xxl-3 col-lg-6">
+            <div className="main-tiles border-5 card-hover border-0 card o-hidden">
+              <div className="custome-2-bg b-r-4 card-body">
+                <div className="media static-top-widget">
+                  <div className="media-body p-0">
+                    <span className="m-0">Đơn hàng</span>
+                    <h4 className="mb-0 counter">
+                      {formatNumber(data.orders.total)}
+                    </h4>
+                    <div className="m-0">Chờ xử lý: {formatNumber(data.orders.pending)}</div>
+                    <div className="m-0">Đang bàn giao: {formatNumber(data.orders.processing)}</div>
+                    <div className="m-0">Đã bàn giao: {formatNumber(data.orders.completed)}</div>
+                    <div className="m-0">Có lỗi: {formatNumber(data.orders.failed)}</div>
+                    <div className="m-0">Đã hủy: {formatNumber(data.orders.cancelled)}</div>
+                  </div>
+                  <div className="align-self-center text-center">
+                    <i className="ri-shopping-bag-3-line"></i>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="card-body p-0">
-            <div id="report-chart"></div>
-          </div>
-        </div>
-      </div>
-      {/* Earning chart  end */}
 
-      {/* Best Selling Product Start  */}
-      <div className="col-xl-6 col-md-12">
-        <div className="card o-hidden card-hover">
-          <div className="card-header card-header-top card-header--2 px-0 pt-0">
-            <div className="card-header-title">
-              <h4>Best Selling Product</h4>
-            </div>
-
-            <div className="best-selling-box d-sm-flex d-none">
-              <span>Short By:</span>
-              <div className="dropdown">
-                <button
-                  className="btn p-0 dropdown-toggle"
-                  type="button"
-                  id="dropdownMenuButton1"
-                  data-bs-toggle="dropdown"
-                  data-bs-auto-close="true"
-                >
-                  Today
-                </button>
-                <ul
-                  className="dropdown-menu"
-                  aria-labelledby="dropdownMenuButton1"
-                >
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Action
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Another action
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Something else here
-                    </a>
-                  </li>
-                </ul>
+          {/* Thẻ Total Products */}
+          <div className="col-sm-6 col-xxl-3 col-lg-6">
+            <div className="main-tiles border-5 card-hover border-0 card o-hidden">
+              <div className="custome-3-bg b-r-4 card-body">
+                <div className="media static-top-widget">
+                  <div className="media-body p-0">
+                    <span className="m-0">Sản phẩm</span>
+                    <h4 className="mb-0 counter">
+                      {formatNumber(data.acc.total)}
+                    </h4>
+                    <div className="m-0">Không dùng để bán: {formatNumber(data.acc.sold)}</div>
+                    <div className="m-0">Sẵn sàng bán: {formatNumber(data.acc.available)}</div>
+                  </div>
+                  <div className="align-self-center text-center">
+                    <i className="ri-chat-3-line"></i>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="card-body p-0">
-            <div>
-              <div className="table-responsive">
-                <table
-                  className="best-selling-table w-image
-                                        w-image
-                                        w-image table border-0"
-                >
-                  <tbody>
-                    <tr>
-                      <td>
-                        <div className="best-product-box">
-                          <div className="product-image">
-                            <Image width={500} height={500}
-                              src="/admin/assets/images/product/1.png"
-                              className="img-fluid"
-                              alt="Product"
-                            />
-                          </div>
-                          <div className="product-name">
-                            <h5>Aata Buscuit</h5>
-                            <h6>26-08-2022</h6>
-                          </div>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div className="product-detail-box">
-                          <h6>Price</h6>
-                          <h5>$29.00</h5>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div className="product-detail-box">
-                          <h6>Orders</h6>
-                          <h5>62</h5>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div className="product-detail-box">
-                          <h6>Stock</h6>
-                          <h5>510</h5>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div className="product-detail-box">
-                          <h6>Amount</h6>
-                          <h5>$1,798</h5>
-                        </div>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td>
-                        <div className="best-product-box">
-                          <div className="product-image">
-                            <Image width={500} height={500}
-                              src="/admin/assets/images/product/2.png"
-                              className="img-fluid"
-                              alt="Product"
-                            />
-                          </div>
-                          <div className="product-name">
-                            <h5>Aata Buscuit</h5>
-                            <h6>26-08-2022</h6>
-                          </div>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div className="product-detail-box">
-                          <h6>Price</h6>
-                          <h5>$29.00</h5>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div className="product-detail-box">
-                          <h6>Orders</h6>
-                          <h5>62</h5>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div className="product-detail-box">
-                          <h6>Stock</h6>
-                          <h5>510</h5>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div className="product-detail-box">
-                          <h6>Amount</h6>
-                          <h5>$1,798</h5>
-                        </div>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td>
-                        <div className="best-product-box">
-                          <div className="product-image">
-                            <Image width={500} height={500}
-                              src="/admin/assets/images/product/3.png"
-                              className="img-fluid"
-                              alt="Product"
-                            />
-                          </div>
-                          <div className="product-name">
-                            <h5>Aata Buscuit</h5>
-                            <h6>26-08-2022</h6>
-                          </div>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div className="product-detail-box">
-                          <h6>Price</h6>
-                          <h5>$29.00</h5>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div className="product-detail-box">
-                          <h6>Orders</h6>
-                          <h5>62</h5>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div className="product-detail-box">
-                          <h6>Stock</h6>
-                          <h5>510</h5>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div className="product-detail-box">
-                          <h6>Amount</h6>
-                          <h5>$1,798</h5>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* Best Selling Product End  */}
-
-      {/* Recent orders start */}
-      <div className="col-xl-6">
-        <div className="card o-hidden card-hover">
-          <div className="card-header card-header-top card-header--2 px-0 pt-0">
-            <div className="card-header-title">
-              <h4>Recent Orders</h4>
-            </div>
-
-            <div className="best-selling-box d-sm-flex d-none">
-              <span>Short By:</span>
-              <div className="dropdown">
-                <button
-                  className="btn p-0 dropdown-toggle"
-                  type="button"
-                  id="dropdownMenuButton2"
-                  data-bs-toggle="dropdown"
-                  data-bs-auto-close="true"
-                >
-                  Today
-                </button>
-                <ul
-                  className="dropdown-menu"
-                  aria-labelledby="dropdownMenuButton2"
-                >
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Action
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Another action
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Something else here
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <div className="card-body p-0">
-            <div>
-              <div className="table-responsive">
-                <table className="best-selling-table table border-0">
-                  <tbody>
-                    <tr>
-                      <td>
-                        <div className="best-product-box">
-                          <div className="product-name">
-                            <h5>Aata Buscuit</h5>
-                            <h6>#64548</h6>
-                          </div>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div className="product-detail-box">
-                          <h6>Date Placed</h6>
-                          <h5>5/1/22</h5>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div className="product-detail-box">
-                          <h6>Price</h6>
-                          <h5>$250.00</h5>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div className="product-detail-box">
-                          <h6>Order Status</h6>
-                          <h5>Completed</h5>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div className="product-detail-box">
-                          <h6>Payment</h6>
-                          <h5 className="text-danger">Unpaid</h5>
-                        </div>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td>
-                        <div className="best-product-box">
-                          <div className="product-name">
-                            <h5>Aata Buscuit</h5>
-                            <h6>26-08-2022</h6>
-                          </div>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div className="product-detail-box">
-                          <h6>Date Placed</h6>
-                          <h5>5/1/22</h5>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div className="product-detail-box">
-                          <h6>Price</h6>
-                          <h5>$250.00</h5>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div className="product-detail-box">
-                          <h6>Order Status</h6>
-                          <h5>Completed</h5>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div className="product-detail-box">
-                          <h6>Payment</h6>
-                          <h5 className="theme-color">Paid</h5>
-                        </div>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td>
-                        <div className="best-product-box">
-                          <div className="product-name">
-                            <h5>Aata Buscuit</h5>
-                            <h6>26-08-2022</h6>
-                          </div>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div className="product-detail-box">
-                          <h6>Date Placed</h6>
-                          <h5>5/1/22</h5>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div className="product-detail-box">
-                          <h6>Price</h6>
-                          <h5>$250.00</h5>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div className="product-detail-box">
-                          <h6>Order Status</h6>
-                          <h5>Completed</h5>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div className="product-detail-box">
-                          <h6>Payment</h6>
-                          <h5 className="theme-color">Paid</h5>
-                        </div>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td>
-                        <div className="best-product-box">
-                          <div className="product-name">
-                            <h5>Aata Buscuit</h5>
-                            <h6>26-08-2022</h6>
-                          </div>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div className="product-detail-box">
-                          <h6>Date Placed</h6>
-                          <h5>5/1/22</h5>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div className="product-detail-box">
-                          <h6>Price</h6>
-                          <h5>$250.00</h5>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div className="product-detail-box">
-                          <h6>Order Status</h6>
-                          <h5>Completed</h5>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div className="product-detail-box">
-                          <h6>Payment</h6>
-                          <h5 className="theme-color">Paid</h5>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* Recent orders end */}
-
-      {/* Earning chart star */}
-      <div className="col-xl-6">
-        <div className="card o-hidden card-hover">
-          <div className="card-header border-0 mb-0">
-            <div className="card-header-title">
-              <h4>Earning</h4>
-            </div>
-          </div>
-          <div className="card-body p-0">
-            <div id="bar-chart-earning"></div>
-          </div>
-        </div>
-      </div>
-      {/* Earning chart end */}
-
-      {/* Transactions start */}
-      <div className="col-xxl-4 col-md-6">
-        <div className="card o-hidden card-hover">
-          <div className="card-header border-0">
-            <div className="card-header-title">
-              <h4>Transactions</h4>
-            </div>
-          </div>
-
-          <div className="card-body pt-0">
-            <div>
-              <div className="table-responsive">
-                <table className="user-table transactions-table table border-0">
-                  <tbody>
-                    <tr>
-                      <td>
-                        <div className="transactions-icon">
-                          <i className="ri-shield-line"></i>
-                        </div>
-                        <div className="transactions-name">
-                          <h6>Wallets</h6>
-                          <p>Starbucks</p>
-                        </div>
-                      </td>
-
-                      <td className="lost">-$74</td>
-                    </tr>
-                    <tr>
-                      <td className="td-color-1">
-                        <div className="transactions-icon">
-                          <i className="ri-check-line"></i>
-                        </div>
-                        <div className="transactions-name">
-                          <h6>Bank Transfer</h6>
-                          <p>Add Money</p>
-                        </div>
-                      </td>
-
-                      <td className="success">+$125</td>
-                    </tr>
-                    <tr>
-                      <td className="td-color-2">
-                        <div className="transactions-icon">
-                          <i className="ri-exchange-dollar-line"></i>
-                        </div>
-                        <div className="transactions-name">
-                          <h6>Paypal</h6>
-                          <p>Add Money</p>
-                        </div>
-                      </td>
-
-                      <td className="lost">-$50</td>
-                    </tr>
-                    <tr>
-                      <td className="td-color-3">
-                        <div className="transactions-icon">
-                          <i className="ri-bank-card-line"></i>
-                        </div>
-                        <div className="transactions-name">
-                          <h6>Mastercard</h6>
-                          <p>Ordered Food</p>
-                        </div>
-                      </td>
-
-                      <td className="lost">-$40</td>
-                    </tr>
-                    <tr>
-                      <td className="td-color-4 pb-0">
-                        <div className="transactions-icon">
-                          <i className="ri-bar-chart-grouped-line"></i>
-                        </div>
-                        <div className="transactions-name">
-                          <h6>Transfer</h6>
-                          <p>Refund</p>
-                        </div>
-                      </td>
-
-                      <td className="success pb-0">+$90</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* Transactions end */}
-
-      {/* visitors chart start */}
-      <div className="col-xxl-4 col-md-6">
-        <div className="h-100">
-          <div className="card o-hidden card-hover">
-            <div className="card-header border-0">
-              <div className="d-flex align-items-center justify-content-between">
-                <div className="card-header-title">
-                  <h4>Visitors</h4>
+          {/* Thẻ Total Customers */}
+          <div className="col-sm-6 col-xxl-3 col-lg-6">
+            <div className="main-tiles border-5 card-hover border-0 card o-hidden">
+              <div className="custome-4-bg b-r-4 card-body">
+                <div className="media static-top-widget">
+                  <div className="media-body p-0">
+                    <span className="m-0">Khách hàng</span>
+                    <h4 className="mb-0 counter">
+                      {formatNumber(data.users.total)}
+                    </h4>
+                    <span className="m-0">KH mới trong tháng này: {formatNumber(data.users.newThisMonth)}</span>
+                  </div>
+                  <div className="align-self-center text-center">
+                    <i className="ri-user-add-line"></i>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="card-body pt-0">
-              <div className="pie-chart">
-                <div id="pie-chart-visitors"></div>
+          </div>
+
+          {/* Charts Section */}
+          <div className="col-12">
+            <div className="card shadow-sm">
+              <div className="card-header">
+                <h5>Thống kê trực quan</h5>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* visitors chart end */}
-
-      {/* To Do List start */}
-      <div className="col-xxl-4 col-md-6">
-        <div className="card o-hidden card-hover">
-          <div className="card-header border-0">
-            <div className="card-header-title">
-              <h4>To Do List</h4>
-            </div>
-          </div>
-
-          <div className="card-body pt-0">
-            <ul className="to-do-list">
-              <li className="to-do-item">
-                <div className="form-check user-checkbox">
-                  <input
-                    className="checkbox_animated check-it"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
-                  />
-                </div>
-                <div className="to-do-list-name">
-                  <strong>Pick up kids from school</strong>
-                  <p>8 Hours</p>
-                </div>
-              </li>
-              <li className="to-do-item">
-                <div className="form-check user-checkbox">
-                  <input
-                    className="checkbox_animated check-it"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault1"
-                  />
-                </div>
-                <div className="to-do-list-name">
-                  <strong>Prepare or presentation.</strong>
-                  <p>8 Hours</p>
-                </div>
-              </li>
-              <li className="to-do-item">
-                <div className="form-check user-checkbox">
-                  <input
-                    className="checkbox_animated check-it"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault2"
-                  />
-                </div>
-                <div className="to-do-list-name">
-                  <strong>Create invoice</strong>
-                  <p>8 Hours</p>
-                </div>
-              </li>
-              <li className="to-do-item">
-                <div className="form-check user-checkbox">
-                  <input
-                    className="checkbox_animated check-it"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault3"
-                  />
-                </div>
-                <div className="to-do-list-name">
-                  <strong>Meeting with Alisa</strong>
-                  <p>8 Hours</p>
-                </div>
-              </li>
-
-              <li className="to-do-item">
-                <form className="row g-2">
-                  <div className="col-8">
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="name"
-                      placeholder="Enter Task Name"
+              <div className="card-body">
+                <div className="row">
+                  <div className="col-md-6 mb-4">
+                    <h6>Doanh thu theo thời gian</h6>
+                    <Line
+                        data={revenueChartData}
+                        options={{ responsive: true, plugins: { legend: { position: "top" } } }}
                     />
                   </div>
-                  <div className="col-4">
-                    <button
-                      type="submit"
-                      className="btn btn-primary w-100 h-100"
-                    >
-                      Add task
-                    </button>
+                  <div className="col-md-6 mb-4">
+                    <h6>Phân bố trạng thái đơn hàng</h6>
+                    <Pie
+                        data={orderChartData}
+                        options={{ responsive: true, plugins: { legend: { position: "top" } } }}
+                    />
                   </div>
-                </form>
-              </li>
-            </ul>
+                  <div className="col-md-6 mb-4">
+                    <h6>Tình trạng sản phẩm</h6>
+                    <Bar
+                        data={productChartData}
+                        options={{ responsive: true, plugins: { legend: { position: "top" } } }}
+                    />
+                  </div>
+                  <div className="col-md-6 mb-4">
+                    <h6>Top 5 sản phẩm bán chạy</h6>
+                    <Bar
+                        data={topProductsChartData}
+                        options={{
+                          responsive: true,
+                          indexAxis: "y",
+                          plugins: { legend: { position: "top" } },
+                        }}
+                    />
+                  </div>
+                  <div className="col-md-6 mb-4">
+                    <h6>Tăng trưởng khách hàng</h6>
+                    <Line
+                        data={userGrowthChartData}
+                        options={{ responsive: true, plugins: { legend: { position: "top" } } }}
+                    />
+                  </div>
+                  <div className="col-md-6 mb-4">
+                    <h6>Top khách hàng nạp thẻ</h6>
+                    <Bar
+                        data={topCardChartData}
+                        options={{ responsive: true, plugins: { legend: { position: "top" } } }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
+
+          {/* Top Card Table */}
+          {data.topCard.length > 0 && (
+              <div className="col-12">
+                <div className="card shadow-sm">
+                  <div className="card-header">
+                    <h5>Top Nạp Thẻ</h5>
+                  </div>
+                  <div className="card-body">
+                    <div className="table-responsive">
+                      <table className="table table-hover table-bordered">
+                        <thead>
+                        <tr>
+                          <th>Username</th>
+                          <th>Tên</th>
+                          <th>Số điện thoại</th>
+                          <th>Số tiền đã nạp</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {data.topCard.map((card, index) => (
+                            <tr key={index}>
+                              <td>{card.username}</td>
+                              <td>{card.user_code}</td>
+                              <td>{card.phone}</td>
+                              <td>{formatNumber(card.total_amount)} đ</td>
+                            </tr>
+                        ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          )}
         </div>
       </div>
-      {/* To Do List end */}
-    </div>
   );
 }

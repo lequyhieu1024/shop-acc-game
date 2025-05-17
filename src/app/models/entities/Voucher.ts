@@ -1,4 +1,13 @@
-import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn} from "typeorm";
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    CreateDateColumn,
+    UpdateDateColumn,
+    DeleteDateColumn,
+    OneToMany
+} from "typeorm";
+import {Order} from "@/app/models/entities/Order";
 
 @Entity({ name: "vouchers" })
 export class Voucher {
@@ -37,4 +46,7 @@ export class Voucher {
 
     @DeleteDateColumn()
     deleted_at?: Date;
+
+    @OneToMany(() => Order, orders => orders.voucher, { cascade: true })
+    orders: Order[] | undefined;
 }
