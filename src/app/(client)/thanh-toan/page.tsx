@@ -130,7 +130,6 @@ export default function CheckoutPage() {
                     return;
                 }
             }
-
             await api.post("/orders", {
                 user_id: session.user.id,
                 customer_name: values.name,
@@ -143,7 +142,7 @@ export default function CheckoutPage() {
                 order_items: cartItems.map((item) => ({
                     product_id: item.id,
                     quantity: item.quantity,
-                    unit_price: item.price,
+                    unit_price: Number(item.price),
                 })),
             });
 

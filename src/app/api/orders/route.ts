@@ -146,7 +146,7 @@ export async function POST(request: Request) {
         (sum: number, item: { unit_price: number; quantity: number }) => sum + item.unit_price * item.quantity,
         0
     );
-    const finalAmount = totalProductPrice - voucherDiscount;
+    const finalAmount = totalProductPrice - (voucherDiscount||0);
 
     if (user.balance < finalAmount) {
       return NextResponse.json({ error: "Số dư không đủ" }, { status: 400 });
@@ -196,7 +196,7 @@ export async function POST(request: Request) {
           order: order,
           product_id: item.product_id,
           quantity: item.quantity,
-          unit_price: item.unit_price,
+          price: Number(item.unit_price),
         });
         await queryRunner.manager.save(orderItem);
 

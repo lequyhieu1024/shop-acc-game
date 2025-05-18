@@ -69,7 +69,7 @@ export class Order {
     @Column({ type: "bigint",nullable:true })
     voucher_discount?: number;
 
-    @Column({ type: 'bigint', nullable: false })
+    @Column({ type: 'bigint', nullable: true })
     voucher_id?: number;
 
     @ManyToOne(() => Voucher, voucher => voucher.orders, { eager: false })
