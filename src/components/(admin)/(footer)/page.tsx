@@ -4,10 +4,29 @@ import { Layout } from "antd";
 import Image from "next/image";
 import Link from "next/link";
 import { FaFacebookF, FaPhoneAlt } from "react-icons/fa";
+import React, {useEffect, useState} from "react";
+import api from "@/app/services/axiosService";
+import {ISystem} from "@/app/interfaces/ISystem";
 
 const { Footer } = Layout;
 
 const AppFooter: React.FC = () => {
+
+  const [data, setData] = useState<ISystem | null>(null);
+
+  useEffect(() => {
+    const fetchSystemData = async () => {
+      try {
+        const response = await api.get('/clients/systems');
+        const system = response.data.system;
+        setData(system)
+      } catch (error) {
+        console.error('Error fetching system data:', error);
+      }
+    };
+
+    fetchSystemData();
+  }, []);
   return (
     <Footer className="bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-white border-t border-purple-500/20">
       <div className="container mx-auto py-12 grid grid-cols-1 md:grid-cols-4 gap-10">
@@ -91,17 +110,17 @@ const AppFooter: React.FC = () => {
           <div className="space-y-4">
             <div className="flex items-center gap-3 p-3 bg-purple-500/20 rounded-lg">
               <FaPhoneAlt className="text-purple-400" />
-              <span className="text-gray-300">Chăm sóc khách hàng: <span className="text-purple-400 font-bold">0355.342.442</span></span>
+              <span className="text-gray-300">Chăm sóc khách hàng: <span className="text-purple-400 font-bold">{ data && data.zalo || "033 8475 943"}</span></span>
             </div>
             <div className="flex items-center gap-3 p-3 bg-purple-500/20 rounded-lg">
               <FaFacebookF className="text-purple-400" />
-              <Link href="https://facebook.com" target="_blank" className="text-gray-300 hover:text-purple-400 transition-colors">
-                Facebook Fanpage
+              <Link href={ data && data.facebook || "https://www.facebook.com/le.hieu.168731/"} target="_blank" className="text-gray-300 hover:text-purple-400 transition-colors">
+                Fan page
               </Link>
             </div>
             <div className="mt-4 p-3 bg-purple-500/20 rounded-lg">
               <Image
-                src="/client/assets/images/placeholder.png"
+                src={ data && String(data.logo) || '/client/assets/images/LOGO.png' }
                 alt="Hỗ Trợ"
                 className="rounded-lg"
                 height={100}

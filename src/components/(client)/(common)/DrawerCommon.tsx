@@ -1,5 +1,5 @@
 import React from "react";
-import { Drawer, Button } from "antd";
+import { Drawer } from "antd";
 
 interface DrawerCommonProps {
   open: boolean; // Updated from 'visible' to 'open'

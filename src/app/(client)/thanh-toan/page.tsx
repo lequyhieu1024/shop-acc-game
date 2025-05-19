@@ -153,9 +153,9 @@ export default function CheckoutPage() {
             localStorage.removeItem("totalItems");
 
             toast.success(
-                "Đặt hàng thành công! Vui lòng kiểm tra email để xem chi tiết đơn hàng.",
+                "Đặt hàng thành công!.",
                 {
-                    onClose: () => window.location.href = "/",
+                    onClose: () => window.location.href = "/don-hang-cua-toi",
                     autoClose: 3000,
                 }
             );
