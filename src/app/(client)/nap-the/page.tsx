@@ -77,7 +77,7 @@ export default function ChargeCard() {
                 </div>
             </div>
             <FeeComponent />
-
+            <div id="lich-su-nap"></div>
 
             <CardChargeHistory mt={`mt-10`}/>
         </div>

@@ -185,9 +185,9 @@ const NavBar = () => {
               {session ? (
                 <span className="text-white hover:text-purple-400 transition-colors">
                   <Image
-                    src={"/client/assets/images/user_placeholder_image.jpg"}
-                    alt="Avatar"
-                    width={40}
+                    src={"/client/assets/images/LOGO.png"}
+                    alt="Shopcutigaming"
+                    width={60}
                     height={40}
                     className="rounded-lg border-2 border-purple-500/50"
                   />
@@ -199,49 +199,54 @@ const NavBar = () => {
               )}
               <ul className="absolute right-0 top-full invisible w-[200px] bg-gradient-to-br from-gray-900 to-gray-800 shadow-xl group-hover/profile:visible rounded-lg border border-purple-500/20">
                 {session ? (
-                  <>
-                    <li className="sm:hidden px-5 py-3 hover:bg-purple-500/20 transition-colors">
-                      <div className="flex items-center space-x-2">
-                        <div className="text-[16px] text-purple-400 font-bold">
-                          {loading ? (
-                            "Đang tải..."
-                          ) : (
-                            `${balance.toLocaleString()} đ`
-                          )}
+                    <>
+                      <li className="sm:hidden px-5 py-3 hover:bg-purple-500/20 transition-colors">
+                        <div className="flex items-center space-x-2">
+                          <div className="text-[16px] text-purple-400 font-bold">
+                            {loading ? (
+                                "Đang tải..."
+                            ) : (
+                                `${balance.toLocaleString()} đ`
+                            )}
+                          </div>
+                          <button
+                              onClick={refreshBalance}
+                              className="text-purple-400 hover:text-purple-300 block"
+                              title="Cập nhật số dư"
+                          >
+                            <FaSyncAlt size={14} className={loading ? "animate-spin" : ""}/>
+                          </button>
                         </div>
-                        <button
-                          onClick={refreshBalance}
-                          className="text-purple-400 hover:text-purple-300 block"
-                          title="Cập nhật số dư"
-                        >
-                          <FaSyncAlt size={14} className={loading ? "animate-spin" : ""} />
-                        </button>
-                      </div>
-                    </li>
-                    {session.user.role === "admin" && (
+                      </li>
+                      {session.user.role === "admin" && (
+                          <li className="px-5 py-3 hover:bg-purple-500/20 transition-colors">
+                            <Link href="/admin/dashboard" className="text-white hover:text-purple-400 font-medium">
+                              Truy cập admin
+                            </Link>
+                          </li>
+                      )}
                       <li className="px-5 py-3 hover:bg-purple-500/20 transition-colors">
-                        <Link href="/admin/dashboard" className="text-white hover:text-purple-400 font-medium">
-                          Truy cập admin
+                        <Link href="/don-hang-cua-toi" className="text-white hover:text-purple-400 font-medium">
+                          Đơn hàng của tôi
                         </Link>
                       </li>
-                    )}
-                    <li className="px-5 py-3 hover:bg-purple-500/20 transition-colors">
-                      <Link href="/don-hang-cua-toi" className="text-white hover:text-purple-400 font-medium">
-                        Đơn hàng của tôi
-                      </Link>
-                    </li>
-                    <li className="px-5 py-3 hover:bg-purple-500/20 transition-colors">
-                      <button onClick={handleLogout} className="text-white hover:text-purple-400 font-medium">
-                        Đăng xuất
-                      </button>
-                    </li>
-                  </>
+                      <li className="px-5 py-3 hover:bg-purple-500/20 transition-colors">
+                        <Link href="/nap-the#lich-su-nap" className="text-white hover:text-purple-400 font-medium">
+                          Lịch sử nạp thẻ
+                        </Link>
+                      </li>
+                      <li className="px-5 py-3 hover:bg-purple-500/20 transition-colors">
+                        <button onClick={handleLogout} className="text-white hover:text-purple-400 font-medium">
+                          Đăng xuất
+                        </button>
+                      </li>
+                    </>
                 ) : (
-                  <>
-                    <li className="px-5 py-3 hover:bg-purple-500/20 transition-colors">
-                      <Link href="/dang-ky" className="text-white hover:text-purple-400 font-medium">
-                        Đăng ký
-                      </Link>
+                    <>
+                      <li className="px-5 py-3 hover:bg-purple-500/20 transition-colors">
+                        <Link href="/dang-ky" className="text-white hover:text-purple-400 font-medium">
+                          Đăng ký
+                        </Link>
                     </li>
                     <li className="px-5 py-3 hover:bg-purple-500/20 transition-colors">
                       <Link href="/dang-nhap" className="text-white hover:text-purple-400 font-medium">

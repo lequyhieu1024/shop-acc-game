@@ -23,6 +23,7 @@ export default function Layout({children}: { children: ReactNode }) {
             />
             <meta name="keywords" content="bán acc Free Fire, shopcutigaming, acc Free Fire giá rẻ, Lê Quý Hiếu"/>
             <link rel="canonical" href="https://shopcutigaming.com/about"/>
+            <link rel="shortcut icon" href="/public/client/assets/images/logo/favicon-32x32.png" type="image/x-icon"/>
         </Head>
         <body>
         <SessionProvider>
