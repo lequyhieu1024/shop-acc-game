@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { IoHome } from "react-icons/io5";
+import React, { useState } from "react";
+// import { IoHome } from "react-icons/io5";
 import { FaShoppingCart, FaCaretDown, FaSyncAlt, FaBars } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
 import Link from "next/link";
@@ -56,7 +56,14 @@ const NavBar = () => {
           {/* Logo and Mobile Menu Button */}
           <div className="flex items-center">
             <Link href="/" className="text-white hover:text-purple-400 transition-colors mr-4">
-              <IoHome className="w-7 h-7" />
+              {/*<IoHome className="w-7 h-7" />*/}
+              <Image
+                  height={40}
+                  width={90}
+                  className="rounded-lg border-2 border-purple-500/50"
+                  src="/client/assets/images/LOGO.png"
+                  alt="Shop cu tí gaming"
+              />
             </Link>
             
             {/* Mobile Menu Button */}
@@ -149,9 +156,9 @@ const NavBar = () => {
           {/* Cart and Profile Icons */}
           <div className="flex items-center gap-6">
             {session?.user && (
-                <div className="hidden sm:flex items-center space-x-3 p-4 bg-purple-500/20 rounded-lg">
+                <div className="hidden sm:flex items-center space-x-3 p-3 bg-purple-500/20 rounded-lg">
                   <div className="text-sm text-white font-bold">Số dư:</div>
-                  <div className="text-sm text-purple-400 font-bold">
+                  <div className="text-sm text-white font-bold">
                     {loading ? (
                         "Đang tải..."
                     ) : (
@@ -185,9 +192,9 @@ const NavBar = () => {
               {session ? (
                 <span className="text-white hover:text-purple-400 transition-colors">
                   <Image
-                    src={"/client/assets/images/LOGO.png"}
+                    src={"/client/assets/images/user_placeholder_image.jpg"}
                     alt="Shopcutigaming"
-                    width={60}
+                    width={40}
                     height={40}
                     className="rounded-lg border-2 border-purple-500/50"
                   />
