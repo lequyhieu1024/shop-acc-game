@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { toast } from "react-toastify";
 import { useBalance } from "@/app/hooks/useBalance";
+import SearchInput from "@/components/(client)/(common)/SearchInput";
 
 const NavBar = () => {
   const { totalItems } = useCart();
@@ -153,6 +154,11 @@ const NavBar = () => {
             </div>
           </div>
 
+          {/* Search Input */}
+          <div className="hidden md:block flex-1 max-w-xl mx-4">
+            <SearchInput />
+          </div>
+
           {/* Cart and Profile Icons */}
           <div className="flex items-center gap-6">
             {session?.user && (
@@ -269,6 +275,10 @@ const NavBar = () => {
 
         {/* Mobile Menu */}
         <div className={`md:hidden fixed top-[73px] left-0 w-full bg-gradient-to-r from-gray-900 via-purple-900 to-gray-900 shadow-lg transition-all duration-300 ease-in-out mobile-menu ${mobileMenuVisible ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
+          {/* Add Search Input to Mobile Menu */}
+          <div className="p-3 border-b border-purple-500/20">
+            <SearchInput />
+          </div>
           <ul className="p-3">
             {menu.map((menuData, index) => (
               <li key={index} className="mobile-menu-item hover:bg-purple-500/20 py-1 transition-colors">
