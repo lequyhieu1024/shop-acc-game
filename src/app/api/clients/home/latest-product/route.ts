@@ -15,8 +15,7 @@ export const GET = async (req: NextRequest) => {
             take: limit,
             order: {
                 created_at: "DESC",
-            },
-            where: {is_for_sale: true}
+            }
         });
         return NextResponse.json({
             products,

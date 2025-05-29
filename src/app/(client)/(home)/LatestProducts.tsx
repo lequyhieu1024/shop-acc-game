@@ -29,7 +29,7 @@ const LatestProducts = () => {
 
   return (
     <BoxCommon
-      title="🔥 Nick Free Fire mới nhất"
+      title="🔥 Acc Free Fire !!"
       items={products}
       badgeText="NEW"
     />

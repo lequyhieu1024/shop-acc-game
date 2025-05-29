@@ -15,12 +15,15 @@ import Image from "next/image";
 import { toast } from "react-toastify";
 import { useBalance } from "@/app/hooks/useBalance";
 import SearchInput from "@/components/(client)/(common)/SearchInput";
+// import { Modal } from "antd";
+import ProfileModal from "@/components/(client)/(common)/ProfileModal";
 
 const NavBar = () => {
   const { totalItems } = useCart();
   const { screenSize = "md" } = useViewport();
   const [cartDrawerVisible, setCartDrawerVisible] = useState(false);
   const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
+  const [profileModalVisible, setProfileModalVisible] = useState(false);
   const { data: session } = useSession();
   const { balance, loading, refreshBalance } = useBalance();
   const router = useRouter();
@@ -249,6 +252,14 @@ const NavBar = () => {
                         </Link>
                       </li>
                       <li className="px-5 py-3 hover:bg-purple-500/20 transition-colors">
+                        <button 
+                          onClick={() => setProfileModalVisible(true)} 
+                          className="text-white hover:text-purple-400 font-medium w-full text-left"
+                        >
+                          Thông tin cá nhân
+                        </button>
+                      </li>
+                      <li className="px-5 py-3 hover:bg-purple-500/20 transition-colors">
                         <button onClick={handleLogout} className="text-white hover:text-purple-400 font-medium">
                           Đăng xuất
                         </button>
@@ -303,6 +314,11 @@ const NavBar = () => {
       >
         <CartDrawerContent setCartDrawerVisible={setCartDrawerVisible} />
       </DrawerCommon>
+
+      <ProfileModal 
+        visible={profileModalVisible}
+        onClose={() => setProfileModalVisible(false)}
+      />
     </>
   );
 };
