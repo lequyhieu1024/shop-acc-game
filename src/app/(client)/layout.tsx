@@ -69,6 +69,18 @@ export default function Layout({children}: { children: ReactNode }) {
                     cardType: "summary_large_image",
                 }}
             />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "Organization",
+                        "url": "https://shopcutigaming.com/",
+                        "logo": "https://shopcutigaming.com/client/assets/images/LOGO.png",
+                        "name": "Shop Cu Tí Gaming"
+                    })
+                }}
+            />
         </Head>
         <SessionProvider>
             <CartProvider>

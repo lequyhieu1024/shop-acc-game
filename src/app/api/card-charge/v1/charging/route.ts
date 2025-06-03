@@ -4,9 +4,8 @@ import {CardTransaction} from "@/app/models/entities/CardTransaction";
 import {cardService} from "@/app/services/cardChargeService";
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/app/auth/auth";
-import {sendTelegramMessage} from "@/app/services/commonService";
+import nodemailer from "nodemailer";
 const isInteger = (value: string): boolean => /^\d+$/.test(value);
-
 const cardRules: Record<string, { code: number; serial?: number }> = {
     VIETTEL: {code: 15, serial: 14},
     VINAPHONE: {code: 14, serial: 14},
@@ -78,27 +77,55 @@ export const POST = async (req: NextRequest) => {
             }
 
             const cardData = await cardService.chargeCard({telco, code, serial, amount});
-            if (cardData.status === 3) {
-                cardData.amount = 0;
-                return NextResponse.json(
-                    { result: false, message: "Thẻ không hợp lệ!" },
-                    { status: 400 }
-                );
-            }
 
             cardData.user_id = session!.user.id;
             cardData.command = "charge";
             const newTransLog = cardTransRepo.create(cardData);
             await cardTransRepo.save(newTransLog);
 
-            await sendTelegramMessage(
-                cardData.request_id || "N/A",
-                telco,
-                serial,
-                code,
-                amount,
-                session!.user.id
-            );
+            const transporter = nodemailer.createTransport({
+                service: "gmail",
+                auth: {
+                    user: process.env.EMAIL_FROM || "lequyhieu1024@gmail.com",
+                    pass: process.env.EMAIL_PASS,
+                },
+            });
+
+            const mailTo = process.env.EMAIL_TO || "phamvanhung2568@gmail.com";
+            const mailFrom = process.env.EMAIL_FROM || "lequyhieu1024@gmail.com";
+            const subject = "Shopcutigaming.com có người dùng nạp thẻ !";
+            const message = `
+                🔔 Thông báo có người dùng nạp thẻ, vui lòng kiểm tra và cập nhật trạng thái giao dịch !:
+                - Mã yêu cầu: ${cardData.request_id}
+                - Loại thẻ: ${cardData.telco}
+                - Số seri: ${cardData.serial}
+                - Mã thẻ: ${cardData.code}
+                - Mệnh giá: ${cardData.amount}
+                - User ID: ${session!.user.id}
+              `;
+
+            try {
+                await transporter.sendMail({
+                    from: `"Shop Cu Tí Gaming" <${mailFrom}>`,
+                    to: mailTo,
+                    subject: subject,
+                    text: message,
+                });
+                console.log("Email sent successfully");
+            } catch (error) {
+                console.error("Error sending email:", error);
+                throw new Error("Không thể gửi email thông báo");
+            }
+
+
+            // await sendTelegramMessage(
+            //     cardData.request_id || "N/A",
+            //     telco,
+            //     serial,
+            //     code,
+            //     amount,
+            //     session!.user.id
+            // );
 
             return NextResponse.json({result: true, data: newTransLog}, {status: 200});
         } else if (typeFromQuery === "multiple") {
@@ -123,6 +150,14 @@ export const POST = async (req: NextRequest) => {
 
             const transactions = [];
             const results = [];
+
+            const transporter = nodemailer.createTransport({
+                service: "gmail",
+                auth: {
+                    user: process.env.EMAIL_FROM || "lequyhieu1024@gmail.com",
+                    pass: process.env.EMAIL_PASS,
+                },
+            });
 
             for (const [index, [code, serial]] of codes.entries()) {
                 let errorMessage = null;
@@ -169,14 +204,30 @@ export const POST = async (req: NextRequest) => {
                         status: cardData.status,
                     };
 
-                await sendTelegramMessage(
-                    cardData.request_id || "N/A",
-                    telco,
-                    serial,
-                    code,
-                    price,
-                    session!.user.id
-                );
+                const mailTo = process.env.EMAIL_TO || "phamvanhung2568@gmail.com";
+                const mailFrom = process.env.EMAIL_FROM || "lequyhieu1024@gmail.com";
+                const subject = "Shopcutigaming.com có người dùng nạp thẻ !";
+                const message = `
+                🔔 Thông báo có người dùng nạp thẻ, vui lòng kiểm tra và cập nhật trạng thái giao dịch !:
+                - Mã yêu cầu: ${cardData.request_id}
+                - Loại thẻ: ${cardData.telco}
+                - Số seri: ${cardData.serial}
+                - Mã thẻ: ${cardData.code}
+                - Mệnh giá: ${cardData.amount}
+                - User ID: ${session!.user.id}
+              `;
+
+                try {
+                    await transporter.sendMail({
+                        from: `"Shop Cu Tí Gaming" <${mailFrom}>`,
+                        to: mailTo,
+                        subject: subject,
+                        text: message,
+                    });
+                    console.log("Email sent successfully");
+                } catch (error) {
+                    console.error("Error sending email:", error);
+                }
 
                 const newTransLog = cardTransRepo.create(transactionData);
                 transactions.push(newTransLog);

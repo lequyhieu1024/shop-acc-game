@@ -1,10 +1,9 @@
 import Banner from "./Banner";
 // import ExclusiveOffers from "./ExclusiveOffers";
 import InfoCards from "./InforCard";
-import LatestProducts from "./LatestProducts";
 // import LuckyWheelToggle from "@/components/(client)/(common)/LuckyWheelToggle";
 import NotiBannerPage from "./NotiBanner";
-import NickChip from "@/app/(client)/(home)/NickChip";
+import CategoryList from "./LatestProducts";
 
 export default function Home() {
   return (
@@ -13,8 +12,8 @@ export default function Home() {
         <NotiBannerPage />
         <Banner />
         {/*<ExclusiveOffers />*/}
-        <LatestProducts />
-        <NickChip />
+        <CategoryList />
+        {/*<NickChip />*/}
         <InfoCards />
       </div>
     </div>
