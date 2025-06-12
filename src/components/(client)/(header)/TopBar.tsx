@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { IoHome } from "react-icons/io5";
+import React, { useState } from "react";
+// import { IoHome } from "react-icons/io5";
 import { FaShoppingCart, FaCaretDown, FaSyncAlt, FaBars } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
 import Link from "next/link";
@@ -14,12 +14,16 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { toast } from "react-toastify";
 import { useBalance } from "@/app/hooks/useBalance";
+import SearchInput from "@/components/(client)/(common)/SearchInput";
+// import { Modal } from "antd";
+import ProfileModal from "@/components/(client)/(common)/ProfileModal";
 
 const NavBar = () => {
   const { totalItems } = useCart();
   const { screenSize = "md" } = useViewport();
   const [cartDrawerVisible, setCartDrawerVisible] = useState(false);
   const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
+  const [profileModalVisible, setProfileModalVisible] = useState(false);
   const { data: session } = useSession();
   const { balance, loading, refreshBalance } = useBalance();
   const router = useRouter();
@@ -56,7 +60,14 @@ const NavBar = () => {
           {/* Logo and Mobile Menu Button */}
           <div className="flex items-center">
             <Link href="/" className="text-white hover:text-purple-400 transition-colors mr-4">
-              <IoHome className="w-7 h-7" />
+              {/*<IoHome className="w-7 h-7" />*/}
+              <Image
+                  height={40}
+                  width={90}
+                  className="rounded-lg border-2 border-purple-500/50"
+                  src="/client/assets/images/LOGO.png"
+                  alt="Shop cu tí gaming"
+              />
             </Link>
             
             {/* Mobile Menu Button */}
@@ -146,12 +157,17 @@ const NavBar = () => {
             </div>
           </div>
 
+          {/* Search Input */}
+          <div className="hidden md:block flex-1 max-w-xl mx-4">
+            <SearchInput />
+          </div>
+
           {/* Cart and Profile Icons */}
           <div className="flex items-center gap-6">
             {session?.user && (
-                <div className="hidden sm:flex items-center space-x-3 p-4 bg-purple-500/20 rounded-lg">
+                <div className="hidden sm:flex items-center space-x-3 p-3 bg-purple-500/20 rounded-lg">
                   <div className="text-sm text-white font-bold">Số dư:</div>
-                  <div className="text-sm text-purple-400 font-bold">
+                  <div className="text-sm text-white font-bold">
                     {loading ? (
                         "Đang tải..."
                     ) : (
@@ -185,9 +201,9 @@ const NavBar = () => {
               {session ? (
                 <span className="text-white hover:text-purple-400 transition-colors">
                   <Image
-                    src={"/client/assets/images/LOGO.png"}
+                    src={"/client/assets/images/user_placeholder_image.jpg"}
                     alt="Shopcutigaming"
-                    width={60}
+                    width={40}
                     height={40}
                     className="rounded-lg border-2 border-purple-500/50"
                   />
@@ -236,6 +252,14 @@ const NavBar = () => {
                         </Link>
                       </li>
                       <li className="px-5 py-3 hover:bg-purple-500/20 transition-colors">
+                        <button 
+                          onClick={() => setProfileModalVisible(true)} 
+                          className="text-white hover:text-purple-400 font-medium w-full text-left"
+                        >
+                          Thông tin cá nhân
+                        </button>
+                      </li>
+                      <li className="px-5 py-3 hover:bg-purple-500/20 transition-colors">
                         <button onClick={handleLogout} className="text-white hover:text-purple-400 font-medium">
                           Đăng xuất
                         </button>
@@ -262,6 +286,10 @@ const NavBar = () => {
 
         {/* Mobile Menu */}
         <div className={`md:hidden fixed top-[73px] left-0 w-full bg-gradient-to-r from-gray-900 via-purple-900 to-gray-900 shadow-lg transition-all duration-300 ease-in-out mobile-menu ${mobileMenuVisible ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
+          {/* Add Search Input to Mobile Menu */}
+          <div className="p-3 border-b border-purple-500/20">
+            <SearchInput />
+          </div>
           <ul className="p-3">
             {menu.map((menuData, index) => (
               <li key={index} className="mobile-menu-item hover:bg-purple-500/20 py-1 transition-colors">
@@ -286,6 +314,11 @@ const NavBar = () => {
       >
         <CartDrawerContent setCartDrawerVisible={setCartDrawerVisible} />
       </DrawerCommon>
+
+      <ProfileModal 
+        visible={profileModalVisible}
+        onClose={() => setProfileModalVisible(false)}
+      />
     </>
   );
 };

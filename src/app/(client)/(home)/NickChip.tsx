@@ -21,7 +21,7 @@ const NickChip = () => {
   }, []);
   return (
       <BoxCommon
-          title="🔥 Giá siêu rẻ nhưng chất lượng siêu tốt !!!"
+          title="🔥 Acc Free Fire Giá Rẻ !!"
           items={nickChip}
       />
   );

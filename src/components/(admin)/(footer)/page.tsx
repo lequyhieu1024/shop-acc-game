@@ -35,33 +35,21 @@ const AppFooter: React.FC = () => {
           <h4 className="text-xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">Thông Tin Chung</h4>
           <ul className="space-y-3">
             <li>
-              <Link href="/about" className="text-gray-300 hover:text-purple-400 transition-colors flex items-center gap-2">
+              <Link href="/gioi-thieu" className="text-gray-300 hover:text-purple-400 transition-colors flex items-center gap-2">
                 <span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span>
                 Về Chúng Tôi
               </Link>
             </li>
             <li>
-              <Link href="/policy" className="text-gray-300 hover:text-purple-400 transition-colors flex items-center gap-2">
+              <Link href="/nap-the" className="text-gray-300 hover:text-purple-400 transition-colors flex items-center gap-2">
                 <span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span>
-                Chính Sách Bảo Mật
+                Nạp thẻ
               </Link>
             </li>
             <li>
-              <Link href="/terms" className="text-gray-300 hover:text-purple-400 transition-colors flex items-center gap-2">
+              <Link href="/bai-viet" className="text-gray-300 hover:text-purple-400 transition-colors flex items-center gap-2">
                 <span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span>
-                Điều Khoản Sử Dụng
-              </Link>
-            </li>
-            <li>
-              <Link href="/contact" className="text-gray-300 hover:text-purple-400 transition-colors flex items-center gap-2">
-                <span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span>
-                Chính Sách Bán Hàng
-              </Link>
-            </li>
-            <li>
-              <Link href="/support" className="text-gray-300 hover:text-purple-400 transition-colors flex items-center gap-2">
-                <span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span>
-                Chính Sách Đổi Trả
+                Bài viết
               </Link>
             </li>
           </ul>
@@ -72,33 +60,21 @@ const AppFooter: React.FC = () => {
           <h4 className="text-xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">Sản Phẩm</h4>
           <ul className="space-y-3">
             <li>
-              <Link href="/products/free-fire" className="text-gray-300 hover:text-purple-400 transition-colors flex items-center gap-2">
+              <Link href="/danh-muc" className="text-gray-300 hover:text-purple-400 transition-colors flex items-center gap-2">
                 <span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span>
                 Mua Nick Free Fire
               </Link>
             </li>
             <li>
-              <Link href="/products/minigame" className="text-gray-300 hover:text-purple-400 transition-colors flex items-center gap-2">
-                <span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span>
-                Minigame Kim Cương
-              </Link>
-            </li>
-            <li>
-              <Link href="/products/nick-vip" className="text-gray-300 hover:text-purple-400 transition-colors flex items-center gap-2">
+              <Link href="/danh-muc" className="text-gray-300 hover:text-purple-400 transition-colors flex items-center gap-2">
                 <span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span>
                 Mua Nick Free VIP
               </Link>
             </li>
             <li>
-              <Link href="/products/lien-quan" className="text-gray-300 hover:text-purple-400 transition-colors flex items-center gap-2">
+              <Link href="/danh-muc" className="text-gray-300 hover:text-purple-400 transition-colors flex items-center gap-2">
                 <span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span>
-                Mua Nick Liên Quân
-              </Link>
-            </li>
-            <li>
-              <Link href="/products/roblox" className="text-gray-300 hover:text-purple-400 transition-colors flex items-center gap-2">
-                <span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span>
-                Apex Roblox
+                Danh mục sản phẩm
               </Link>
             </li>
           </ul>
@@ -124,7 +100,7 @@ const AppFooter: React.FC = () => {
                 alt="Hỗ Trợ"
                 className="rounded-lg"
                 height={100}
-                width={100}
+                width={320}
               />
             </div>
           </div>

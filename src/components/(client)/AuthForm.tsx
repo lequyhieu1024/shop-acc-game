@@ -7,7 +7,7 @@ import { Formik, Field, Form as FormikForm, ErrorMessage } from "formik";
 import * as yup from "yup";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 
 interface AuthProps {
   tab: string;
@@ -18,9 +18,6 @@ const validationSchema = yup.object().shape({
   password: yup
       .string()
       .min(6, "Mật khẩu ít nhất 6 ký tự")
-      .matches(/[A-Z]/, "Mật khẩu phải có ít nhất 1 chữ in hoa")
-      .matches(/[a-z]/, "Mật khẩu phải có ít nhất 1 chữ thường")
-      .matches(/\d/, "Mật khẩu phải có ít nhất 1 số")
       .required("Vui lòng nhập mật khẩu!"),
   referral_code: yup.string().when("$isRegister", {
     is: true,
@@ -28,7 +25,7 @@ const validationSchema = yup.object().shape({
   }),
 });
 
-const AuthForm: React.FC<AuthProps> = ({tab}) => {
+const AuthForm: React.FC<AuthProps> = ({ tab }) => {
   const [activeTab, setActiveTab] = useState(tab);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -39,6 +36,7 @@ const AuthForm: React.FC<AuthProps> = ({tab}) => {
     username: string;
     password: string;
     referral_code?: string;
+    action: string;
   }) => {
     setLoading(true);
     setError("");
@@ -50,6 +48,7 @@ const AuthForm: React.FC<AuthProps> = ({tab}) => {
         username: values.username,
         password: values.password,
         referral_code: activeTab === "register" ? values.referral_code || undefined : undefined,
+        action: activeTab, // Gửi action (login/register)
       });
 
       if (result?.error) {
@@ -57,10 +56,10 @@ const AuthForm: React.FC<AuthProps> = ({tab}) => {
       } else {
         setSuccess(true);
         router.push("/");
-        if (activeTab == "register") {
-          toast.success('Đăng ký thành công, đã đăng nhập')
+        if (activeTab === "register") {
+          toast.success("Đăng ký thành công, đã đăng nhập");
         } else {
-          toast.success('Đăng nhập thành công')
+          toast.success("Đăng nhập thành công");
         }
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -93,13 +92,14 @@ const AuthForm: React.FC<AuthProps> = ({tab}) => {
                 username: "",
                 password: "",
                 referral_code: "",
+                action: activeTab, // Thêm action vào initialValues
               }}
               validationSchema={validationSchema}
               validateOnChange={false}
               validateOnBlur={false}
               context={{ isRegister: activeTab === "register" }}
               onSubmit={(values) => {
-                handleSubmit(values);
+                handleSubmit({ ...values, action: activeTab });
               }}
           >
             {({ handleSubmit }) => (
@@ -107,6 +107,9 @@ const AuthForm: React.FC<AuthProps> = ({tab}) => {
                     onSubmit={handleSubmit}
                     className="flex flex-col gap-4 mt-6"
                 >
+                  {/* Hidden Action Field */}
+                  <Field type="hidden" name="action" value={activeTab} />
+
                   {/* Username Field */}
                   <label className="font-medium">Tên đăng nhập</label>
                   <Field

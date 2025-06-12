@@ -1,39 +1,27 @@
 export default function ChargeCardTextComponent() {
     return (
         <div className="mb-6">
-            <h1 className="text-center text-2xl font-bold mb-2">Đổi thẻ cào</h1>
+            <h1 className="text-center text-2xl font-bold mb-2">Giới thiệu Shop Cuti Gaming</h1>
             <p className="text-gray-700">
                 <strong className="text-red-600">
-                    - Không nhận API từ game bài, thẻ ăn cắp, lừa đảo, không rõ nguồn gốc, thẻ rút từ visa, credit
-                    card... Phát hiện khóa vv không hoàn số dư
+                    - Shop Cuti Gaming cam kết chỉ cung cấp tài khoản game uy tín, rõ ràng nguồn gốc, không bán tài khoản bị hack, gian lận hoặc không hợp lệ.
                 </strong>
             </p>
             <p className="text-black">
-                - Vui lòng đọc{' '}
-                <a href="https://thesieure.com/news/http-api-tichhop247-com.html" className="text-blue-600 font-bold">
-                    Điều Khoản
-                </a>
-                , Đổi thẻ sang thẻ game rẻ hơn tại{' '}
-                <a href="https://365pay.vn/" className="text-red-600 font-bold">
-                    365pay.vn
-                </a>
+                - Mọi tài khoản đều được kiểm tra kỹ trước khi đăng bán. Sau khi mua, khách hàng có thể đăng nhập ngay và đổi mật khẩu.
             </p>
-            <p>
-                - <strong className="text-red-600">Tạo web con đổi thẻ, bán thẻ miễn phí </strong>
-                <a href="https://thesieure.com/news/cap-web-con-doi-the-tich-hop-doi-the-rut-tien-tu-dong-auto-100.html"
-                   className="font-bold">
-                    tại đây
-                </a>
-                . Hướng dẫn tích hợp API gạch thẻ tự động cho Shop:{' '}
-                <a href="https://thesieure.com/merchant/list" className="font-bold">tại đây</a>
+            <p className="text-black">
+                - Tuyệt đối không sử dụng thông tin thanh toán không hợp pháp như thẻ tín dụng bị đánh cắp, ví điện tử không thuộc sở hữu cá nhân. Hệ thống sẽ tự động khóa tài khoản vi phạm và không hoàn tiền.
             </p>
-            <p>
-                <a href="https://thesieure.com/doithecao" className="font-bold">Lịch sử nạp thẻ tại đây</a>,{' '}
-                Thống kê{' '}
-                <a href="https://thesieure.com/doithecao/san-luong" className="font-bold">tại đây</a>,{' '}
-                Nhận thông báo Telegram{' '}
-                <a href="https://t.me/thongbao_thesieure" className="font-bold">tại đây</a>
+            <p className="text-black">
+                - Khách hàng cần đọc kỹ hướng dẫn trước khi mua và hoàn toàn chịu trách nhiệm với thao tác thanh toán của mình. Shop không chịu trách nhiệm nếu khách nhập sai thông tin.
+            </p>
+            <p className="text-black">
+                - Đội ngũ hỗ trợ hoạt động 24/7 để giải đáp mọi thắc mắc và xử lý sự cố một cách nhanh chóng và chuyên nghiệp.
+            </p>
+            <p className="text-black">
+                - Cảm ơn quý khách đã tin tưởng và ủng hộ Shop Cuti Gaming. Sự hài lòng của bạn là ưu tiên hàng đầu của chúng tôi.
             </p>
         </div>
-    )
+    );
 }

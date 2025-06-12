@@ -8,8 +8,8 @@ import { User } from "@/app/models/entities/User";
 import { Product } from "@/app/models/entities/Product";
 import { PaymentStatus, OrderStatus } from "@/app/models/entities/Order";
 import {IsNull, Like} from "typeorm";
-import { sendTelegramMessage2} from "@/app/services/commonService";
 import {Voucher} from "@/app/models/entities/Voucher";
+import nodemailer from "nodemailer";
 
 
 export const GET = async (request: Request) => {
@@ -159,7 +159,7 @@ export async function POST(request: Request) {
       }
       if (!product.is_for_sale) {
         return NextResponse.json(
-            { error: `Sản phẩm ${product.name} không dành cho bạn, vui lòng liên hệ quản trị viên để có thể mua !` },
+            { error: `Nick ${product.name} đã có người đặt cọc, vui lòng mua nick khác !` },
             { status: 400 }
         );
       }
@@ -223,7 +223,35 @@ export async function POST(request: Request) {
 
       await queryRunner.commitTransaction();
 
-      await sendTelegramMessage2(customer_name, customer_phone);
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.EMAIL_FROM || "lequyhieu1024@gmail.com",
+          pass: process.env.EMAIL_PASS,
+        },
+      });
+
+      const mailTo = process.env.EMAIL_TO || "phamvanhung2568@gmail.com";
+      const mailFrom = process.env.EMAIL_FROM || "lequyhieu1024@gmail.com";
+      const subject = "Shopcutigaming.com Có đơn hàng mới cần xử lý !";
+      const message = `
+        🔔 Có đơn hàng mới cần xử lý!
+        - Khách hàng: ${customer_name}  
+        - Số điện thoại: ${customer_phone}  
+        `;
+
+      try {
+        await transporter.sendMail({
+          from: `"Shop Cu Tí Gaming" <${mailFrom}>`,
+          to: mailTo,
+          subject: subject,
+          text: message,
+        });
+        console.log("Email sent successfully");
+      } catch (error) {
+        console.error("Error sending email:", error);
+        throw new Error("Không thể gửi email thông báo");
+      }
 
       return NextResponse.json({
         result: true,

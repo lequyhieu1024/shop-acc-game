@@ -1,8 +1,7 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
 import { Card, Badge, Modal } from "antd";
-import { RightOutlined, CheckCircleFilled } from "@ant-design/icons";
-import Link from "next/link";
+import { CheckCircleFilled } from "@ant-design/icons";
 import Image from "next/image";
 import { FaShoppingCart } from "react-icons/fa";
 import { useCart } from "@/app/contexts/CartContext";
@@ -21,7 +20,6 @@ interface BoxCommonProps {
 const BoxCommon: React.FC<BoxCommonProps> = ({
                                                  title,
                                                  items,
-                                                 link = "/danh-muc",
                                                  badgeText = "",
                                                  showPrice = true,
                                              }) => {
@@ -178,9 +176,9 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
         <div className="container mx-auto px-4 py-12 relative">
             <div className="flex justify-between items-center mb-8">
                 <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">{title}</h2>
-                <Link href={link} className="text-purple-600 hover:text-purple-800 flex items-center font-medium transition-all hover:scale-105">
-                    Xem tất cả <RightOutlined className="ml-1" />
-                </Link>
+                {/*<Link href={link} className="text-purple-600 hover:text-purple-800 flex items-center font-medium transition-all hover:scale-105">*/}
+                {/*    Xem tất cả <RightOutlined className="ml-1" />*/}
+                {/*</Link>*/}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {items.map((item) => (
