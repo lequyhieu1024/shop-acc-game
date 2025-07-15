@@ -25,7 +25,6 @@ interface CheckoutFormValues {
 }
 
 const { Title, Text } = Typography;
-const { Option } = Select;
 
 export default function CheckoutPage() {
     const [form] = Form.useForm<CheckoutFormValues>();

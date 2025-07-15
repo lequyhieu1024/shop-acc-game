@@ -61,7 +61,7 @@ export class CardTransaction {
     @CreateDateColumn({ type: 'timestamp' })
     created_at!: Date;
 
-    @ManyToOne(() => User, user => user.cardTransactions, { eager: false })
+    @ManyToOne(() => User, { eager: false })
     @JoinColumn({ name: "user_id" })
     user: User | undefined;
 }
