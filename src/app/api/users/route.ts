@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
 
         const query = userRepository
             .createQueryBuilder("user")
-            .where("user.deleted_at IS NULL");
+            .where("user.deleted_at IS NULL").orderBy("user.id", "DESC");
 
         if (username) {
             query.andWhere("user.username LIKE :username", { username: `%${username}%` });

@@ -81,7 +81,7 @@ export class Product {
   @DeleteDateColumn()
   deleted_at?: Date;
 
-  @ManyToOne(() => Category, { eager: false })
+  @ManyToOne(() => Category, (category) => category.products, { eager: true })
   @JoinColumn({ name: "category_id" })
   category: Category | undefined;
 

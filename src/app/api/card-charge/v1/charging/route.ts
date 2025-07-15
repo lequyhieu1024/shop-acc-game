@@ -77,11 +77,21 @@ export const POST = async (req: NextRequest) => {
             }
 
             const cardData = await cardService.chargeCard({telco, code, serial, amount});
-
             cardData.user_id = session!.user.id;
             cardData.command = "charge";
-            const newTransLog = cardTransRepo.create(cardData);
-            await cardTransRepo.save(newTransLog);
+
+            let newTransLog;
+            if (!cardData.id || !cardData.amount || !cardData.value) {
+                newTransLog = cardTransRepo.create(cardData);
+                await cardTransRepo.save(newTransLog);
+                return NextResponse.json(
+                    {result: false, message: "Thesieure không thể tiếp nhận thông tin nạp thẻ này, vui lòng kiểm tra lại thông tin thẻ!"},
+                    {status: 400}
+                );
+            } else {
+                newTransLog = cardTransRepo.create(cardData);
+                await cardTransRepo.save(newTransLog);
+            }
 
             const transporter = nodemailer.createTransport({
                 service: "gmail",

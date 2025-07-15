@@ -9,9 +9,9 @@ export default function AboutPage() {
                 <title>Giới thiệu Shop Cuti Gaming - Bán acc Free Fire uy tín</title>
                 <meta
                     name="description"
-                    content="Shop Cuti Gaming - Địa chỉ bán acc Free Fire uy tín tại shopcutigaming.com. Cung cấp tài khoản Free Fire giá rẻ, an toàn, hỗ trợ 24/7 bởi Lê Quý Hiếu."
+                    content="Shop Cuti Gaming - Địa chỉ bán acc Free Fire uy tín tại shopcutigaming.com. Cung cấp tài khoản Free Fire giá rẻ, an toàn, hỗ trợ 24/7 bởi Phạm Văn Hùng."
                 />
-                <meta name="keywords" content="bán acc Free Fire, shopcutigaming, acc Free Fire giá rẻ, Lê Quý Hiếu" />
+                <meta name="keywords" content="bán acc Free Fire, shopcutigaming, acc Free Fire giá rẻ, Phạm Văn Hùng" />
                 <link rel="canonical" href="https://shopcutigaming.com/about" />
             </Head>
             <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 py-20">
@@ -33,7 +33,7 @@ export default function AboutPage() {
                                 </h2>
                                 <div className="space-y-4 text-gray-300">
                                     <p>
-                                        Shop Cu Tí Gaming được thành lập bởi <strong className="text-purple-400">Lê Quý Hiếu</strong>, với mục tiêu mang đến cho game thủ Free Fire những tài khoản chất lượng cao, từ acc VIP, acc rank cao đến acc giá rẻ. Chúng tôi cam kết:
+                                        Shop Cu Tí Gaming được thành lập bởi <strong className="text-purple-400">Phạm Văn Hùng</strong>, với mục tiêu mang đến cho game thủ Free Fire những tài khoản chất lượng cao, từ acc VIP, acc rank cao đến acc giá rẻ. Chúng tôi cam kết:
                                     </p>
                                     <ul className="list-disc pl-5 space-y-2">
                                         <li>Tài khoản 100% an toàn, không hack.</li>

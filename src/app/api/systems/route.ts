@@ -42,7 +42,7 @@ export const PATCH = async (req: NextRequest) => {
     const newData: Record<string, any> = {};
     
     // Xử lý các trường văn bản
-    ['name', 'phone', 'email', 'youtube', 'facebook', 'tiktok'].forEach(field => {
+    ['name', 'phone', 'email','zalo', 'youtube', 'facebook', 'tiktok'].forEach(field => {
       const value = formData.get(field);
       if (value) newData[field] = value;
     });

@@ -694,48 +694,6 @@ export default function ProductForm({
                   </div>
                   <div className="mb-4 row align-items-center">
                     <label className="form-label-title col-md-3 mb-0">
-                      ID Tài Khoản
-                    </label>
-                    <div className="col-md-9">
-                      <input
-                        className={`form-control ${
-                          errors.account_id ? "is-invalid" : ""
-                        }`}
-                        type="text"
-                        name="account_id"
-                        value={formData.account_id || ""}
-                        onChange={handleChange}
-                      />
-                      {errors.account_id && (
-                        <div className="invalid-feedback">
-                          {errors.account_id}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  <div className="mb-4 row align-items-center">
-                    <label className="form-label-title col-md-3 mb-0">
-                      Tên người chơi
-                    </label>
-                    <div className="col-md-9">
-                      <input
-                        className={`form-control ${
-                          errors.account_name ? "is-invalid" : ""
-                        }`}
-                        type="text"
-                        name="account_name"
-                        value={formData.account_name || ""}
-                        onChange={handleChange}
-                      />
-                      {errors.account_name && (
-                        <div className="invalid-feedback">
-                          {errors.account_name}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  <div className="mb-4 row align-items-center">
-                    <label className="form-label-title col-md-3 mb-0">
                       Số kim cương
                     </label>
                     <div className="col-md-9">

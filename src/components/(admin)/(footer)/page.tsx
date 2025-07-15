@@ -86,7 +86,7 @@ const AppFooter: React.FC = () => {
           <div className="space-y-4">
             <div className="flex items-center gap-3 p-3 bg-purple-500/20 rounded-lg">
               <FaPhoneAlt className="text-purple-400" />
-              <span className="text-gray-300">Chăm sóc khách hàng: <span className="text-purple-400 font-bold">{ data && data.zalo || "033 8475 943"}</span></span>
+              <span className="text-gray-300">Chăm sóc khách hàng: <span className="text-purple-400 font-bold">{ data && data.phone || "033 8475 943"}</span></span>
             </div>
             <div className="flex items-center gap-3 p-3 bg-purple-500/20 rounded-lg">
               <FaFacebookF className="text-purple-400" />

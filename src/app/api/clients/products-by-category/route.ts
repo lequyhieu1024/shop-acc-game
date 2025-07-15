@@ -17,7 +17,7 @@ export const GET = async (req: NextRequest) => {
         
         // Build where clause based on categoryId
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const whereClause: any = { is_for_sale: true };
+        const whereClause: any = {};
         if (categoryId && categoryId !== "all") {
             whereClause.category_id = parseInt(categoryId);
         }

@@ -52,6 +52,7 @@ export async function GET(req: NextRequest) {
         }
 
         const [products, total] = await productRepository.findAndCount({
+            relations: ["category"],
             where,
             skip,
             take: limit,
@@ -86,7 +87,6 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
     try {
         const productRepository = await initRepository(Product);
-
         const formData = await req.formData();
 
         const name = formData.get("name") as string;
@@ -98,31 +98,32 @@ export async function POST(req: NextRequest) {
         const quantity = formData.get("quantity") as string;
         const category_id = formData.get("category_id") as string;
         const register_by = formData.get("register_by") as string;
+
         if (!name || !code || !thumbnailFile || !regularPrice || !salePrice || !skinType || !quantity || !category_id || !register_by) {
             return NextResponse.json(
                 {
                     success: false,
                     message: "Vui lòng cung cấp đầy đủ thông tin: tên, mã, ảnh, giá gốc, giá bán, số lượng, ...",
                 },
-                {status: 400}
+                { status: 400 }
             );
         }
 
         const thumbnailUrl = await uploadFileToPinata(thumbnailFile, name);
+
         const imageFilesRaw = formData.getAll("images");
         const imageFiles = imageFilesRaw.filter(
             (file) => file instanceof File && file.name && file.size > 0
         );
-        const imageUrls: string[] = [];
 
-        for (const imageFile of imageFiles) {
-            try {
-                const imageUrl = await uploadFileToPinata(imageFile as File, name);
-                imageUrls.push(String(imageUrl));
-            } catch (error) {
+        const imageUploadPromises = imageFiles.map((file) =>
+            uploadFileToPinata(file as File, name).then((url) => String(url)).catch((error) => {
                 console.error("Failed to upload image:", (error as Error).message);
-            }
-        }
+                return null;
+            })
+        );
+
+        const imageUrls = (await Promise.all(imageUploadPromises)).filter((url) => url !== null) as string[];
 
         const newProduct = productRepository.create({
             code,
@@ -136,15 +137,13 @@ export async function POST(req: NextRequest) {
             register_by: register_by,
             rank: formData.get("rank") as string,
             server: formData.get("server") as string,
-            number_diamond_available: parseInt(
-                formData.get("number_diamond_available") as string
-            ) || 0,
+            number_diamond_available: parseInt(formData.get("number_diamond_available") as string) || 0,
             status: (formData.get("status") as "active" | "inactive") || "active",
             is_for_sale: formData.get("is_for_sale") === "true" || false,
             category_id: parseInt(category_id) || 0,
             quantity: Number(quantity),
             account_id: formData.get("account_id") || null,
-            account_name: formData.get("account_name") || null
+            account_name: formData.get("account_name") || null,
         });
 
         const savedProduct = await productRepository.save(newProduct);
@@ -167,7 +166,7 @@ export async function POST(req: NextRequest) {
                 images: imageUrls,
                 message: "Tạo sản phẩm thành công",
             },
-            {status: 200}
+            { status: 200 }
         );
     } catch (error) {
         console.error("Lỗi khi tạo sản phẩm:", error);
@@ -176,7 +175,7 @@ export async function POST(req: NextRequest) {
                 success: false,
                 message: "Đã xảy ra lỗi khi tạo sản phẩm",
             },
-            {status: 500}
+            { status: 500 }
         );
     }
 }

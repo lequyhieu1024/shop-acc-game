@@ -25,14 +25,14 @@ const Banner = () => {
     <Carousel
       touchMove
       draggable
-      className="h-[320px] bg-red-50 container select-none cursor-grab active:cursor-grabbing pt-10 mb-6 "
+      className="h-[320px] md:h-[550px] bg-red-50 container select-none cursor-grab active:cursor-grabbing pt-12 mb-6 "
     >
       {banners.map((banner, index) => (
         <div key={index} className="">
           <Image width={500} height={500}
             src={banner.image_url}
             alt="Shop cu tí gaming"
-            className="w-full h-[320px] object-cover"
+            className="w-full h-[320px] md:h-[550px] object-cover"
           />
         </div>
       ))}

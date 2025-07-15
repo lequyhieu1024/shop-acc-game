@@ -8,6 +8,7 @@ import Loading from "@/components/Loading";
 import { statusLabels } from "@/app/models/entities/Order";
 import { toast } from "react-toastify";
 import {number_format} from "@/app/services/commonService";
+import {convertToInt} from "@/app/helpers/common";
 
 const { Option } = Select;
 
@@ -66,7 +67,7 @@ export default function EditOrder() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (product: any) => (
           <div className="flex items-center gap-2">
-            <img style={{ width: 200, height: 100 }}
+            <img style={{ width: 160, height: 100 }}
                 src={String(product!.thumbnail) || "/placeholder-image.jpg"}
                 alt={product!.name || "Hình ảnh sản phẩm"}
                 className="w-12 h-12 object-cover"
@@ -74,20 +75,22 @@ export default function EditOrder() {
                   e.currentTarget.src = "/placeholder-image.jpg";
                 }}
             />
-            <div>
-              <div className="font-medium">{product!.name || "N/A"}</div>
-              <div className="text-sm text-gray-500">
-                {product?.category.name || "Không có danh mục"}
-              </div>
+            <div className={`mt-3`}>
+              <h4>{product!.name || "N/A"}</h4>
             </div>
           </div>
       ),
     },
     {
+      title: "Mã sản phẩm",
+      dataIndex: "code",
+      key: "unit_price",
+    },
+    {
       title: "Đơn giá",
       dataIndex: "unit_price",
       key: "unit_price",
-      render: (unit_price: number) => (unit_price ? `${number_format(unit_price)} đ` : "N/A"),
+      render: (unit_price: number) => (unit_price ? `${convertToInt(unit_price)} đ` : "N/A"),
     },
     {
       title: "Số lượng",
@@ -101,7 +104,7 @@ export default function EditOrder() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (record: any) => {
         const totalPrice = record.unit_price && record.quantity ? record.unit_price * record.quantity : null;
-        return totalPrice + ' đ';
+        return convertToInt(totalPrice) + ' đ';
       },
     },
   ];
@@ -149,24 +152,24 @@ export default function EditOrder() {
                 <>
                   <Descriptions.Item label="Tổng giá sản phẩm">
                     <span className="text-lg font-bold text-red-500">
-                      {order.total_product_price?.toLocaleString("vi-VN") || "0"} đ
+                      {convertToInt(order.total_product_price) || "0"} đ
                     </span>
                   </Descriptions.Item>
                   <Descriptions.Item label="Giảm trừ từ mã giảm giá">
                     <span className="text-lg font-bold text-red-500">
-                      {order.voucher_discount?.toLocaleString("vi-VN") || "0"} đ
+                      {convertToInt(order.voucher_discount) || "0"} đ
                     </span>
                   </Descriptions.Item>
                   <Descriptions.Item label="Tổng thanh toán">
                     <span className="text-lg font-bold text-red-500">
-                      {order.total_amount?.toLocaleString("vi-VN") || "0"} đ
+                      {convertToInt(order.total_amount) || "0"} đ
                     </span>
                   </Descriptions.Item>
                 </>
               ) : (
                     <Descriptions.Item label="Tổng thanh toán">
                         <span className="text-lg font-bold text-red-500">
-                          {order.total_amount?.toLocaleString("vi-VN") || "0"} đ
+                          {convertToInt(order.total_amount) || "0"} đ
                         </span>
                     </Descriptions.Item>
               )

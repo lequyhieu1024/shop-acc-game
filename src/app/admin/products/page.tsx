@@ -155,6 +155,11 @@ export default function Product() {
             ),
         },
         {
+            title: "Danh mục",
+            dataIndex: ["category", "name"],
+            key: "category",
+        },
+        {
             title: "Trạng thái",
             dataIndex: "status",
             key: "status",

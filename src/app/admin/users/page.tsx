@@ -4,9 +4,11 @@ import { IUser } from "@/app/interfaces/IUser";
 import api from "@/app/services/axiosService";
 import Loading from "@/components/Loading";
 import ErrorPage from "@/components/(admin)/Error";
-import { Space, Table, TableProps, Tag } from "antd";
+import { Space, Table, TableProps, Tag, Modal, Form, InputNumber } from "antd";
 import DeleteConfirm from "@/components/DeleteConfirm";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
+import { convertToInt } from "@/app/helpers/common";
+import Link from "next/link";
 
 interface Filters {
     [key: string]: string | number | boolean;
@@ -16,6 +18,9 @@ export default function UsersPage() {
     const [loading, setLoading] = useState<boolean>(true);
     const [users, setUsers] = useState<IUser[]>([]);
     const [error, setError] = useState<boolean>(false);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+    const [form] = Form.useForm();
 
     const [pagination, setPagination] = useState({
         current: 1,
@@ -80,7 +85,7 @@ export default function UsersPage() {
         try {
             const res = await api.delete(`users/${id}`);
             if (res) {
-                toast.success("Xóa người dùng thành công !")
+                toast.success("Xóa người dùng thành công !");
                 await fetchUsers();
             }
         } catch (e) {
@@ -88,9 +93,40 @@ export default function UsersPage() {
         }
     };
 
+    const handleUpdateBalance = async (values: { balance: number }) => {
+        if (selectedUserId === null) return;
+
+        try {
+            const response = await api.patch(`users/${selectedUserId}`, {
+                balance: values.balance,
+            });
+            if (response.status === 200) {
+                toast.success("Cập nhật số dư thành công!");
+                setIsModalVisible(false);
+                form.resetFields();
+                await fetchUsers();
+            }
+        } catch (e) {
+            console.error(e);
+            toast.error("Cập nhật số dư thất bại!");
+        }
+    };
+
+    const showEditModal = (user: IUser) => {
+        setSelectedUserId(user.id);
+        form.setFieldsValue({ balance: user.balance });
+        setIsModalVisible(true);
+    };
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
+        setSelectedUserId(null);
+        form.resetFields();
+    };
+
     const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setPagination((prev) => ({ ...prev, current: 1 })); // Reset về trang 1 khi tìm kiếm
+        setPagination((prev) => ({ ...prev, current: 1 }));
         fetchUsers(formData, 1);
     };
 
@@ -110,7 +146,8 @@ export default function UsersPage() {
             created_at: "",
         });
     };
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleTableChange = (pagination: any) => {
         const { current, pageSize } = pagination;
         fetchUsers(formData, current, pageSize);
@@ -123,7 +160,7 @@ export default function UsersPage() {
 
     const columns: TableProps<IUser>["columns"] = [
         {
-            title: "Username",
+            title: "username",
             dataIndex: "username",
             key: "username",
         },
@@ -137,18 +174,18 @@ export default function UsersPage() {
             title: "Số dư",
             dataIndex: "balance",
             key: "balance",
-            render: (balance: bigint) => `${balance.toString()} VND`,
+            render: (balance: bigint) => `${convertToInt(balance)} VND`,
         },
         {
-            title: "Vé quay miễn phí",
-            dataIndex: "number_of_free_draw",
-            key: "number_of_free_draw",
+            title: "Mã người dùng",
+            dataIndex: "user_code",
+            key: "user_code",
         },
         {
             title: "Mã giới thiệu",
             dataIndex: "referral_code",
             key: "referral_code",
-            render: (referral_code: string) => referral_code || "-",
+            render: (referral_code: string) => referral_code == 'undefined' ? "-" : referral_code,
         },
         {
             title: "Vai trò",
@@ -177,8 +214,13 @@ export default function UsersPage() {
             key: "action",
             render: (user: IUser) => (
                 <Space size="middle">
+                    <Link href={`#`} onClick={() => showEditModal(user)}>
+                        <i className="ri-pencil-line"></i>
+                    </Link>
                     {user.role !== "admin" ? (
-                        <DeleteConfirm onConfirm={() => handleDelete(user.id)} />
+                        <>
+                            <DeleteConfirm onConfirm={() => handleDelete(user.id)} />
+                        </>
                     ) : null}
                 </Space>
             ),
@@ -277,6 +319,46 @@ export default function UsersPage() {
                                                 onChange: (page, pageSize) => handleTableChange({ current: page, pageSize }),
                                             }}
                                         />
+
+                                        <Modal
+                                            title="Cập nhật số dư"
+                                            open={isModalVisible}
+                                            onCancel={handleCancel}
+                                            footer={null}
+                                        >
+                                            <Form
+                                                form={form}
+                                                onFinish={handleUpdateBalance}
+                                                layout="vertical"
+                                            >
+                                                <Form.Item
+                                                    name="balance"
+                                                    label="Số dư (VND)"
+                                                    rules={[
+                                                        {
+                                                            required: true,
+                                                            message: "Vui lòng nhập số dư!",
+                                                        },
+                                                    ]}
+                                                >
+                                                    <InputNumber
+                                                        style={{ width: "100%" }}
+                                                        formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                                        parser={(value) => value?.replace(/\$\s?|(,*)/g, "") as unknown as number}
+                                                    />
+                                                </Form.Item>
+                                                <Form.Item>
+                                                    <Space>
+                                                        <button type="submit" className="btn btn-primary">
+                                                            Lưu
+                                                        </button>
+                                                        <button type="button" className="btn btn-secondary" onClick={handleCancel}>
+                                                            Hủy
+                                                        </button>
+                                                    </Space>
+                                                </Form.Item>
+                                            </Form>
+                                        </Modal>
                                     </div>
                                 </div>
                             </div>
