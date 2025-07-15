@@ -9,6 +9,7 @@ import { Table, Space, TableProps, Tag, Input, Select, Button, Form } from "antd
 import Image from "next/image";
 import DeleteConfirm from "@/components/DeleteConfirm";
 import { toast } from "react-toastify";
+import {convertToInt} from "@/app/helpers/common";
 
 const { Option } = Select;
 
@@ -149,8 +150,8 @@ export default function Product() {
             key: "price",
             render: (record) => (
                 <div className={`d-flex flex-column`}>
-                    <del className={`text-danger`}>{record.regular_price.toLocaleString("vi-VN")} đ</del>
-                    <span>{record.sale_price.toLocaleString("vi-VN")} đ</span>
+                    <span>Giá CARD: {convertToInt(record.regular_price)} đ</span>
+                    <span>Giá ATM: {convertToInt(record.sale_price)} đ</span>
                 </div>
             ),
         },

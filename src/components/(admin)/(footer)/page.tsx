@@ -96,7 +96,7 @@ const AppFooter: React.FC = () => {
             </div>
             <div className="mt-4 p-3 bg-purple-500/20 rounded-lg">
               <Image
-                src={ data && String(data.logo) || '/client/assets/images/LOGO.png' }
+                src={ '/client/assets/images/LOGO.png' }
                 alt="Hỗ Trợ"
                 className="rounded-lg"
                 height={100}

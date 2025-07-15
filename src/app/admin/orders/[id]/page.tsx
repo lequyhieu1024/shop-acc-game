@@ -7,7 +7,6 @@ import { IOrder } from "@/app/interfaces/IOrder";
 import Loading from "@/components/Loading";
 import { statusLabels } from "@/app/models/entities/Order";
 import { toast } from "react-toastify";
-import {number_format} from "@/app/services/commonService";
 import {convertToInt} from "@/app/helpers/common";
 
 const { Option } = Select;
@@ -48,7 +47,8 @@ export default function EditOrder() {
     try {
       setIsSubmitting(true);
       await api.patch(`/orders/${params.id}`, {
-        status
+        status,
+        paymentStatus
       });
       toast.success("Cập nhật trạng thái đơn hàng thành công");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -71,9 +71,6 @@ export default function EditOrder() {
                 src={String(product!.thumbnail) || "/placeholder-image.jpg"}
                 alt={product!.name || "Hình ảnh sản phẩm"}
                 className="w-12 h-12 object-cover"
-                onError={(e) => {
-                  e.currentTarget.src = "/placeholder-image.jpg";
-                }}
             />
             <div className={`mt-3`}>
               <h4>{product!.name || "N/A"}</h4>
@@ -83,8 +80,8 @@ export default function EditOrder() {
     },
     {
       title: "Mã sản phẩm",
-      dataIndex: "code",
-      key: "unit_price",
+      dataIndex: ["product", "code"],
+      key: "code",
     },
     {
       title: "Đơn giá",
@@ -125,7 +122,10 @@ export default function EditOrder() {
           <Descriptions.Item label="Email">{order.customer_email || "N/A"}</Descriptions.Item>
           <Descriptions.Item label="Số điện thoại">{order.customer_phone || "N/A"}</Descriptions.Item>
           <Descriptions.Item label="Phương thức thanh toán">
-            Ví
+
+            <Tag color={"blue"}>
+              CARD
+            </Tag>
           </Descriptions.Item>
           <Descriptions.Item label="Trạng thái thanh toán">
             <Tag color={order.payment_status === "paid" ? "green" : "red"}>
@@ -214,7 +214,7 @@ export default function EditOrder() {
                 name="payment_status"
                 rules={[{ required: true, message: "Vui lòng chọn trạng thái thanh toán" }]}
             >
-              <Select disabled={true} value={paymentStatus} onChange={setPaymentStatus}>
+              <Select onChange={setPaymentStatus}>
                 <Option value="unpaid">Chưa thanh toán</Option>
                 <Option value="paid">Đã thanh toán</Option>
               </Select>

@@ -8,6 +8,7 @@ import { useCart } from "@/app/contexts/CartContext";
 import { IProduct } from "@/app/interfaces/IProduct";
 import { useRouter } from "next/navigation";
 import { BsCartPlus } from "react-icons/bs";
+import {convertToInt} from "@/app/helpers/common";
 
 interface BoxCommonProps {
     title: string;
@@ -130,7 +131,8 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
             const cartItem = {
                 id: item.id.toString(),
                 name: item.name || "",
-                price: item?.sale_price!.toString() || "0",
+                sale_price: item?.sale_price!.toString() || "0",
+                regular_price: item?.regular_price!.toString() || "0",
                 quantity: 1,
                 image: item.thumbnail,
             };
@@ -153,7 +155,8 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
             const cartItem = {
                 id: item.id.toString(),
                 name: item.name || "",
-                price: item?.sale_price!.toString() || "0",
+                sale_price: item?.sale_price!.toString() || "0",
+                regular_price: item?.regular_price!.toString() || "0",
                 quantity: 1,
                 image: item.thumbnail,
             };
@@ -211,25 +214,20 @@ const BoxCommon: React.FC<BoxCommonProps> = ({
                             </div>
                         }
                     >
-                        <div className="p-4">
+                        <div className="p-3">
                             {item.name && (
                                 <h3 className="text-lg font-bold mb-3 line-clamp-2 text-white hover:text-purple-400 transition-colors">
                                     {item.name}
                                 </h3>
                             )}
                             {showPrice && (
-                                <div className="flex items-center mb-4">
-                                    <span className="text-2xl font-bold text-purple-400">{item.sale_price}</span>
-                                    {item.regular_price && (
-                                        <span className="ml-2 text-gray-400 line-through text-sm">
-                                            {item.regular_price}
-                                        </span>
-                                    )}
-                                    {item.sale_price && item.regular_price && (
-                                        <span className="ml-2 text-xs text-white bg-gradient-to-r from-purple-600 to-blue-600 px-2 py-1 rounded-full font-bold">
-                                            -{Math.round(((item.regular_price - item.sale_price) / item.regular_price) * 100)}%
-                                        </span>
-                                    )}
+                                <div className="mb-4 flex items-center justify-between">
+                                    <div className={`border border-gray-300 rounded-md p-2 px-5`}>
+                                        <div className="text-md">Giá ATM </div><div className="text-lg font-bold text-purple-400">{convertToInt(item.sale_price)}</div>
+                                    </div>
+                                    <div className={`border border-gray-300 rounded-md p-2 px-5`}>
+                                        <div className="text-md">Giá CARD </div><div className="text-lg font-bold text-purple-400">{convertToInt(item.regular_price)}</div>
+                                    </div>
                                 </div>
                             )}
                             <div className="flex items-center gap-3 flex-col">

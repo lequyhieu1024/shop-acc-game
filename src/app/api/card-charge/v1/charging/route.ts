@@ -137,7 +137,7 @@ export const POST = async (req: NextRequest) => {
             //     session!.user.id
             // );
 
-            return NextResponse.json({result: true, data: newTransLog}, {status: 200});
+            return NextResponse.json({result: true}, {status: 200});
         } else if (typeFromQuery === "multiple") {
             if (!data.telco || !data.price || !data.code) {
                 return NextResponse.json(
@@ -255,7 +255,6 @@ export const POST = async (req: NextRequest) => {
             return NextResponse.json(
                 {
                     result: true,
-                    data: transactions,
                     details: results,
                 },
                 {status: 200}

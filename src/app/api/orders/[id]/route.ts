@@ -62,7 +62,7 @@ export async function PATCH(
     }
 
     const body = await request.json();
-    const { status } = body;
+    const { status,paymentStatus } = body;
 
     if (status && !VALID_STATUSES.includes(status)) {
       return NextResponse.json(
@@ -73,6 +73,7 @@ export async function PATCH(
 
     // Cập nhật trạng thái
     if (status) order.status = status;
+    if (paymentStatus) order.payment_status = paymentStatus;
     order.updated_at = new Date();
 
     await orderRepository.save(order);

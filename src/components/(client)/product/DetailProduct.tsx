@@ -7,6 +7,7 @@ import {useCart} from "@/app/contexts/CartContext";
 import {IProduct} from "@/app/interfaces/IProduct";
 import {IProductImage} from "@/app/interfaces/IProductImage";
 import {useRouter} from "next/navigation";
+import {convertToInt} from "@/app/helpers/common";
 
 interface DetailProductProps {
     product: IProduct | null;
@@ -95,7 +96,8 @@ const DetailProduct: React.FC<DetailProductProps> = ({product}) => {
             const cartItem = {
                 id: item.id.toString(),
                 name: item.name || "",
-                price: item?.sale_price?.toString() || "0",
+                sale_price: item?.sale_price?.toString() || "0",
+                regular_price: item?.regular_price?.toString() || "0",
                 quantity: 1,
                 image: item.thumbnail || "",
             };
@@ -203,20 +205,18 @@ const DetailProduct: React.FC<DetailProductProps> = ({product}) => {
                                 </h1>
                                 <div className="flex items-center space-x-3">
                                     <Rate allowHalf defaultValue={5} disabled className="text-yellow-400"/>
-                                    <span className="text-gray-400 text-sm">5 đánh giá</span>
+                                    <span className="text-gray-400 text-sm">102 đánh giá</span>
                                 </div>
                             </div>
 
                             <div className="p-6 bg-purple-500/10 rounded-xl border border-purple-500/20">
                                 <div className="flex items-baseline gap-4">
-                                    <span className="text-3xl font-bold text-purple-400">{product.sale_price} đ</span>
-                                    <del className="text-gray-400 text-lg">{product.regular_price} đ</del>
-                                    {product.regular_price && product.sale_price && (
-                                        <span
-                                            className="text-sm text-white bg-gradient-to-r from-purple-600 to-blue-600 px-3 py-1 rounded-full font-bold">
-                        -{Math.round(((product.regular_price - product.sale_price) / product.regular_price) * 100)}%
-                      </span>
-                                    )}
+                                    <div className={`border border-gray-300 rounded-md p-2 px-5`}>
+                                        <div className="text-md text-white">Giá ATM </div><div className="text-lg font-bold text-purple-400">{convertToInt(product.sale_price)}</div>
+                                    </div>
+                                    <div className={`border border-gray-300 rounded-md p-2 px-5`}>
+                                        <div className="text-md text-white">Giá CARD </div><div className="text-lg font-bold text-purple-400">{convertToInt(product.regular_price)}</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -9,7 +9,8 @@ import React, {
 export interface CartItem {
   id: string;
   name: string;
-  price: number | string;
+  sale_price: number | string;
+  regular_price: number | string;
   quantity: number;
   image?: string | null | File;
 }
