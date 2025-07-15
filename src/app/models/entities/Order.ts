@@ -28,19 +28,13 @@ export const statusLabels: Record<string, string> = {
 
 export enum PaymentMethod {
     CASH = 'cash',
-    BANK_TRANSFER = 'bank_transfer',
-    MANUAL = 'manual',             // thanh toán thủ công (Zalo, tin nhắn...)
-    THIRD_PARTY = 'third_party'    // ví điện tử, cổng nạp bên thứ 3
+    BANK_TRANSFER = 'bank_transfer', //ATM
+    THIRD_PARTY = 'third_party'    // CARD
 }
 
 export enum PaymentStatus {
     UNPAID = 'unpaid',
-    WAITING_CONFIRMATION = 'waiting_confirmation', // dành cho thanh toán thủ công
-    PENDING_THIRD_PARTY = 'pending_third_party',   // đang xử lý ở ví/cổng bên thứ 3
     PAID = 'paid',
-    FAILED = 'failed',
-    REFUNDED = 'refunded',
-    CANCELLED = 'cancelled'
 }
 
 @Entity({ name: "orders" })

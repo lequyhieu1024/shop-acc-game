@@ -3,7 +3,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { initRepository } from "@/app/models/connect";
 import { User as UserEntity } from "@/app/models/entities/User";
 import bcrypt from "bcrypt";
-import {NextResponse} from "next/server";
 
 declare module "next-auth" {
     interface Session {

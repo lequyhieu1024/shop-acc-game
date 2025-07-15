@@ -4,6 +4,7 @@ import Link from "next/link";
 import { DeleteOutlined } from "@ant-design/icons";
 import { useCart } from "@/app/contexts/CartContext";
 import Image from "next/image";
+import {convertToInt} from "@/app/helpers/common";
 
 const { Text } = Typography;
 
@@ -11,7 +12,8 @@ const { Text } = Typography;
 export interface CartItem {
   id: string;
   name: string;
-  price: number;
+  sale_price: number;
+  regular_price: number;
   quantity: number;
   image?: string;
 }
@@ -31,7 +33,7 @@ const CartDrawerContent: React.FC<CartDrawerContentProps> = ({ setCartDrawerVisi
 
   // Calculate total price
   const totalPrice = items.reduce((sum, item) => {
-    const priceString = String(item.price); // Ensure price is treated as a string
+    const priceString = String(item.sale_price); // Ensure price is treated as a string
     const numericPrice = parseFloat(priceString.replace(/,/g, "")); // Remove commas and convert to number
     return sum + numericPrice * item.quantity;
   }, 0);
@@ -99,7 +101,7 @@ const CartDrawerContent: React.FC<CartDrawerContentProps> = ({ setCartDrawerVisi
       key: "price",
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (_: any, record: CartItem) => (
-        <Text className="text-purple-400 font-medium">{record.price.toLocaleString("vi-VN")}đ</Text>
+        <Text className="text-purple-400 font-medium">{convertToInt(record.sale_price)}đ</Text>
       )
     },
     {
@@ -190,7 +192,7 @@ const CartDrawerContent: React.FC<CartDrawerContentProps> = ({ setCartDrawerVisi
         <div className="flex justify-between mb-6">
           <Text className="text-gray-400">Tổng tiền:</Text>
           <Text className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-            {totalPrice.toLocaleString("vi-VN")}đ
+            {convertToInt(totalPrice)}đ
           </Text>
         </div>
         <div className="flex justify-end">

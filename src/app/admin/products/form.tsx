@@ -85,11 +85,9 @@ export default function ProductForm({
     if (!formData.skin_type.trim())
       newErrors.skin_type = "Loại súng không được để trống";
     if (formData.regular_price <= 0)
-      newErrors.regular_price = "Vui lòng nhập giá gốc";
+      newErrors.regular_price = "Vui lòng nhập giá bán cart";
     if (formData.sale_price <= 0)
-      newErrors.sale_price = "Vui lòng nhập giá bán";
-    if (Number(formData.sale_price) >= Number(formData.regular_price))
-      newErrors.sale_price = "Nên để giá bán thấp hơn giá gốc";
+      newErrors.sale_price = "Vui lòng nhập giá bán atm";
     if (formData.number_diamond_available! < 0)
       newErrors.number_diamond_available = "Số kim cương không được nhỏ hơn 0";
     if (formData.quantity <= 0) newErrors.quantity = "Số lượng phải lớn hơn 0";
@@ -640,7 +638,7 @@ export default function ProductForm({
                   </div>
                   <div className="mb-4 row align-items-center">
                     <label className="form-label-title col-md-3 mb-0">
-                      Giá gốc
+                      Giá card
                     </label>
                     <div className="col-md-9">
                       <input
@@ -663,7 +661,7 @@ export default function ProductForm({
 
                   <div className="mb-4 row align-items-center">
                     <label className="form-label-title col-md-3 mb-0">
-                      Giá bán
+                      Giá ATM
                     </label>
                     <div className="col-md-9">
                       <input

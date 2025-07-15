@@ -1,5 +1,5 @@
 "use client";
-import { Form, Input, Button, Card, Row, Col, Typography } from "antd";
+import { Form, Input, Button, Card, Row, Col, Typography, Select } from "antd";
 import { useEffect, useState } from "react";
 import MethodPayment from "./MethodPayment";
 import { useRouter } from "next/navigation";
@@ -7,11 +7,13 @@ import { useSession } from "next-auth/react";
 import api from "@/app/services/axiosService";
 import { PaymentMethod, PaymentStatus } from "@/app/models/entities/Order";
 import { toast } from "react-toastify";
+import {convertToInt} from "@/app/helpers/common";
 
 interface CartItem {
     id: number;
     name: string;
-    price: number;
+    sale_price: number;
+    regular_price: number;
     quantity: number;
 }
 
@@ -23,6 +25,7 @@ interface CheckoutFormValues {
 }
 
 const { Title, Text } = Typography;
+const { Option } = Select;
 
 export default function CheckoutPage() {
     const [form] = Form.useForm<CheckoutFormValues>();
@@ -32,7 +35,8 @@ export default function CheckoutPage() {
     const [isAdminPurchaseLoading, setIsAdminPurchaseLoading] = useState(false);
     const [voucherDiscount, setVoucherDiscount] = useState(0);
     const [isApplyingVoucher, setIsApplyingVoucher] = useState(false);
-    const [isAppliedVoucher, setIsAppliedVoucher] = useState(false)
+    const [isAppliedVoucher, setIsAppliedVoucher] = useState(false);
+    const [paymentMethod, setPaymentMethod] = useState<"ATM" | "CARD">("CARD");
     const router = useRouter();
     const { data: session } = useSession();
 
@@ -44,13 +48,12 @@ export default function CheckoutPage() {
     }, []);
 
     const totalAmount = cartItems.reduce(
-        (sum, item) => sum + item.price * item.quantity,
+        (sum, item) => sum + (paymentMethod === "ATM" ? item.sale_price : item.regular_price) * item.quantity,
         0
     );
 
     const finalAmount = totalAmount - voucherDiscount;
 
-    // Hàm xử lý áp dụng mã giảm giá
     const handleApplyVoucher = async () => {
         const voucherCode = form.getFieldValue("voucherCode");
         if (!voucherCode) {
@@ -68,7 +71,7 @@ export default function CheckoutPage() {
             if (voucherResponse.data.result) {
                 const discount = voucherResponse.data.discount || 0;
                 setVoucherDiscount(discount);
-                setIsAppliedVoucher(true)
+                setIsAppliedVoucher(true);
                 toast.success(`Áp dụng mã giảm giá thành công! Giảm ${discount.toLocaleString("vi-VN")} đ`);
             } else {
                 setVoucherDiscount(0);
@@ -78,13 +81,13 @@ export default function CheckoutPage() {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             setVoucherDiscount(0);
+            setIsAppliedVoucher(false);
             if (error.response && error.response.data && error.response.data.message) {
                 toast.error(`${error.response.data.message}`);
             } else {
                 console.error("Error applying voucher:", error.message);
                 toast.error("Có lỗi khi áp dụng mã giảm giá!");
             }
-            setIsAppliedVoucher(false);
         } finally {
             setIsApplyingVoucher(false);
         }
@@ -109,7 +112,6 @@ export default function CheckoutPage() {
             setIsWebPurchaseLoading(true);
             const values = await form.validateFields();
 
-            // Kiểm tra số dư
             const balanceResponse = await api.get("/user/balance");
             const userBalance = balanceResponse.data.balance;
 
@@ -138,13 +140,13 @@ export default function CheckoutPage() {
                 customer_email: values.email,
                 customer_phone: values.phone,
                 total_amount: finalAmount,
-                voucher_code: values.voucherCode, // Gửi mã voucher nếu có
-                payment_method: PaymentMethod.THIRD_PARTY,
+                voucher_code: values.voucherCode,
+                payment_method: paymentMethod === "ATM" ? PaymentMethod.BANK_TRANSFER : PaymentMethod.THIRD_PARTY,
                 payment_status: PaymentStatus.PAID,
                 order_items: cartItems.map((item) => ({
                     product_id: item.id,
                     quantity: item.quantity,
-                    unit_price: item.price,
+                    unit_price: paymentMethod === "ATM" ? item.sale_price : item.regular_price,
                 })),
             });
 
@@ -153,7 +155,7 @@ export default function CheckoutPage() {
             localStorage.removeItem("totalItems");
 
             toast.success(
-                "Đặt hàng thành công!.",
+                "Đặt hàng thành công!",
                 {
                     onClose: () => window.location.href = "/don-hang-cua-toi",
                     autoClose: 3000,
@@ -180,8 +182,15 @@ export default function CheckoutPage() {
         setIsAdminPurchaseLoading(false);
     };
 
+    const handlePaymentMethodChange = (value: "ATM" | "CARD") => {
+        setPaymentMethod(value);
+        if (isAppliedVoucher) {
+            handleApplyVoucher();
+        }
+    };
+
     return (
-        <div className="max-w-4xl mx-auto mt-16 px-4">
+        <div className="max-w-4xl mx-auto mt-16 p-4">
             <Title level={2} className="text-center mb-8">
                 Trang Thanh Toán
             </Title>
@@ -224,14 +233,36 @@ export default function CheckoutPage() {
                                 <div className="flex gap-2">
                                     <Input placeholder="Nhập mã giảm giá" />
                                     <Button
-                                        type={ isAppliedVoucher ? 'default' : 'primary'}
-                                        onClick={ isAppliedVoucher ? handleRemoveVoucher : handleApplyVoucher }
+                                        type={isAppliedVoucher ? "default" : "primary"}
+                                        onClick={isAppliedVoucher ? handleRemoveVoucher : handleApplyVoucher}
                                         loading={isApplyingVoucher}
                                     >
-                                        { isAppliedVoucher ? "Hủy" : "Áp dụng" }
+                                        {isAppliedVoucher ? "Hủy" : "Áp dụng"}
                                     </Button>
                                 </div>
                             </Form.Item>
+
+                            <Form.Item
+                                label="Phương thức thanh toán"
+                                name="payment_method"
+                                rules={[{ required: true, message: "Vui lòng chọn phương thức thanh toán" }]}
+                            >
+                                <Select
+                                    onChange={handlePaymentMethodChange}
+                                    placeholder="--Chọn phương thức thanh toán--"
+                                >
+                                    <Select.Option value="CARD">Card</Select.Option>
+                                    <Select.Option value="ATM">ATM</Select.Option>
+                                </Select>
+                            </Form.Item>
+                            {paymentMethod === "ATM" && (
+                                <Text className="text-red-500 mt-3">
+                                    Đối với thanh toán bằng ATM, vui lòng chuyển khoản vào TK ngân hàng bên dưới, chụp lại màn hình và liên hệ quản trị viên để nhận acc<br />
+                                    Ngân hàng: MB Bank<br />
+                                    STK: 8890125068888<br />
+                                    Chủ tài khoản: Phạm Văn Hùng
+                                </Text>
+                            )}
                         </Form>
                     </Card>
                 </Col>
@@ -245,7 +276,7 @@ export default function CheckoutPage() {
                                         {item.name} x {item.quantity}
                                     </Text>
                                     <Text className="font-medium text-red-500">
-                                        {(item.price * item.quantity).toLocaleString("vi-VN")} đ
+                                        {(paymentMethod === "ATM" ? item.sale_price : item.regular_price) * Number(convertToInt(item.quantity))} đ
                                     </Text>
                                 </div>
                             ))}
@@ -253,17 +284,17 @@ export default function CheckoutPage() {
                             <div className="border-t pt-4">
                                 <div className="flex justify-between">
                                     <Text>Tổng tiền trước giảm:</Text>
-                                    <Text>{totalAmount.toLocaleString("vi-VN")} đ</Text>
+                                    <Text>{convertToInt(totalAmount)} đ</Text>
                                 </div>
                                 {voucherDiscount > 0 && (
                                     <div className="flex justify-between text-green-500">
                                         <Text>Giảm giá:</Text>
-                                        <Text>-{voucherDiscount.toLocaleString("vi-VN")} đ</Text>
+                                        <Text>-{convertToInt(voucherDiscount)} đ</Text>
                                     </div>
                                 )}
                                 <div className="flex justify-between font-bold text-red-500">
                                     <Text>Tổng tiền sau giảm:</Text>
-                                    <Text>{finalAmount.toLocaleString("vi-VN")} đ</Text>
+                                    <Text>{convertToInt(finalAmount)} đ</Text>
                                 </div>
                             </div>
 

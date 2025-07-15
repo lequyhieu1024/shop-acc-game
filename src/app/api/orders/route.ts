@@ -10,7 +10,6 @@ import { PaymentStatus, OrderStatus } from "@/app/models/entities/Order";
 import {IsNull, Like} from "typeorm";
 import {Voucher} from "@/app/models/entities/Voucher";
 import nodemailer from "nodemailer";
-import {sendTelegramMessage2} from "@/app/services/commonService";
 
 
 export const GET = async (request: Request) => {
@@ -176,6 +175,14 @@ export async function POST(request: Request) {
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
+    let paymentStatuss;
+    if (payment_method == 'ATM') {
+      paymentStatuss = PaymentStatus.UNPAID
+    }
+    if (payment_method == 'CARD') {
+      paymentStatuss = PaymentStatus.PAID
+    }
+
     try {
       const order = orderRepository.create({
         user_id: session.user.id,
@@ -187,7 +194,7 @@ export async function POST(request: Request) {
         voucher_discount: voucherDiscount,
         voucher_id: voucherId,
         payment_method,
-        payment_status: PaymentStatus.PAID,
+        payment_status: paymentStatuss,
         status: OrderStatus.PENDING,
       });
       await queryRunner.manager.save(order);
