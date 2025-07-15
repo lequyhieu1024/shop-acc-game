@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { initRepository } from "@/app/models/connect";
 import { User as UserEntity } from "@/app/models/entities/User";
 import bcrypt from "bcrypt";
+import {NextResponse} from "next/server";
 
 declare module "next-auth" {
     interface Session {
@@ -41,6 +42,12 @@ export const authOptions: NextAuthOptions = {
 
                 if (!username || !password) {
                     throw new Error("Tên đăng nhập và mật khẩu là bắt buộc");
+                }
+
+                const usernameRegex = /^[a-zA-Z0-9]+$/;
+
+                if (!usernameRegex.test(username)) {
+                    throw new Error("Tên đăng nhập phải viết liền, không dấu và không chứa ký tự đặc biệt");
                 }
 
                 // Validate username
@@ -108,7 +115,7 @@ export const authOptions: NextAuthOptions = {
                         password: hashedPassword,
                         phone: "",
                         balance: initialBalance,
-                        referral_code: referral_code || `REF${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+                        referral_code: referral_code || null,
                         number_of_free_draw: 1,
                         role: "user",
                     });

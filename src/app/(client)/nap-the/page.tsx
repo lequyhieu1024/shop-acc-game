@@ -42,9 +42,10 @@ export default function ChargeCard() {
             if (response.status === 200) {
                 toast.success("Đã tiếp nhận đơn nạp thẻ, vui lòng kiểm tra số dư sau ít phút");
             }
-        } catch (error) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
             console.error("Submission error:", error);
-            toast.error("Vui lòng kiểm tra lại thông tin thẻ và thử lại !");
+            toast.error(error.response.data.message || "Vui lòng kiểm tra lại thông tin thẻ và thử lại !");
         }
     };
 

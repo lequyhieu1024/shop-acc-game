@@ -12,6 +12,7 @@ import Image from "next/image";
 const formSchema = z.object({
   name: z.string().min(1, "Tên website phải có ít nhất 1 ký tự"),
   phone: z.string().min(10, "Số điện thoại không hợp lệ"),
+  zalo: z.string().min(10, "Số điện thoại không hợp lệ"),
   email: z.string().email("Email không hợp lệ"),
   youtube: z.string().url("Link Youtube không hợp lệ").optional().or(z.literal('')),
   facebook: z.string().url("Link Facebook không hợp lệ").optional().or(z.literal('')),
@@ -115,6 +116,7 @@ const System: React.FC = () => {
         const systemData = response.data.system;
         setValue("name", systemData.name);
         setValue("phone", systemData.phone);
+        setValue("zalo", systemData.zalo);
         setValue("email", systemData.email);
         setValue("youtube", systemData.youtube || '');
         setValue("facebook", systemData.facebook || '');
@@ -201,6 +203,7 @@ const System: React.FC = () => {
                 {[
                   { label: "Tên website", name: "name" as keyof FormData },
                   { label: "Số điện thoại", name: "phone" as keyof FormData },
+                  { label: "SDT Zalo", name: "zalo" as keyof FormData },
                   { label: "Email", name: "email" as keyof FormData },
                   { label: "Link Youtube", name: "youtube" as keyof FormData },
                   { label: "Link Fan page", name: "facebook" as keyof FormData },

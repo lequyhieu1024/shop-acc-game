@@ -14,9 +14,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const usernameRegex = /^[a-zA-Z0-9]+$/;
+
+    if (!usernameRegex.test(username)) {
+      return NextResponse.json(
+          { error: "Tên đăng nhập phải viết liền, không dấu và không chứa ký tự đặc biệt" },
+          { status: 400 }
+      );
+    }
+
     const userRepository = await initRepository(User);
-    
-    // Kiểm tra username đã tồn tại chưa
+
     const existingUser = await userRepository.findOne({
       where: { username },
     });
@@ -28,38 +36,30 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Tạo mã người dùng
     const userCode = `USER${Math.random()
       .toString(36)
       .substring(2, 8)
       .toUpperCase()}`;
-    
-    // Mã hóa mật khẩu
+
     const hashedPassword = await bcrypt.hash(password, 10);
-    
-    // Xử lý số dư ban đầu
+
     let initialBalance = 0;
-    let referrerId = null;
 
     if (referral_code) {
       initialBalance = Number(process.env.INITIAL_BALANCE) || 0;
-      
-      // Tìm người giới thiệu
+
       const referrer = await userRepository.findOne({
         where: { referral_code },
       });
       
       if (referrer) {
-        // Cộng tiền cho người giới thiệu
         await userRepository.update(
           { id: referrer.id },
           { balance: referrer.balance + Number(process.env.REFERRAL_BONUS) || 20000 }
         );
-        referrerId = referrer.id;
       }
     }
 
-    // Tạo người dùng mới
     const newUser = userRepository.create({
       user_code: userCode,
       username,
@@ -67,10 +67,8 @@ export async function POST(request: NextRequest) {
       phone: "",
       balance: initialBalance,
       referral_code: referral_code || null,
-      referrer_id: referrerId,
       number_of_free_draw: 1,
       role: "user",
-      is_for_sale: 0, // Mặc định không cho phép bán
     });
 
     await userRepository.save(newUser);
