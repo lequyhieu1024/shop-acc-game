@@ -80,6 +80,7 @@ export const POST = async (req: NextRequest) => {
             cardData.user_id = session!.user.id;
             cardData.command = "charge";
 
+
             let newTransLog;
             if (!cardData.id || !cardData.amount || !cardData.value) {
                 newTransLog = cardTransRepo.create(cardData);
