@@ -27,18 +27,21 @@ export async function PATCH(req: NextRequest) {
         const body = await req.json();
         const { balance } = body;
 
+        console.log(balance)
+
         await userRepository.update(
             { id: Number(id) },
-            balance,
+            { balance: Number(balance) }
         );
 
         return NextResponse.json(
             { message: "Cập nhật số dư người dùng thành công." },
             { status: 200 }
         );
-    } catch {
+    } catch (error) {
+        console.log(error)
         return NextResponse.json(
-            { message: "Có lỗi xảy ra." },
+            { message: (error as Error).message },
             { status: 500 }
         );
     }

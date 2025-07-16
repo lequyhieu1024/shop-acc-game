@@ -1,24 +1,25 @@
 "use client";
-import React, {useCallback, useEffect, useState, useRef} from "react";
-import {Rate, Modal, Button} from "antd";
-import {ShoppingCartOutlined, CheckCircleFilled, LeftOutlined, RightOutlined} from "@ant-design/icons";
-import {FaShoppingCart} from "react-icons/fa";
-import {useCart} from "@/app/contexts/CartContext";
-import {IProduct} from "@/app/interfaces/IProduct";
-import {IProductImage} from "@/app/interfaces/IProductImage";
-import {useRouter} from "next/navigation";
-import {convertToInt} from "@/app/helpers/common";
+import React, { useCallback, useEffect, useState, useRef } from "react";
+import { Rate, Modal, Button } from "antd";
+import { ShoppingCartOutlined, CheckCircleFilled, LeftOutlined, RightOutlined } from "@ant-design/icons";
+import { FaShoppingCart } from "react-icons/fa";
+import { useCart } from "@/app/contexts/CartContext";
+import { IProduct } from "@/app/interfaces/IProduct";
+import { IProductImage } from "@/app/interfaces/IProductImage";
+import { useRouter } from "next/navigation";
+import { convertToInt } from "@/app/helpers/common";
 
 interface DetailProductProps {
     product: IProduct | null;
 }
 
-const DetailProduct: React.FC<DetailProductProps> = ({product}) => {
+const DetailProduct: React.FC<DetailProductProps> = ({ product }) => {
     const [clickedButtons, setClickedButtons] = useState<Record<number, boolean>>({});
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isAdding, setIsAdding] = useState(false);
     const [previewImage, setPreviewImage] = useState<string | null>(null);
-    const {addItem} = useCart();
+    const [currentImageIndex, setCurrentImageIndex] = useState<number>(-1);
+    const { addItem } = useCart();
     const router = useRouter();
     const thumbnailRef = useRef<HTMLDivElement>(null);
 
@@ -79,6 +80,22 @@ const DetailProduct: React.FC<DetailProductProps> = ({product}) => {
       .thumbnail-container::-webkit-scrollbar-thumb:hover {
         background: #555;
       }
+      .preview-nav-button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 10;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+      .preview-nav-button:hover {
+        background: rgba(0, 0, 0, 0.7);
+      }
     `;
         document.head.appendChild(styleElement);
 
@@ -92,7 +109,7 @@ const DetailProduct: React.FC<DetailProductProps> = ({product}) => {
             e.stopPropagation();
             if (isAdding) return;
             setIsAdding(true);
-            setClickedButtons((prev) => ({...prev, [item.id]: true}));
+            setClickedButtons((prev) => ({ ...prev, [item.id]: true }));
             const cartItem = {
                 id: item.id.toString(),
                 name: item.name || "",
@@ -105,7 +122,7 @@ const DetailProduct: React.FC<DetailProductProps> = ({product}) => {
             setIsModalVisible(true);
             setTimeout(() => setIsModalVisible(false), 2000);
             setTimeout(() => {
-                setClickedButtons((prev) => ({...prev, [item.id]: false}));
+                setClickedButtons((prev) => ({ ...prev, [item.id]: false }));
                 setIsAdding(false);
             }, 1000);
         },
@@ -133,17 +150,37 @@ const DetailProduct: React.FC<DetailProductProps> = ({product}) => {
         [isAdding, router]
     );
 
-
-    const handleImageClick = (imageUrl: string) => {
+    const handleImageClick = (imageUrl: string, index: number) => {
         setPreviewImage(imageUrl);
+        setCurrentImageIndex(index);
     };
 
     const scrollThumbnails = (direction: "left" | "right") => {
         if (thumbnailRef.current) {
-            const scrollAmount = 100; // Adjust this value based on thumbnail width
+            const scrollAmount = 100;
             const currentScroll = thumbnailRef.current.scrollLeft;
             const newScroll = direction === "left" ? currentScroll - scrollAmount : currentScroll + scrollAmount;
-            thumbnailRef.current.scrollTo({left: newScroll, behavior: "smooth"});
+            thumbnailRef.current.scrollTo({ left: newScroll, behavior: "smooth" });
+        }
+    };
+
+    const handleNextImage = () => {
+        if (product && Array.isArray(product.images) && currentImageIndex < product.images.length - 1) {
+            const nextIndex = currentImageIndex + 1;
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            setPreviewImage(product.images[nextIndex].image_url);
+            setCurrentImageIndex(nextIndex);
+        }
+    };
+
+    const handlePrevImage = () => {
+        if (product && Array.isArray(product.images) && currentImageIndex > 0) {
+            const prevIndex = currentImageIndex - 1;
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            setPreviewImage(product.images[prevIndex].image_url);
+            setCurrentImageIndex(prevIndex);
         }
     };
 
@@ -172,7 +209,7 @@ const DetailProduct: React.FC<DetailProductProps> = ({product}) => {
                             </div>
                             <div className="relative">
                                 <Button
-                                    icon={<LeftOutlined/>}
+                                    icon={<LeftOutlined />}
                                     onClick={() => scrollThumbnails("left")}
                                     className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-gradient-to-r from-purple-600 to-blue-600 text-white border-none shadow-lg hover:from-purple-700 hover:to-blue-700"
                                 />
@@ -187,14 +224,14 @@ const DetailProduct: React.FC<DetailProductProps> = ({product}) => {
                                                     src={img.image_url || "/client/assets/images/placeholder.png"}
                                                     alt={`Thumbnail ${index}`}
                                                     className="w-24 h-24 object-cover rounded-lg cursor-pointer hover:opacity-75 transition border-2 border-purple-500/20 hover:border-purple-500/50"
-                                                    onClick={() => handleImageClick(img.image_url)}
+                                                    onClick={() => handleImageClick(img.image_url, index)}
                                                 />
                                             </div>
                                         ))
                                     ) : null}
                                 </div>
                                 <Button
-                                    icon={<RightOutlined/>}
+                                    icon={<RightOutlined />}
                                     onClick={() => scrollThumbnails("right")}
                                     className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-gradient-to-r from-purple-600 to-blue-600 text-white border-none shadow-lg hover:from-purple-700 hover:to-blue-700"
                                 />
@@ -204,7 +241,7 @@ const DetailProduct: React.FC<DetailProductProps> = ({product}) => {
                                     {product.name}
                                 </h1>
                                 <div className="flex items-center space-x-3">
-                                    <Rate allowHalf defaultValue={5} disabled className="text-yellow-400"/>
+                                    <Rate allowHalf defaultValue={5} disabled className="text-yellow-400" />
                                     <span className="text-gray-400 text-sm">102 đánh giá</span>
                                 </div>
                             </div>
@@ -212,10 +249,12 @@ const DetailProduct: React.FC<DetailProductProps> = ({product}) => {
                             <div className="p-6 bg-purple-500/10 rounded-xl border border-purple-500/20">
                                 <div className="flex items-baseline gap-4">
                                     <div className={`border border-gray-300 rounded-md p-2 px-5`}>
-                                        <div className="text-md text-white">Giá ATM </div><div className="text-lg font-bold text-purple-400">{convertToInt(product.sale_price)}</div>
+                                        <div className="text-md text-white">Giá ATM </div>
+                                        <div className="text-lg font-bold text-purple-400">{convertToInt(product.sale_price)}</div>
                                     </div>
                                     <div className={`border border-gray-300 rounded-md p-2 px-5`}>
-                                        <div className="text-md text-white">Giá CARD </div><div className="text-lg font-bold text-purple-400">{convertToInt(product.regular_price)}</div>
+                                        <div className="text-md text-white">Giá CARD </div>
+                                        <div className="text-lg font-bold text-purple-400">{convertToInt(product.regular_price)}</div>
                                     </div>
                                 </div>
                             </div>
@@ -302,11 +341,11 @@ const DetailProduct: React.FC<DetailProductProps> = ({product}) => {
                                             justifyContent: "center",
                                         }}
                                     >
-                                        <FaShoppingCart style={{fontSize: "16px", color: "white"}}/>
+                                        <FaShoppingCart style={{ fontSize: "16px", color: "white" }} />
                                     </div>
                                     <span
                                         className="add-to-cart relative z-10 flex items-center justify-center gap-2 text-base font-bold">
-                                      <ShoppingCartOutlined/> Thêm vào giỏ hàng
+                                      <ShoppingCartOutlined /> Thêm vào giỏ hàng
                                     </span>
                                     <span className="added font-bold">Đã thêm</span>
                                 </Button>
@@ -332,12 +371,12 @@ const DetailProduct: React.FC<DetailProductProps> = ({product}) => {
                 centered
                 className="success-modal"
                 styles={{
-                    mask: {backgroundColor: "rgba(0, 0, 0, 0.45)"},
-                    body: {padding: "24px", textAlign: "center"},
+                    mask: { backgroundColor: "rgba(0, 0, 0, 0.45)" },
+                    body: { padding: "24px", textAlign: "center" },
                 }}
             >
                 <div className="flex flex-col items-center">
-                    <CheckCircleFilled style={{fontSize: 48, color: "#52c41a"}}/>
+                    <CheckCircleFilled style={{ fontSize: 48, color: "#52c41a" }} />
                     <p className="mt-4 text-lg text-gray-800">Thêm sản phẩm thành công!</p>
                 </div>
             </Modal>
@@ -349,10 +388,27 @@ const DetailProduct: React.FC<DetailProductProps> = ({product}) => {
                 onCancel={() => setPreviewImage(null)}
                 centered
                 width={800}
-                styles={{body: {padding: 0}}}
+                styles={{ body: { padding: 0, position: "relative" } }}
             >
+                {Array.isArray(product.images) && product.images.length > 1 && (
+                    <>
+                        <Button
+                            icon={<LeftOutlined />}
+                            onClick={handlePrevImage}
+                            className="preview-nav-button"
+                            style={{ left: "10px" }}
+                            disabled={currentImageIndex <= 0}
+                        />
+                        <Button
+                            icon={<RightOutlined />}
+                            onClick={handleNextImage}
+                            className="preview-nav-button"
+                            style={{ right: "10px" }}
+                            disabled={currentImageIndex >= product.images.length - 1}
+                        />
+                    </>
+                )}
                 <img
-                    /* eslint-disable @next/next/no-img-element */
                     src={previewImage || ""}
                     alt="Preview"
                     className="w-full h-auto max-h-[80vh] object-contain"

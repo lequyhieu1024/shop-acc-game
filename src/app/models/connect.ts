@@ -44,7 +44,7 @@ export const AppDataSource = new DataSource({
 
   ],
   synchronize: false,
-  logging: true
+  logging: false
 });
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const initRepository = async (entity: any) => {
