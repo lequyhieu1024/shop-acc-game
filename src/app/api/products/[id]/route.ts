@@ -2,7 +2,7 @@ import {NextRequest, NextResponse} from "next/server";
 import {initRepository} from "@/app/models/connect";
 import {Product} from "@/app/models/entities/Product";
 import {ProductImage} from "@/app/models/entities/Image";
-import {uploadFileToPinata} from "@/app/services/pinataService";
+import {deleteOnPinata, uploadFileToPinata} from "@/app/services/pinataService";
 import {In} from "typeorm";
 
 export const GET = async (
@@ -184,14 +184,21 @@ export const DELETE = async (
     const productId = (await params).id
     try {
         const productRepo = await initRepository(Product);
+        const imageRepo = await initRepository(ProductImage)
 
         const product = await productRepo.findOneBy({ id: Number(productId) });
 
         if (!product) {
             return NextResponse.json({ message: "Product not found" }, { status: 404 });
         }
-
+        await deleteOnPinata(product.thumbnail)
         await productRepo.softDelete({ id: Number(productId) });
+
+        const imagesToDelete = await imageRepo.findBy({ product_id: Number(productId)})
+        if (imagesToDelete.length > 0) {
+            await deleteOnPinata(imagesToDelete);
+        }
+        await imageRepo.delete({ product_id: Number(productId) });
 
         return NextResponse.json(
             { message: "Product and related images deleted successfully" },
