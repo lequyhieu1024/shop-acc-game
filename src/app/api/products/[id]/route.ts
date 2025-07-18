@@ -81,6 +81,7 @@ export const PATCH = async (
         let thumbnailUrl = product.thumbnail;
         if (thumbnailFile && thumbnailFile.size > 0) {
             thumbnailUrl = await uploadFileToPinata(thumbnailFile, name);
+            await deleteOnPinata(product.thumbnail);
         }
 
         const deletedImageIdsRaw = formData.get("deletedImageIds") as string;
@@ -89,7 +90,20 @@ export const PATCH = async (
             : [];
 
         if (deletedImageIds.length > 0) {
-            console.log("Deleting images with IDs:", deletedImageIds);
+            const imagesToDelete = await imageRepo.find({
+                where: {
+                    id: In(deletedImageIds)
+                }
+            });
+
+            if (imagesToDelete.length > 0) {
+                try {
+                    await deleteOnPinata(imagesToDelete);
+                } catch (error) {
+                    console.error("Failed to delete images from Pinata:", error);
+                }
+            }
+
             await imageRepo.delete({
                 id: In(deletedImageIds),
             });
