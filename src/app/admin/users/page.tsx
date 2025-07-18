@@ -250,7 +250,7 @@ export default function UsersPage() {
                                                         type="text"
                                                         name="username"
                                                         className="form-control"
-                                                        placeholder="Username"
+                                                        placeholder="User Code"
                                                         value={formData.username}
                                                         onChange={handleChange}
                                                     />

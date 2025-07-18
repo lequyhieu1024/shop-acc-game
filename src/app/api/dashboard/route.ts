@@ -48,7 +48,7 @@ async function getHistoricalRevenue(months = 6) {
       revenue: Number(revenue?.revenue || 0),
     });
   }
-  return revenueByMonth.reverse();
+  return revenueByMonth.reverse(); // Oldest to newest
 }
 
 async function getHistoricalUsers(months = 6) {
@@ -66,7 +66,7 @@ async function getHistoricalUsers(months = 6) {
       newUsers,
     });
   }
-  return usersByMonth.reverse();
+  return usersByMonth.reverse(); // Oldest to newest
 }
 
 export async function GET() {
@@ -109,6 +109,7 @@ export async function GET() {
           .addSelect("product.name", "product_name")
           .addSelect("COUNT(item.id)", "sold_count")
           .leftJoin("item.product", "product")
+          .where("product.name IS NOT NULL")
           .groupBy("item.product_id")
           .addGroupBy("product.name")
           .orderBy("sold_count", "DESC")
@@ -116,7 +117,6 @@ export async function GET() {
           .getRawMany(),
     ]);
 
-    // Orders
     const [totalOrders, completedOrders, pendingOrders, processingOrders, failedOrders, cancelledOrders] =
         await Promise.all([
           orderRepo.count(),
@@ -127,31 +127,30 @@ export async function GET() {
           orderRepo.count({ where: { status: OrderStatus.CANCELLED } }),
         ]);
 
-    // Users
     const [totalUsers, newUsersThisMonth, historicalUsers] = await Promise.all([
       userRepo.count(),
       userRepo.count({ where: { created_at: MoreThan(startOfMonth) } }),
       getHistoricalUsers(),
     ]);
 
-    // Top Card Transactions
     const transactions = await cardRepo.find({
       where: { status: CardStatus.SUCCESS_CORRECT },
       relations: ["user"],
     });
+    const validTransactions = transactions.filter((transaction) => transaction.user); // Filter out null users
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const userTotals = transactions.reduce((acc: any, transaction: any) => {
+    const userTotals = validTransactions.reduce((acc: any, transaction: any) => {
       const userId = transaction.user_id;
       if (!acc[userId]) {
         acc[userId] = {
           user_id: userId,
           total_amount: 0,
-          username: transaction.user?.username || "N/A",
-          user_code: transaction.user?.user_code || "N/A",
-          phone: transaction.user?.phone || "N/A",
+          username: transaction.user.username || `${userId}`,
+          user_code: transaction.user.user_code || "N/A",
+          phone: transaction.user.phone || "N/A",
         };
       }
-      acc[userId].total_amount += transaction.amount;
+      acc[userId].total_amount += Number(transaction.amount || 0);
       return acc;
     }, {});
 
@@ -164,13 +163,14 @@ export async function GET() {
       revenue: {
         month: Number(revenueMonth?.revenue || 0),
         week: Number(revenueWeek?.revenue || 0),
+        quarter: 0, // Not calculated; included for interface compatibility
         historical: historicalRevenue,
       },
       acc: {
         total: totalAcc,
         sold: accSold,
         available: accAvailable,
-        locked: 0, // Assuming locked is not calculated; adjust if needed
+        locked: 0, // Not calculated; adjust if needed
         top: topAcc,
       },
       orders: {

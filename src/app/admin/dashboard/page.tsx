@@ -43,7 +43,7 @@ interface DashboardData {
     sold: number;
     available: number;
     locked: number;
-    top: { product_id: number; product_name: string, sold_count: number }[];
+    top: { product_id: number; product_name: string; sold_count: number }[];
   };
   orders: {
     total: number;
@@ -71,6 +71,7 @@ export default function DashboardPage() {
         const res = await fetch("/api/dashboard", { cache: "no-store" });
         if (!res.ok) throw new Error("Failed to fetch dashboard data");
         const result = await res.json();
+        if (!result.revenue) throw new Error("Invalid dashboard data");
         setData(result);
       } catch (e) {
         console.error("Lỗi khi lấy dữ liệu dashboard:", (e as Error).message);
@@ -83,7 +84,7 @@ export default function DashboardPage() {
     fetchData();
   }, []);
 
-  if (loading) return <Loading/>;
+  if (loading) return <Loading />;
   if (!data) return <h1>Không có dữ liệu</h1>;
 
   const formatNumber = (value: number) =>
@@ -91,37 +92,38 @@ export default function DashboardPage() {
 
   // Chart 1: Revenue Over Time (Line Chart)
   const revenueChartData = {
-    labels: data.revenue.historical.map((item) => item.month),
+    labels: data.revenue.historical.length
+        ? data.revenue.historical.map((item) => item.month)
+        : ["No Data"],
     datasets: [
       {
         label: "Doanh thu (VNĐ)",
-        data: data.revenue.historical.map((item) => item.revenue),
+        data: data.revenue.historical.length
+            ? data.revenue.historical.map((item) => Number(item.revenue) || 0)
+            : [0],
         borderColor: "rgba(75, 192, 192, 1)",
         backgroundColor: "rgba(75, 192, 192, 0.2)",
         fill: true,
+        tension: 0.4,
       },
     ],
   };
 
   // Chart 2: Order Status Distribution (Pie Chart)
   const orderChartData = {
-    labels: ["Chờ xử lý", "Đang bàn giao nick","Đã bàn giao nick", "Lỗi", "Đã hủy"],
+    labels: ["Chờ xử lý", "Đang bàn giao nick", "Đã bàn giao nick", "Lỗi", "Đã hủy"],
     datasets: [
       {
         data: [
-          data.orders.pending,
-          data.orders.processing,
-          data.orders.completed,
-          data.orders.cancelled,
-          data.orders.failed,
+          Number(data.orders.pending) || 0,
+          Number(data.orders.processing) || 0,
+          Number(data.orders.completed) || 0,
+          Number(data.orders.failed) || 0,
+          Number(data.orders.cancelled) || 0,
         ],
-        backgroundColor: [
-          "#36A2EB",
-          "#FFCE56",
-          "#FF9F40",
-          "#FF6384",
-          "#4BC0C0",
-        ],
+        backgroundColor: ["#36A2EB", "#FFCE56", "#FF9F40", "#FF6384", "#4BC0C0"],
+        borderColor: ["#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff"],
+        borderWidth: 1,
       },
     ],
   };
@@ -132,7 +134,11 @@ export default function DashboardPage() {
     datasets: [
       {
         label: "Số lượng",
-        data: [data.acc.total, data.acc.sold, data.acc.available],
+        data: [
+          Number(data.acc.total) || 0,
+          Number(data.acc.sold) || 0,
+          Number(data.acc.available) || 0,
+        ],
         backgroundColor: ["#36A2EB", "#FF6384", "#4BC0C0"],
       },
     ],
@@ -140,38 +146,55 @@ export default function DashboardPage() {
 
   // Chart 4: Top 5 Products by Sales (Horizontal Bar Chart)
   const topProductsChartData = {
-    labels: data.acc.top.map((item) => item.product_name),
+    labels: data.acc.top.length
+        ? data.acc.top.map((item) => item.product_name || `Product_${item.product_id}`)
+        : ["No Data"],
     datasets: [
       {
         label: "Số lượng bán",
-        data: data.acc.top.map((item) => item.sold_count),
+        data: data.acc.top.length
+            ? data.acc.top.map((item) => Number(item.sold_count) || 0)
+            : [0],
         backgroundColor: "rgba(153, 102, 255, 0.6)",
+        borderColor: "rgba(153, 102, 255, 1)",
+        borderWidth: 1,
       },
     ],
   };
 
   // Chart 5: User Growth (Area Chart)
   const userGrowthChartData = {
-    labels: data.users.historical.map((item) => item.month),
+    labels: data.users.historical.length
+        ? data.users.historical.map((item) => item.month)
+        : ["No Data"],
     datasets: [
       {
         label: "Khách hàng mới",
-        data: data.users.historical.map((item) => item.newUsers),
+        data: data.users.historical.length
+            ? data.users.historical.map((item) => Number(item.newUsers) || 0)
+            : [0],
         borderColor: "rgba(255, 99, 132, 1)",
         backgroundColor: "rgba(255, 99, 132, 0.2)",
         fill: true,
+        tension: 0.4,
       },
     ],
   };
 
   // Chart 6: Top Card Spenders (Bar Chart)
   const topCardChartData = {
-    labels: data.topCard.map((item) => item.username),
+    labels: data.topCard.length
+        ? data.topCard.map((item) => item.username || `User_${item.user_id}`)
+        : ["No Data"],
     datasets: [
       {
         label: "Số tiền nạp (VNĐ)",
-        data: data.topCard.map((item) => item.total_amount),
+        data: data.topCard.length
+            ? data.topCard.map((item) => Number(item.total_amount) || 0)
+            : [0],
         backgroundColor: "rgba(54, 162, 235, 0.6)",
+        borderColor: "rgba(54, 162, 235, 1)",
+        borderWidth: 1,
       },
     ],
   };
@@ -199,7 +222,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Thẻ Đơn hàng */}
+          {/* Card: Orders */}
           <div className="col-sm-6 col-xxl-3 col-lg-6">
             <div className="main-tiles border-5 card-hover border-0 card o-hidden">
               <div className="custome-2-bg b-r-4 card-body">
@@ -223,7 +246,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Thẻ Total Products */}
+          {/* Card: Total Products */}
           <div className="col-sm-6 col-xxl-3 col-lg-6">
             <div className="main-tiles border-5 card-hover border-0 card o-hidden">
               <div className="custome-3-bg b-r-4 card-body">
@@ -244,7 +267,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Thẻ Total Customers */}
+          {/* Card: Total Customers */}
           <div className="col-sm-6 col-xxl-3 col-lg-6">
             <div className="main-tiles border-5 card-hover border-0 card o-hidden">
               <div className="custome-4-bg b-r-4 card-body">
@@ -272,50 +295,64 @@ export default function DashboardPage() {
               </div>
               <div className="card-body">
                 <div className="row">
-                  <div className="col-md-6 mb-4">
-                    <h6>Doanh thu theo thời gian</h6>
+                  <div className="col-md-6 mb-5">
                     <Line
                         data={revenueChartData}
-                        options={{ responsive: true, plugins: { legend: { position: "top" } } }}
+                        options={{
+                          responsive: true,
+                          plugins: { legend: { position: "top" }, title: { display: true, text: "Doanh Thu Theo Thời Gian" } },
+                          scales: { y: { beginAtZero: true } },
+                        }}
                     />
                   </div>
-                  <div className="col-md-6 mb-4">
-                    <h6>Phân bố trạng thái đơn hàng</h6>
+                  <div className="col-md-6 mb-5 text-center" style={{ width: 350, height: 350 }}>
                     <Pie
                         data={orderChartData}
-                        options={{ responsive: true, plugins: { legend: { position: "top" } } }}
+                        options={{
+                          responsive: true,
+                          plugins: { legend: { position: "top" }, title: { display: true, text: "Phân Bố Trạng Thái Đơn Hàng" } },
+                        }}
                     />
                   </div>
-                  <div className="col-md-6 mb-4">
-                    <h6>Tình trạng sản phẩm</h6>
+                  <div className="col-md-6 mb-5">
                     <Bar
                         data={productChartData}
-                        options={{ responsive: true, plugins: { legend: { position: "top" } } }}
+                        options={{
+                          responsive: true,
+                          plugins: { legend: { position: "top" }, title: { display: true, text: "Tình Trạng Sản Phẩm" } },
+                          scales: { y: { beginAtZero: true } },
+                        }}
                     />
                   </div>
-                  <div className="col-md-6 mb-4">
-                    <h6>Top 5 sản phẩm bán chạy</h6>
+                  <div className="col-md-6 mb-5">
                     <Bar
                         data={topProductsChartData}
                         options={{
                           responsive: true,
                           indexAxis: "y",
-                          plugins: { legend: { position: "top" } },
+                          plugins: { legend: { position: "top" }, title: { display: true, text: "Top 5 Sản Phẩm Bán Chạy" } },
+                          scales: { x: { beginAtZero: true } },
                         }}
                     />
                   </div>
-                  <div className="col-md-6 mb-4">
-                    <h6>Tăng trưởng khách hàng</h6>
+                  <div className="col-md-6 mb-5">
                     <Line
                         data={userGrowthChartData}
-                        options={{ responsive: true, plugins: { legend: { position: "top" } } }}
+                        options={{
+                          responsive: true,
+                          plugins: { legend: { position: "top" }, title: { display: true, text: "Tăng Trưởng Khách Hàng" } },
+                          scales: { y: { beginAtZero: true } },
+                        }}
                     />
                   </div>
-                  <div className="col-md-6 mb-4">
-                    <h6>Top khách hàng nạp thẻ</h6>
+                  <div className="col-md-6 mb-5">
                     <Bar
                         data={topCardChartData}
-                        options={{ responsive: true, plugins: { legend: { position: "top" } } }}
+                        options={{
+                          responsive: true,
+                          plugins: { legend: { position: "top" }, title: { display: true, text: "Top Khách Hàng Nạp Thẻ" } },
+                          scales: { y: { beginAtZero: true } },
+                        }}
                     />
                   </div>
                 </div>
@@ -336,7 +373,7 @@ export default function DashboardPage() {
                         <thead>
                         <tr>
                           <th>Username</th>
-                          <th>Tên</th>
+                          <th>User Code</th>
                           <th>Số điện thoại</th>
                           <th>Số tiền đã nạp</th>
                         </tr>
@@ -344,9 +381,9 @@ export default function DashboardPage() {
                         <tbody>
                         {data.topCard.map((card, index) => (
                             <tr key={index}>
-                              <td>{card.username}</td>
-                              <td>{card.user_code}</td>
-                              <td>{card.phone}</td>
+                              <td>{card.username || `N/A`}</td>
+                              <td>{card.user_code || "N/A"}</td>
+                              <td>{card.phone || "N/A"}</td>
                               <td>{formatNumber(card.total_amount)} đ</td>
                             </tr>
                         ))}

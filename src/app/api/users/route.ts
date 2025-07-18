@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
             .where("user.deleted_at IS NULL").orderBy("user.id", "DESC");
 
         if (username) {
-            query.andWhere("user.username LIKE :username", { username: `%${username}%` });
+            query.andWhere("user.user_code LIKE :user_code", { user_code: `%${username}%` });
         }
 
         if (phone) {

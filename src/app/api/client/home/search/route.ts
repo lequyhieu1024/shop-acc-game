@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { initRepository } from "@/app/models/connect";
 import { Product } from "@/app/models/entities/Product";
-import { Like } from "typeorm";
+import {Like, MoreThan} from "typeorm";
 
 export async function GET(request: Request) {
   try {
@@ -15,7 +15,7 @@ export async function GET(request: Request) {
     const productRepo = await initRepository(Product);
     const products = await productRepo.find({
       where: [
-        { name: Like(`%${query}%`), status: 'active' },
+        { name: Like(`%${query}%`), status: 'active', quantity: MoreThan(0) },
         { description: Like(`%${query}%`), status: 'active' }
       ],
       relations: ['category'],

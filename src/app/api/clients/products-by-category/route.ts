@@ -2,6 +2,7 @@ import {NextRequest, NextResponse} from "next/server";
 import {initRepository} from "@/app/models/connect";
 import {Product} from "@/app/models/entities/Product";
 import {Category} from "@/app/models/entities/Category";
+import {MoreThan} from "typeorm";
 
 export const GET = async (req: NextRequest) => {
     try {
@@ -17,7 +18,10 @@ export const GET = async (req: NextRequest) => {
         
         // Build where clause based on categoryId
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const whereClause: any = {};
+        const whereClause: any = {
+            status: 'active',
+            quantity: MoreThan(0)
+        };
         if (categoryId && categoryId !== "all") {
             whereClause.category_id = parseInt(categoryId);
         }

@@ -90,7 +90,6 @@ export default function ProductForm({
       newErrors.sale_price = "Vui lòng nhập giá bán atm";
     if (formData.number_diamond_available! < 0)
       newErrors.number_diamond_available = "Số kim cương không được nhỏ hơn 0";
-    if (formData.quantity <= 0) newErrors.quantity = "Số lượng phải lớn hơn 0";
     if (!formData.register_by.trim())
       newErrors.register_by = "Bắt buộc phải nhập thông tin đăng ký";
     if (formData.category_id === 0)
