@@ -31,6 +31,46 @@ export const uploadFileToPinata = async (file: File, name: string = ""): Promise
     }
 }
 
+export const uploadFilesToPinata = async (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    files: any[],
+    namePrefix: string = ""
+): Promise<{ name: string; url: string }[] | NextResponse> => {
+    try {
+        const preparedFiles = await Promise.all(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            files.map(async (file: any) => {
+                if (!namePrefix) return file;
+                const ext = file.name.split('.').pop();
+                const newName = `${toSlug(namePrefix)}-${randomString()}${ext ? '.' + ext : ''}`;
+                return new File([await file.arrayBuffer()], newName, { type: file.type });
+            })
+        );
+
+        const uploadData = await pinata.upload
+            .fileArray(preparedFiles)
+
+        const cid = uploadData.IpfsHash;
+
+        const gatewayBase = await pinata.gateways.convert(cid);
+
+        const filesWithUrls = preparedFiles.map((file) => ({
+            name: file.name,
+            url: `${gatewayBase}/${encodeURIComponent(file.name)}`,
+        }));
+        console.log(filesWithUrls)
+        return filesWithUrls;
+    } catch (error) {
+        console.error("Error uploading multiple files to Pinata:", error);
+        return NextResponse.json(
+            { error: "Internal Server Error", details: (error as Error).message },
+            { status: 500 }
+        );
+    }
+};
+
+
+
 const extractCID = (url: string): string => {
     const match = url.match(/\/ipfs\/([^/?#]+)/);
     return match ? match[1] : '';

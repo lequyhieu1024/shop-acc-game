@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import {initRepository} from "@/app/models/connect";
-import {uploadFileToPinata} from "@/app/services/pinataService";
+import {uploadFilesToPinata, uploadFileToPinata} from "@/app/services/pinataService";
 import {Product} from "@/app/models/entities/Product";
 import {ProductImage} from "@/app/models/entities/Image";
 import {Between, LessThanOrEqual, Like} from "typeorm";
@@ -116,14 +116,7 @@ export async function POST(req: NextRequest) {
             (file) => file instanceof File && file.name && file.size > 0
         );
 
-        const imageUploadPromises = imageFiles.map((file) =>
-            uploadFileToPinata(file as File, name).then((url) => String(url)).catch((error) => {
-                console.error("Failed to upload image:", (error as Error).message);
-                return null;
-            })
-        );
-
-        const imageUrls = (await Promise.all(imageUploadPromises)).filter((url) => url !== null) as string[];
+        const urls = await uploadFilesToPinata(imageFiles, name);
 
         const newProduct = productRepository.create({
             code,
@@ -148,12 +141,12 @@ export async function POST(req: NextRequest) {
 
         const savedProduct = await productRepository.save(newProduct);
 
-        if (imageUrls.length > 0) {
+        if (Array.isArray(urls) && urls.length > 0) {
             const imageRepository = await initRepository(ProductImage);
-            const imageEntities = imageUrls.map((url) =>
+            const imageEntities = urls.map((url) =>
                 imageRepository.create({
                     product_id: savedProduct.id,
-                    image_url: url,
+                    image_url: url.url,
                 })
             );
             await imageRepository.save(imageEntities);
@@ -163,7 +156,7 @@ export async function POST(req: NextRequest) {
             {
                 success: true,
                 product: savedProduct,
-                images: imageUrls,
+                images: urls,
                 message: "Tạo sản phẩm thành công",
             },
             { status: 200 }
