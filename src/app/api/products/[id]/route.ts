@@ -2,8 +2,9 @@ import {NextRequest, NextResponse} from "next/server";
 import {initRepository} from "@/app/models/connect";
 import {Product} from "@/app/models/entities/Product";
 import {ProductImage} from "@/app/models/entities/Image";
-import {deleteOnPinata, uploadFileToPinata} from "@/app/services/pinataService";
+import {deleteImage} from "@/app/services/pinataService";
 import {In} from "typeorm";
+import {saveFileToUploads} from "@/app/services/uploadHosting";
 
 export const GET = async (
     req: NextRequest,
@@ -80,8 +81,8 @@ export const PATCH = async (
 
         let thumbnailUrl = product.thumbnail;
         if (thumbnailFile && thumbnailFile.size > 0) {
-            thumbnailUrl = await uploadFileToPinata(thumbnailFile, name);
-            await deleteOnPinata(product.thumbnail);
+            thumbnailUrl = await saveFileToUploads(thumbnailFile);
+            await deleteImage(product.thumbnail);
         }
 
         const deletedImageIdsRaw = formData.get("deletedImageIds") as string;
@@ -98,7 +99,7 @@ export const PATCH = async (
 
             if (imagesToDelete.length > 0) {
                 try {
-                    await deleteOnPinata(imagesToDelete);
+                    await deleteImage(imagesToDelete);
                 } catch (error) {
                     console.error("Failed to delete images from Pinata:", error);
                 }
@@ -118,7 +119,7 @@ export const PATCH = async (
         if (imageFiles.length > 0) {
             for (const imageFile of imageFiles) {
                 try {
-                    const imageUrl = await uploadFileToPinata(imageFile as File, name);
+                    const imageUrl = await saveFileToUploads(imageFile as File);
                     newImageUrls.push(String(imageUrl));
                 } catch (error) {
                     console.error("Failed to upload image:", (error as Error).message);
@@ -205,12 +206,12 @@ export const DELETE = async (
         if (!product) {
             return NextResponse.json({ message: "Product not found" }, { status: 404 });
         }
-        await deleteOnPinata(product.thumbnail)
+        await deleteImage(product.thumbnail)
         await productRepo.softDelete({ id: Number(productId) });
 
         const imagesToDelete = await imageRepo.findBy({ product_id: Number(productId)})
         if (imagesToDelete.length > 0) {
-            await deleteOnPinata(imagesToDelete);
+            await deleteImage(imagesToDelete);
         }
         await imageRepo.delete({ product_id: Number(productId) });
 

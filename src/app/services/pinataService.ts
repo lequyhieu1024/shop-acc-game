@@ -2,6 +2,8 @@ import "server-only"
 import {PinataSDK} from "pinata-web3"
 import {NextResponse} from "next/server";
 import {randomString, toSlug} from "@/app/services/commonService";
+import path from "path";
+import fs from "fs/promises";
 
 export const pinata = new PinataSDK({
     pinataJwt: `${process.env.PINATA_JWT}`,
@@ -103,5 +105,72 @@ export const deleteOnPinata = async (data: any): Promise<NextResponse> => {
     } catch (error: any) {
         console.error('Unpin error:', error);
         return NextResponse.json({message: 'Failed to unpin', error: error.message}, {status: 500});
+    }
+};
+
+const HOST_URL = process.env.NEXT_PUBLIC_UPLOAD_URL || "";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const deleteImage = async (data: any): Promise<NextResponse> => {
+    try {
+        const urls: string[] = [];
+
+        if (Array.isArray(data)) {
+            data.forEach((item) => {
+                if (typeof item === "string") urls.push(item);
+                else if (item?.image_url) urls.push(item.image_url);
+            });
+        } else if (typeof data === "string") {
+            urls.push(data);
+        } else if (data?.image_url) {
+            urls.push(data.image_url);
+        }
+
+        if (urls.length === 0) {
+            return NextResponse.json({ message: "Không có ảnh để xoá." });
+        }
+
+        const pinataCIDs: string[] = [];
+        const hostingPaths: string[] = [];
+
+        for (const url of urls) {
+            if (url.includes("mypinata.cloud")) {
+                const cid = extractCID(url);
+                if (cid) pinataCIDs.push(cid);
+            } else if (url.startsWith(HOST_URL)) {
+                const relativePath = url.replace(HOST_URL, "");
+                const filePath = path.join(process.cwd(), "public", relativePath);
+                hostingPaths.push(filePath);
+            }
+        }
+
+        const deletedLocal: string[] = [];
+        for (const filePath of hostingPaths) {
+            try {
+                await fs.unlink(filePath);
+                deletedLocal.push(filePath);
+            } catch {
+                console.warn("Không tìm thấy file để xoá:", filePath);
+            }
+        }
+
+        let pinataResult = null;
+        if (pinataCIDs.length > 0) {
+            pinataResult = await pinata.unpin(pinataCIDs);
+        }
+
+        return NextResponse.json({
+            message: "Đã xoá ảnh thành công.",
+            deletedLocal,
+            pinataCIDs,
+            pinataResult,
+        });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+        console.error("Lỗi xoá ảnh:", error);
+        return NextResponse.json(
+            { message: "Lỗi khi xoá ảnh", error: error.message },
+            { status: 500 }
+        );
     }
 };

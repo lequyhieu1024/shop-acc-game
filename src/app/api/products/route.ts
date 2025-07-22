@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import {initRepository} from "@/app/models/connect";
-import {uploadFilesToPinata, uploadFileToPinata} from "@/app/services/pinataService";
 import {Product} from "@/app/models/entities/Product";
 import {ProductImage} from "@/app/models/entities/Image";
 import {Between, LessThanOrEqual, Like} from "typeorm";
+import {saveFileToUploads} from "@/app/services/uploadHosting";
 
 export async function GET(req: NextRequest) {
     try {
@@ -109,14 +109,19 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const thumbnailUrl = await uploadFileToPinata(thumbnailFile, name);
+        const thumbnailUrl = await saveFileToUploads(thumbnailFile);
 
         const imageFilesRaw = formData.getAll("images");
         const imageFiles = imageFilesRaw.filter(
             (file) => file instanceof File && file.name && file.size > 0
         );
 
-        const urls = await uploadFilesToPinata(imageFiles, name);
+        const urls = await Promise.all(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            imageFiles.map(async (file: any) => ({
+                url: await saveFileToUploads(file),
+            }))
+        );
 
         const newProduct = productRepository.create({
             code,
