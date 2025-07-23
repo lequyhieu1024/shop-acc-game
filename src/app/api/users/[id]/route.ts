@@ -1,6 +1,46 @@
 import {NextRequest, NextResponse} from "next/server";
 import {initRepository} from "@/app/models/connect";
 import {User} from "@/app/models/entities/User";
+// import {CardTransaction} from "@/app/models/entities/CardTransaction";
+
+// export async function GET(req: NextRequest) {
+//     try {
+//         const { pathname } = new URL(req.url);
+//         const id = pathname.split("/").pop();
+//
+//         if (!id) {
+//             return NextResponse.json(
+//                 { message: "ID người dùng không hợp lệ." },
+//                 { status: 400 }
+//             );
+//         }
+//
+//         const userRepository = await initRepository(User);
+//         const user = await userRepository.findOne({ where: { id: parseInt(id) } });
+//
+//         if (!user) {
+//             return NextResponse.json(
+//                 { message: "Người dùng không tồn tại." },
+//                 { status: 404 }
+//             );
+//         }
+//
+//         const transRepo = await initRepository(CardTransaction);
+//
+//         const transactions = await transRepo.findBy({user_id: user.id})
+//
+//         return NextResponse.json({
+//             transactions: transactions,
+//             user: user
+//         },{ status: 200 });
+//     } catch (error) {
+//         console.log(error)
+//         return NextResponse.json(
+//             { message: (error as Error).message },
+//             { status: 500 }
+//         );
+//     }
+// }
 
 export async function PATCH(req: NextRequest) {
     try {

@@ -5,7 +5,7 @@ import api from "@/app/services/axiosService";
 import Loading from "@/components/Loading";
 import {useParams, useRouter} from "next/navigation";
 import {ITransaction} from "@/app/interfaces/ITransaction";
-import {DateTimeISO8601ToUFFAndUTCP7, maskDigits, numberFormat} from "@/app/services/commonService";
+import {DateTimeISO8601ToUFFAndUTCP7, numberFormat} from "@/app/services/commonService";
 import Link from "next/link";
 import {IUser} from "@/app/interfaces/IUser";
 
@@ -81,8 +81,8 @@ const TransactionDetail = () => {
                     label="Mệnh giá khai báo">{numberFormat(transaction.declared_value)} vnđ</Descriptions.Item>
                 <Descriptions.Item label="Giá trị thực">{numberFormat(transaction.value)} vnđ</Descriptions.Item>
                 <Descriptions.Item label="Số tiền">{numberFormat(transaction.amount)} vnđ</Descriptions.Item>
-                <Descriptions.Item label="Mã thẻ">{maskDigits(transaction.code)}</Descriptions.Item>
-                <Descriptions.Item label="Số serial">{maskDigits(transaction.serial)}</Descriptions.Item>
+                <Descriptions.Item label="Mã thẻ">{transaction.code}</Descriptions.Item>
+                <Descriptions.Item label="Số serial">{transaction.serial}</Descriptions.Item>
                 <Descriptions.Item label="Nhà mạng">{transaction.telco}</Descriptions.Item>
                 <Descriptions.Item label="ID giao dịch (Thẻ siêu rẻ)">{transaction.trans_id ?? "N/A"}</Descriptions.Item>
                 <Descriptions.Item label="Ngày tạo">{ DateTimeISO8601ToUFFAndUTCP7(transaction.created_at) }</Descriptions.Item>

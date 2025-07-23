@@ -30,9 +30,9 @@ export default function UsersPage() {
 
     const [formData, setFormData] = useState({
         username: "",
+        user_code: "",
+        user_id: "",
         phone: "",
-        role: "",
-        created_at: "",
     });
 
     const fetchUsers = async (
@@ -134,16 +134,16 @@ export default function UsersPage() {
         e.preventDefault();
         setFormData({
             username: "",
+            user_code: "",
+            user_id: "",
             phone: "",
-            role: "",
-            created_at: "",
         });
         setPagination((prev) => ({ ...prev, current: 1 }));
         fetchUsers({
             username: "",
+            user_code: "",
+            user_id: "",
             phone: "",
-            role: "",
-            created_at: "",
         });
     };
 
@@ -160,9 +160,19 @@ export default function UsersPage() {
 
     const columns: TableProps<IUser>["columns"] = [
         {
+            title: "User ID",
+            dataIndex: "id",
+            key: "id",
+        },
+        {
             title: "username",
             dataIndex: "username",
             key: "username",
+        },
+        {
+            title: "Mã người dùng",
+            dataIndex: "user_code",
+            key: "user_code",
         },
         {
             title: "Số điện thoại",
@@ -175,11 +185,6 @@ export default function UsersPage() {
             dataIndex: "balance",
             key: "balance",
             render: (balance: bigint) => `${convertToInt(balance)} VND`,
-        },
-        {
-            title: "Mã người dùng",
-            dataIndex: "user_code",
-            key: "user_code",
         },
         {
             title: "Mã giới thiệu",
@@ -217,6 +222,9 @@ export default function UsersPage() {
                     <Link href={`#`} onClick={() => showEditModal(user)}>
                         <i className="ri-pencil-line"></i>
                     </Link>
+                    <Link href={`/admin/transactions?user_code=${user.user_code}`}>
+                        <i className="ri-history-line"></i>
+                    </Link>
                     {user.role !== "admin" ? (
                         <>
                             <DeleteConfirm onConfirm={() => handleDelete(user.id)} />
@@ -248,10 +256,30 @@ export default function UsersPage() {
                                                 <div className="col-md-3">
                                                     <input
                                                         type="text"
+                                                        name="user_id"
+                                                        className="form-control"
+                                                        placeholder="user id"
+                                                        value={formData.user_id}
+                                                        onChange={handleChange}
+                                                    />
+                                                </div>
+                                                <div className="col-md-3">
+                                                    <input
+                                                        type="text"
                                                         name="username"
                                                         className="form-control"
-                                                        placeholder="User Code"
+                                                        placeholder="user name"
                                                         value={formData.username}
+                                                        onChange={handleChange}
+                                                    />
+                                                </div>
+                                                <div className="col-md-3">
+                                                    <input
+                                                        type="text"
+                                                        name="user_code"
+                                                        className="form-control"
+                                                        placeholder="usercode"
+                                                        value={formData.user_code}
                                                         onChange={handleChange}
                                                     />
                                                 </div>
@@ -262,27 +290,6 @@ export default function UsersPage() {
                                                         className="form-control"
                                                         placeholder="Số điện thoại"
                                                         value={formData.phone}
-                                                        onChange={handleChange}
-                                                    />
-                                                </div>
-                                                <div className="col-md-3">
-                                                    <select
-                                                        name="role"
-                                                        className="form-select form-control"
-                                                        value={formData.role}
-                                                        onChange={handleChange}
-                                                    >
-                                                        <option value="">Vai trò</option>
-                                                        <option value="user">Người dùng</option>
-                                                        <option value="admin">Quản trị viên</option>
-                                                    </select>
-                                                </div>
-                                                <div className="col-md-3">
-                                                    <input
-                                                        type="date"
-                                                        name="created_at"
-                                                        className="form-control"
-                                                        value={formData.created_at}
                                                         onChange={handleChange}
                                                     />
                                                 </div>

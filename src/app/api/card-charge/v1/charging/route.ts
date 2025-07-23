@@ -113,6 +113,7 @@ export const POST = async (req: NextRequest) => {
                 - Mã thẻ: ${cardData.code}
                 - Mệnh giá: ${cardData.amount}
                 - User ID: ${session!.user.id}
+                - Username: ${session!.user.username}
               `;
 
             try {

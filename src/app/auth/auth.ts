@@ -34,7 +34,7 @@ export const authOptions: NextAuthOptions = {
                 username: { label: "Tên đăng nhập", type: "text" },
                 password: { label: "Mật khẩu", type: "password" },
                 referral_code: { label: "Mã giới thiệu", type: "text" },
-                action: { label: "Hành động", type: "text" }, // Thêm trường action
+                action: { label: "Hành động", type: "text" },
             },
             async authorize(credentials) {
                 const { username, password, referral_code, action } = credentials || {};

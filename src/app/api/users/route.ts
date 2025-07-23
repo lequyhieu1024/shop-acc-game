@@ -8,8 +8,8 @@ export async function GET(req: NextRequest) {
         const { searchParams } = new URL(req.url);
         const username = searchParams.get("username");
         const phone = searchParams.get("phone");
-        const role = searchParams.get("role");
-        const created_at = searchParams.get("created_at");
+        const user_code = searchParams.get("user_code");
+        const user_id = searchParams.get("user_id");
         const page = parseInt(searchParams.get("page") || "1");
         const size = parseInt(searchParams.get("size") || "10");
 
@@ -17,20 +17,20 @@ export async function GET(req: NextRequest) {
             .createQueryBuilder("user")
             .where("user.deleted_at IS NULL").orderBy("user.id", "DESC");
 
+        if (user_id) {
+            query.andWhere("user.id LIKE :id", { id: `%${user_id}%` });
+        }
+
+        if (user_code) {
+            query.andWhere("user.user_code LIKE :user_code", { user_code: `%${user_code}%` });
+        }
+
         if (username) {
-            query.andWhere("user.user_code LIKE :user_code", { user_code: `%${username}%` });
+            query.andWhere("user.username LIKE :username", { username: `%${username}%` });
         }
 
         if (phone) {
             query.andWhere("user.phone LIKE :phone", { phone: `%${phone}%` });
-        }
-
-        if (role) {
-            query.andWhere("user.role = :role", { role });
-        }
-
-        if (created_at) {
-            query.andWhere("DATE(user.created_at) = :created_at", { created_at });
         }
 
         query.skip((page - 1) * size).take(size);

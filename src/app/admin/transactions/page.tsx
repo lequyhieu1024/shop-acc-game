@@ -8,6 +8,7 @@ import ErrorPage from "@/components/(admin)/Error";
 import { Space, Table, TableProps, Tag, Modal, Select, Button } from "antd";
 import { Timestamp } from "typeorm";
 import {toast} from "react-toastify";
+import {useSearchParams} from "next/navigation";
 
 interface Filters {
   [key: string]: string | number | boolean;
@@ -23,8 +24,9 @@ export default function Transaction() {
     total: 0,
   });
 
+  const searchParams = useSearchParams();
   const [formData, setFormData] = useState({
-    user_code: "",
+    user_code: searchParams.get('user_code') ?? "",
     status: "",
     request_id: "",
     created_at: "",
