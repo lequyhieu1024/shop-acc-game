@@ -114,28 +114,27 @@ export const PATCH = async (
         const imageFiles = imageFilesRaw.filter(
             (file) => file instanceof File && file.name && file.size > 0
         );
-        const newImageUrls: string[] = [];
 
         if (imageFiles.length > 0) {
-            for (const imageFile of imageFiles) {
-                try {
-                    const imageUrl = await saveFileToUploads(imageFile as File);
-                    newImageUrls.push(String(imageUrl));
-                } catch (error) {
-                    console.error("Failed to upload image:", (error as Error).message);
-                }
-            }
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const uploadPromises = imageFiles.map((file: any) => saveFileToUploads(file));
 
-            if (newImageUrls.length > 0) {
-                const imageEntities = newImageUrls.map((url) =>
-                    imageRepo.create({
-                        product_id: Number(productId),
-                        image_url: url,
+            const urls = await Promise.all(uploadPromises).then((results) =>
+                results.map((url) => ({ url }))
+            );
+
+            if (Array.isArray(urls) && urls.length > 0) {
+                const imageRepository = await initRepository(ProductImage);
+                const imageEntities = urls.map((url) =>
+                    imageRepository.create({
+                        product_id: savedProduct.id,
+                        image_url: url.url,
                     })
                 );
-                await imageRepo.save(imageEntities);
+                await imageRepository.save(imageEntities);
             }
         }
+
 
         const updatedProductData = {
             ...product,

@@ -116,11 +116,11 @@ export async function POST(req: NextRequest) {
             (file) => file instanceof File && file.name && file.size > 0
         );
 
-        const urls = await Promise.all(
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            imageFiles.map(async (file: any) => ({
-                url: await saveFileToUploads(file),
-            }))
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const uploadPromises = imageFiles.map((file: any) => saveFileToUploads(file));
+
+        const urls = await Promise.all(uploadPromises).then((results) =>
+            results.map((url) => ({ url }))
         );
 
         const newProduct = productRepository.create({
