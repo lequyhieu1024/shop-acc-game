@@ -159,7 +159,7 @@ export async function POST(request: Request) {
       }
       if (!product.is_for_sale) {
         return NextResponse.json(
-            { error: `Nick ${product.name} đã có người đặt cọc, vui lòng mua nick khác !` },
+            { error: `Nick ${product.name} đã bán, vui lòng mua nick khác !` },
             { status: 400 }
         );
       }

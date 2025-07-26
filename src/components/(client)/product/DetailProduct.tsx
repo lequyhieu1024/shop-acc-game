@@ -1,7 +1,7 @@
 "use client";
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import { Rate, Modal, Button } from "antd";
-import { ShoppingCartOutlined, CheckCircleFilled, LeftOutlined, RightOutlined } from "@ant-design/icons";
+import {ShoppingCartOutlined, CheckCircleFilled, LeftOutlined, RightOutlined, CloseOutlined} from "@ant-design/icons";
 import { FaShoppingCart } from "react-icons/fa";
 import { useCart } from "@/app/contexts/CartContext";
 import { IProduct } from "@/app/interfaces/IProduct";
@@ -383,11 +383,12 @@ const DetailProduct: React.FC<DetailProductProps> = ({ product }) => {
 
             {/* Image Preview Modal */}
             <Modal
+                closeIcon={<CloseOutlined style={{ fontSize: '25px', color: '#000', backgroundColor: 'wheat' }} />}
                 open={!!previewImage}
                 footer={null}
                 onCancel={() => setPreviewImage(null)}
                 centered
-                width={800}
+                width={1100}
                 styles={{ body: { padding: 0, position: "relative" } }}
             >
                 {Array.isArray(product.images) && product.images.length > 1 && (

@@ -13,6 +13,8 @@ export async function GET(req: NextRequest) {
         const page = parseInt(searchParams.get("page") || "1");
         const size = parseInt(searchParams.get("size") || "10");
 
+        console.log(username, phone, user_code, user_id);
+
         const query = userRepository
             .createQueryBuilder("user")
             .where("user.deleted_at IS NULL").orderBy("user.id", "DESC");
