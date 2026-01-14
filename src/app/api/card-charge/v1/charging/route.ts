@@ -82,7 +82,7 @@ export const POST = async (req: NextRequest) => {
 
 
             let newTransLog;
-            if (!cardData.id || !cardData.amount || !cardData.value) {
+            if (cardData.status == 3) {
                 newTransLog = cardTransRepo.create(cardData);
                 await cardTransRepo.save(newTransLog);
                 return NextResponse.json(
